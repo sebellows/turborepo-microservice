@@ -1,8 +1,16 @@
 import { theme } from "../themes/base";
+import { ColorTintKey, ColorVariantKey, PaletteKey } from "./color";
 
 export type Theme = typeof theme;
 
-export type ResponsiveProp<T> = T | readonly (T | null)[];
+export type ThemeMode = "dark" | "light";
+
+export interface ThemeContextValue {
+  theme: Theme;
+  mode: ThemeMode;
+}
+
+export type ResponsiveProp<T> = T; // | readonly (T | null)[];
 
 export type DimensionType = number | string;
 
@@ -15,12 +23,15 @@ export type TextAlign =
   | "end";
 export type TextAlignment = ResponsiveProp<TextAlign>;
 
-export type ColorType = ResponsiveProp<keyof Theme["palette"]>;
+export type ColorTintType =
+  | `${PaletteKey}.${ColorTintKey}`
+  | `${ColorVariantKey}.${ColorTintKey}`;
+export type ColorType = ResponsiveProp<string | ColorTintType>;
 export type ColorProps = {
   /** background-color */
-  background?: ColorType;
+  background?: string;
   /** color */
-  foreground?: ColorType;
+  foreground?: string;
 };
 
 export type RadiiType = ResponsiveProp<keyof Theme["radii"]>;
@@ -72,6 +83,15 @@ export type PaddingProps = {
   paddingX?: SpacingType;
 };
 
+export type BreakpointProps = {
+  xs?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+  prefersReducedMotion?: string;
+};
+
 export type BaseBoxProps = {
   /** text-align */
   textAlign?: TextAlignment;
@@ -85,4 +105,4 @@ export type BoxProps = ColorProps &
   RadiiProps &
   MarginProps &
   PaddingProps &
-  BaseBoxProps;
+  BaseBoxProps & { css?: any };

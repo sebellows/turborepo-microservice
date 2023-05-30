@@ -1,23 +1,24 @@
 import { ReactNode, createContext, useContext } from "react";
 
-import { theme } from "./themes";
-import { Theme } from "./types";
+import { theme } from "../themes";
+import { Theme, ThemeContextValue, ThemeMode } from "../types";
 
-export const ThemeContext = createContext<{
-  theme: Theme;
-}>({
+export const ThemeContext = createContext<ThemeContextValue>({
   theme,
+  mode: 'light'
 });
 
 export const ThemeProvider = ({
   theme,
+  mode = 'light',
   children,
 }: {
   theme: Theme;
+  mode: ThemeMode;
   children: ReactNode;
 }) => {
   return (
-    <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={{ theme, mode }}>{children}</ThemeContext.Provider>
   );
 };
 

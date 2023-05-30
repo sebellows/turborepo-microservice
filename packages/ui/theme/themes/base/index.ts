@@ -1,11 +1,11 @@
 import colorUtils from "../../color/colorUtils";
-import { identityType } from "../../utils";
+import { identityType, toRem } from "../../utils";
 
 import { colors } from "./colors";
 
 const { color, variant } = colorUtils;
 
-const { base, palette } = colors;
+const { base } = colors;
 
 const typography = {
   fontFamily: {
@@ -16,18 +16,18 @@ const typography = {
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
   },
   fontSize: {
-    "3xs": "0.5rem",
-    "2xs": "0.6rem",
-    xs: "0.75rem",
-    sm: "0.875rem",
-    md: "1rem",
-    lg: "1.125rem",
-    xl: "1.25rem",
-    "2xl": "1.5rem",
-    "3xl": "1.875rem",
-    display1: "2.25rem",
-    display2: "3rem",
-    display3: "4rem",
+    "3xs": 9,
+    "2xs": 10,
+    xs: 12,
+    sm: 14,
+    md: 16,
+    lg: 18,
+    xl: 20,
+    "2xl": 24,
+    "3xl": 30,
+    display1: 36,
+    display2: 48,
+    display3: 64,
   },
   fontWeight: {
     light: 300,
@@ -45,19 +45,21 @@ const typography = {
     looser: 1.8,
   },
   tracking: {
-    tighter: "-0.02em",
-    tight: "-0.01em",
-    base: "0em",
-    loose: "0.01em",
-    looser: "0.02em",
+    tighter: -0.32,
+    tight: -0.16,
+    base: 0,
+    loose: 0.16,
+    looser: 0.32,
   },
 };
 
 const breakpoints = {
-  small: 576,
-  medium: 768,
-  large: 992,
-  xlarge: 1200,
+  sm: "(min-width: 576px)",
+  md: "(min-width: 768px )",
+  lg: "(min-width: 992px)",
+  xl: "(min-width: 1200px)",
+  xxl: "(min-width: 1400px)",
+  prefersReducedMotion: "(prefers-reduced-motion: reduce)",
 };
 
 const elevation = {
@@ -148,42 +150,42 @@ const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize["3xl"],
+    size: toRem(typography.fontSize["3xl"]),
     transform: "none",
     weight: typography.fontWeight.heavy,
   },
   h2: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize["2xl"],
+    size: toRem(typography.fontSize["2xl"]),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h3: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize.xl,
+    size: toRem(typography.fontSize.xl),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h4: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize.lg,
+    size: toRem(typography.fontSize.lg),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h5: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize.md,
+    size: toRem(typography.fontSize.md),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h6: {
     color: variant("neutral", "900"),
     family: typography.fontFamily.heading,
-    size: typography.fontSize.sm,
+    size: toRem(typography.fontSize.sm),
     transform: "uppercase",
     weight: typography.fontWeight.bold,
   },
@@ -331,15 +333,28 @@ type Tone = {
 };
 
 const tones = identityType<{ [key: string]: Tone }>()({
-  active: {
-    focusRing: color("blue", "200"),
-    border: [color("blue", "300"), color("blue", "400"), color("blue", "500")],
-    fill: [color("blue", "600"), color("blue", "700"), color("blue", "800")],
-    tint: [color("blue", "50"), color("blue", "100"), color("blue", "200")],
+  // a.k.a., the "active" state
+  primary: {
+    focusRing: variant("primary", "200"),
+    border: [
+      variant("primary", "300"),
+      variant("primary", "400"),
+      variant("primary", "500"),
+    ],
+    fill: [
+      variant("primary", "600"),
+      variant("primary", "700"),
+      variant("primary", "800"),
+    ],
+    tint: [
+      variant("primary", "50"),
+      variant("primary", "100"),
+      variant("primary", "200"),
+    ],
     foreground: [
-      color("blue", "600"),
-      color("blue", "700"),
-      color("blue", "800"),
+      variant("primary", "600"),
+      variant("primary", "700"),
+      variant("primary", "800"),
     ],
     fillForeground: [base.white, base.white, base.white],
   },
@@ -603,6 +618,79 @@ const fields: FieldTokens = {
   },
 };
 
+// export interface BaseTheme<TStyles = {}> {
+//   name: string;
+//   // Global Tokens
+//   typography: {
+//     fontFamily: {
+//       monospace: string;
+//       body: string;
+//       heading: string;
+//     };
+//     fontSize: {
+//       "3xs": number;
+//       "2xs": number;
+//       xs: number;
+//       sm: number;
+//       md: number;
+//       lg: number;
+//       xl: number;
+//       "2xl": number;
+//       "3xl": number;
+//       display1: number;
+//       display2: number;
+//       display3: number;
+//     };
+//     fontWeight: {
+//       light: number;
+//       regular: number;
+//       medium: number;
+//       semibold: number;
+//       bold: number;
+//       heavy: number;
+//     };
+//     leading: {
+//       tighter: 1;
+//       tight: 1.2;
+//       base: 1.4;
+//       loose: 1.6;
+//       looser: 1.8;
+//     };
+//     tracking: {
+//       tighter: -0.32;
+//       tight: -0.16;
+//       base: 0;
+//       loose: 0.16;
+//       looser: 0.32;
+//     };
+//   };
+//   // palette;
+//   breakpoints: {
+//     none: string;
+//     sm: string;
+//     md: string;
+//     lg: string;
+//     xl: string;
+//     prefersReducedMotion: string;
+//     [key: string]: string;
+//   };
+//   elevation: Record<string, number>;
+//   modes;
+//   radii: Record<string, number>;
+//   sizing: Record<string, number>;
+//   spacing: Record<string, number>;
+//   shadow;
+//   animation;
+//   opacity;
+//   // Alias Tokens
+//   headingStyles;
+//   controlSizes;
+//   colors;
+//   tones;
+//   selectableColors;
+//   fields;
+// }
+
 /**
  * Export
  */
@@ -611,7 +699,7 @@ export const theme = {
   name: "Kyle",
   // Global Tokens
   typography,
-  palette,
+  // palette,
   breakpoints,
   elevation,
   modes,

@@ -1,3 +1,5 @@
+import { CSSObject } from "@emotion/react";
+import "@emotion/serialize";
 import { ElementType } from "react";
 
 /**
@@ -92,3 +94,59 @@ class DevLogger {
 }
 
 export const devLogger = DevLogger.getInstance();
+
+export const mapResponsiveProp = <P extends CSSObject, K extends keyof P>(
+  value: K | readonly (K | null)[],
+  valueMap: P
+) => {
+  if (Array.isArray(value)) {
+    return value.map((k) => valueMap[k] ?? null);
+  } else if (typeof value == "string") {
+    return valueMap[value];
+  }
+
+  return null;
+};
+
+/**
+ * Convert pixel value to em units
+ */
+export function toEm(value: `${string}px` | number, baseValue = 16): string {
+  let pixelValue = 0;
+
+  if (typeof value === "string") {
+    pixelValue = parseFloat(value);
+  }
+
+  return pixelValue === 0 ? "0" : `${pixelValue / 16}em`;
+}
+
+/**
+ * Convert pixel value to rem units
+ */
+export function toRem(value: `${string}px` | number, baseValue = 16): string {
+  let pixelValue = 0;
+
+  if (typeof value === "string") {
+    pixelValue = parseFloat(value);
+  }
+
+  return pixelValue === 0 ? "0" : `${pixelValue / baseValue}rem`;
+}
+
+/**
+ * Convert number, em, or rem unit values to px units
+ */
+export function toPx(value: number, baseValue?: number): string {
+  let relativeValue = 0;
+
+  if (typeof value === "string") {
+    relativeValue = parseFloat(value);
+  }
+
+  if (baseValue) {
+    relativeValue *= baseValue;
+  }
+
+  return relativeValue === 0 ? "0" : `${relativeValue}px`;
+}
