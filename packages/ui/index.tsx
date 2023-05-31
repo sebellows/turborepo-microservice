@@ -1,5 +1,5 @@
-import * as React from "react";
+import React from "react";
 
 // component exports
-export * from "./Button";
-export * from "./Header";
+export * from "./components";
+export * from "./theme/public-api"

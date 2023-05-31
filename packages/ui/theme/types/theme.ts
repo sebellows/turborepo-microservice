@@ -5,9 +5,14 @@ export type Theme = typeof theme;
 
 export type ThemeMode = "dark" | "light";
 
-export interface ThemeContextValue {
+export interface RootThemeContextValue {
   theme: Theme;
   mode: ThemeMode;
+}
+
+export interface ThemeContextValue {
+  theme: Theme;
+  scheme: Theme["modes"][ThemeMode];
 }
 
 export type ResponsiveProp<T> = T; // | readonly (T | null)[];
@@ -93,18 +98,3 @@ export type BreakpointProps = {
   xl?: string;
   prefersReducedMotion?: string;
 };
-
-export type BaseBoxProps = {
-  /** text-align */
-  textAlign?: TextAlignment;
-  /** height */
-  height?: ResponsiveProp<DimensionType>;
-  /** width */
-  width?: ResponsiveProp<DimensionType>;
-};
-
-export type BoxProps = ColorProps &
-  RadiiProps &
-  MarginProps &
-  PaddingProps &
-  BaseBoxProps & { css?: any };

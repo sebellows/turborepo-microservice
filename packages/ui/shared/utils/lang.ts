@@ -1,8 +1,11 @@
-import { Constructor, ValueOf } from "type-fest";
-import { AsyncFunction } from "type-fest/source/async-return-type";
-
 import { hasOwn } from "./common";
-import { AsyncClosure, Closure } from "../types";
+import {
+  AsyncClosure,
+  AsyncFunction,
+  Closure,
+  Constructor,
+  ValueOf,
+} from "../types";
 
 export function isEmpty<O extends Object | undefined>(value: O) {
   if (isNil(value)) return true;
@@ -45,7 +48,7 @@ const ConstructorMap = {
   date: Date,
   function: Function,
   map: Map,
-  node: Node,
+  // node: Node,
   null: null,
   number: Number,
   object: Object,

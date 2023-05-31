@@ -1,9 +1,11 @@
-/** @jsx jsx */
+"use client"
 
 import { Fragment, ReactNode } from "react";
 
-import { jsx, Global, normalize } from "../shared";
-import { useRootTheme, useTheme } from "../theme";
+import { jsx, Global } from "../shared/styles/css";
+
+import { normalize } from '../shared/styles/normalize';
+import { useTheme } from "../theme";
 
 type RootProps = {
   /** The app content. */
@@ -14,7 +16,7 @@ type RootProps = {
   optimizeLegibility?: boolean;
 };
 
-export const Root = ({
+export const RootContainer = ({
   children,
   includeNormalize = true,
   optimizeLegibility = true,
@@ -36,8 +38,7 @@ export const Root = ({
 type BaseCSSProps = Omit<RootProps, "children">;
 
 const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
-  const { mode } = useRootTheme()
-  const { typography, colors, modes } = useTheme();
+  const { theme: { typography }, scheme } = useTheme();
 
   return (
     <Fragment>
@@ -49,11 +50,11 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
           },
 
           body: {
-            backgroundColor: modes[mode].background,
-            color: modes[mode].foreground,
+            backgroundColor: scheme.background,
+            color: scheme.foreground,
             fontSize: "1rem",
             fontWeight: typography.fontWeight.regular,
-            lineHeight: typography.leading.base,
+            lineHeight: typography.lineHeight.base,
             fontFamily: typography.fontFamily.body,
 
             // optimize legibility
@@ -66,9 +67,9 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
 
           // Set correct default colors for links from the theme
           a: {
-            color: modes[mode].linkColor,
+            color: scheme.linkColor,
             ":hover": {
-              color: modes[mode].linkHoverColor,
+              color: scheme.linkHoverColor,
             },
           },
 
@@ -78,7 +79,7 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
             boxSizing: "border-box",
             borderWidth: 0,
             borderStyle: "solid",
-            borderColor: modes[mode].border,
+            borderColor: scheme.border,
           },
         }}
       />

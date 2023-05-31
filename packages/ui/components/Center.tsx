@@ -1,10 +1,8 @@
-/** @jsx jsx */
-
 import { jsx } from "../shared/styles";
 
 import { forwardRefAs } from "../shared/utils";
-import { BoxProps } from "../theme/types";
-import { Box } from "./Box";
+
+import { Box, BoxProps } from "./Box";
 
 type CenterProps = {
   fillView?: boolean;

@@ -1,20 +1,22 @@
+"use client"
+
 import { ReactNode, createContext, useContext } from "react";
 
-import { theme } from "../themes";
-import { Theme, ThemeContextValue, ThemeMode } from "../types";
+import { theme as baseTheme } from "../themes";
+import { RootThemeContextValue, Theme, ThemeContextValue, ThemeMode } from "../types";
 
-export const ThemeContext = createContext<ThemeContextValue>({
-  theme,
-  mode: 'light'
+export const ThemeContext = createContext<RootThemeContextValue>({
+  theme: baseTheme,
+  mode: "light",
 });
 
 export const ThemeProvider = ({
-  theme,
+  theme = baseTheme,
   mode = 'light',
   children,
 }: {
-  theme: Theme;
-  mode: ThemeMode;
+  theme?: Theme;
+  mode?: ThemeMode;
   children: ReactNode;
 }) => {
   return (
@@ -22,7 +24,9 @@ export const ThemeProvider = ({
   );
 };
 
-export const useTheme = (): Theme => {
-  const { theme } = useContext(ThemeContext);
-  return theme;
+export const useTheme = (): ThemeContextValue => {
+  const { theme, mode: modeContext } = useContext(ThemeContext);
+  const scheme = theme.modes[modeContext];
+
+  return { theme, scheme };
 };

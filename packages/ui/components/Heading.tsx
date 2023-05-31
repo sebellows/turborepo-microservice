@@ -1,12 +1,11 @@
-/** @jsx jsx */
 import { PropsWithChildren } from "react";
 
-// import { jsx } from '../shared/styles'
-import { forwardRefAs, jsx, set, NoWrapStyles } from "../shared";
-import { BoxProps, HeadingLevel } from "../theme/types";
-import { HeadingStyleMap, useTheme } from '../theme';
+import { jsx } from '../shared/styles/css'
 
-import { Box } from './Box';
+import { forwardRefAs, NoWrapStyles, set } from "../shared";
+import { HeadingLevel, HeadingStyleMap, useTheme } from "../theme";
+
+import { Box, BoxProps } from "./Box";
 
 export type HeadingProps = {
   as?: React.ElementType | keyof JSX.IntrinsicElements;
@@ -25,10 +24,10 @@ const SpanWithTextOverflow = forwardRefAs<'span', PropsWithChildren<{}>>(({ as: 
 });
 
 export const Heading = forwardRefAs<
-  "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
+  HeadingLevel,
   PropsWithChildren<HeadingProps>
 >(({ as: Tag = "h1", size = Tag, children: childrenProp, ...props }, ref) => {
-  const { headingStyles } = useTheme();
+  const { theme: { headingStyles } } = useTheme();
   const { textOverflow, ...attrs } = props;
   const headingStyle = headingStyles[size];
 
@@ -46,5 +45,5 @@ export const Heading = forwardRefAs<
     { margin: 0 }
   );
 
-  return <Box as={Tag} css={styles} ref={ref} {...attrs} />;
+  return <Box as={Tag} css={styles} ref={ref} {...attrs} children={children} />;
 });

@@ -1,3 +1,5 @@
+"use client";
+
 import { css } from "./css";
 
 export const normalize = css`

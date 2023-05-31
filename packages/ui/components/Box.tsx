@@ -1,9 +1,21 @@
-/** @jsx jsx */
+import { jsx } from "../shared/styles/css";
+import { forwardRefAs } from "../shared/utils";
+import { ColorProps, DimensionType, MarginProps, PaddingProps, RadiiProps, ResponsiveProp, TextAlignment, useBoxStyles } from "../theme";
 
-import { jsx } from "../shared/styles";
-import { forwardRefAs } from "../shared/utils/react";
-import { useBoxStyles } from "../theme";
-import { BoxProps } from "../theme/types";
+export type BaseBoxProps = {
+  /** text-align */
+  textAlign?: TextAlignment;
+  /** height */
+  height?: ResponsiveProp<DimensionType>;
+  /** width */
+  width?: ResponsiveProp<DimensionType>;
+};
+
+export type BoxProps = ColorProps &
+  RadiiProps &
+  MarginProps &
+  PaddingProps &
+  BaseBoxProps & { css?: any };
 
 export const Box = forwardRefAs<"div", BoxProps>(
   ({ as: Tag = "div", ...props }, ref) => {

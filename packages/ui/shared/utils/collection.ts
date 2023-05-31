@@ -1,6 +1,6 @@
-import { Get, ValueOf } from "type-fest";
+import { Get } from "type-fest";
 
-import { Closure } from "../types";
+import { Closure, ValueOf } from "../types";
 
 import { cloneDeep } from "./clone";
 import { hasOwn } from "./common";

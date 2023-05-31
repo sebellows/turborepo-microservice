@@ -1,13 +1,35 @@
-import { CSSProperties } from "@emotion/serialize";
-import colorUtils from "../../color/colorUtils";
-import { identityType, toRem } from "../../utils";
+"use client";
 
-import { colors } from "./colors";
+import { CSSProperties } from "@emotion/serialize";
+
+import { identityType, toRem } from "../../utils";
 import { ReplaceKeys } from "../../../shared";
 
-const { color, variant } = colorUtils;
+import { colors } from "./colors";
+
+// const { color, variant } = colorUtils;
 
 const { base } = colors;
+
+type TextProperties = Pick<
+  CSSProperties,
+  | "color"
+  | "fontFamily"
+  | "fontSize"
+  | "letterSpacing"
+  | "textTransform"
+  | "fontWeight"
+>;
+
+export const TextStyleMap = {
+  family: "fontFamily",
+  tracking: "letterSpacing",
+  size: "fontSize",
+  transform: "textTransform",
+  weight: "fontWeight",
+} as const;
+
+export type TextStyle = ReplaceKeys<TextProperties, typeof TextStyleMap>;
 
 const typography = {
   fontFamily: {
@@ -39,19 +61,25 @@ const typography = {
     bold: 700,
     heavy: 800,
   },
-  leading: {
+  lineHeight: {
     tighter: 1,
     tight: 1.2,
     base: 1.4,
     loose: 1.6,
     looser: 1.8,
   },
-  tracking: {
+  letterSpacing: {
     tighter: -0.32,
     tight: -0.16,
     base: 0,
     loose: 0.16,
     looser: 0.32,
+  },
+  textTransform: {
+    none: "none",
+    capitalize: "capitalize",
+    lower: "lowercase",
+    upper: "uppercase",
   },
 };
 
@@ -160,42 +188,42 @@ export type HeadingStyle = ReplaceKeys<
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize["3xl"]),
     transform: "none",
     weight: typography.fontWeight.heavy,
   },
   h2: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize["2xl"]),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h3: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize.xl),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h4: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize.lg),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h5: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize.md),
     transform: "none",
     weight: typography.fontWeight.bold,
   },
   h6: {
-    color: variant("neutral", "900"),
+    color: "variant.neutral.900",
     family: typography.fontFamily.heading,
     size: toRem(typography.fontSize.sm),
     transform: "uppercase",
@@ -283,41 +311,41 @@ type Modes = {
 const modes: Modes = {
   light: {
     background: "white",
-    backgroundMuted: variant("neutral", "100"),
-    backgroundDim: variant("neutral", "200"),
-    backgroundHover: color("blue", "50"),
-    border: variant("neutral", "300"),
-    borderCritical: variant("danger", "400"),
-    borderFocus: color("blue", "400"),
-    focusRing: color("blue", "200"),
-    foreground: variant("neutral", "800"),
-    foregroundMuted: variant("neutral", "900"),
-    foregroundDim: variant("neutral", "700"),
-    foregroundDisabled: variant("neutral", "500"),
-    linkColor: color("blue", "500"),
-    linkHoverColor: color("blue", "600"),
+    backgroundMuted: "variant.neutral.100",
+    backgroundDim: "variant.neutral.200",
+    backgroundHover: "palette.blue.50",
+    border: "variant.neutral.300",
+    borderCritical: "variant.danger.400",
+    borderFocus: "palette.blue.400",
+    focusRing: "palette.blue.200",
+    foreground: "variant.neutral.800",
+    foregroundMuted: "variant.neutral.900",
+    foregroundDim: "variant.neutral.700",
+    foregroundDisabled: "variant.neutral.500",
+    linkColor: "palette.blue.500",
+    linkHoverColor: "palette.blue.600",
     overlayBackground: "rgba(18,18,18, 0.3)", // blanket behind modal dialogs
-    loaderDark: variant("neutral", "500"),
-    loaderLight: variant("neutral", "200"),
+    loaderDark: "variant.neutral.500",
+    loaderLight: "variant.neutral.200",
   },
   dark: {
     background: "black",
-    backgroundMuted: variant("neutral", "600"),
-    backgroundDim: variant("neutral", "700"),
-    backgroundHover: color("blue", "50"),
-    border: variant("neutral", "300"),
-    borderCritical: variant("danger", "400"),
-    borderFocus: color("blue", "400"),
-    focusRing: color("blue", "200"),
-    foreground: variant("neutral", "100"),
-    foregroundMuted: variant("neutral", "200"),
-    foregroundDim: variant("neutral", "300"),
-    foregroundDisabled: variant("neutral", "600"),
-    linkColor: color("blue", "500"),
-    linkHoverColor: color("blue", "600"),
+    backgroundMuted: "variant.neutral.600",
+    backgroundDim: "variant.neutral.700",
+    backgroundHover: "palette.blue.50",
+    border: "variant.neutral.300",
+    borderCritical: "variant.danger.400",
+    borderFocus: "palette.blue.400",
+    focusRing: "palette.blue.200",
+    foreground: "variant.neutral.100",
+    foregroundMuted: "variant.neutral.200",
+    foregroundDim: "variant.neutral.300",
+    foregroundDisabled: "variant.neutral.600",
+    linkColor: "palette.blue.500",
+    linkHoverColor: "palette.blue.600",
     overlayBackground: "rgba(18,18,18, 0.3)", // blanket behind modal dialogs
-    loaderDark: variant("neutral", "200"),
-    loaderLight: variant("neutral", "500"),
+    loaderDark: "variant.neutral.200",
+    loaderLight: "variant.neutral.500",
   },
 };
 
@@ -347,147 +375,87 @@ type Tone = {
 const tones = identityType<{ [key: string]: Tone }>()({
   // a.k.a., the "active" state
   primary: {
-    focusRing: variant("primary", "200"),
+    focusRing: "variant.primary.200",
     border: [
-      variant("primary", "300"),
-      variant("primary", "400"),
-      variant("primary", "500"),
+      "variant.primary.300",
+      "variant.primary.400",
+      "variant.primary.500",
     ],
-    fill: [
-      variant("primary", "600"),
-      variant("primary", "700"),
-      variant("primary", "800"),
-    ],
-    tint: [
-      variant("primary", "50"),
-      variant("primary", "100"),
-      variant("primary", "200"),
-    ],
+    fill: ["variant.primary.600", "variant.primary.700", "variant.primary.800"],
+    tint: ["variant.primary.50", "variant.primary.100", "variant.primary.200"],
     foreground: [
-      variant("primary", "600"),
-      variant("primary", "700"),
-      variant("primary", "800"),
+      "variant.primary.600",
+      "variant.primary.700",
+      "variant.primary.800",
     ],
     fillForeground: [base.white, base.white, base.white],
   },
   neutral: {
-    focusRing: variant("neutral", "300"),
+    focusRing: "variant.neutral.300",
     border: [
-      variant("neutral", "300"),
-      variant("neutral", "400"),
-      variant("neutral", "500"),
+      "variant.neutral.300",
+      "variant.neutral.400",
+      "variant.neutral.500",
     ],
-    fill: [
-      variant("neutral", "600"),
-      variant("neutral", "700"),
-      variant("neutral", "800"),
-    ],
-    tint: [
-      variant("neutral", "200"),
-      variant("neutral", "300"),
-      variant("neutral", "400"),
-    ],
+    fill: ["variant.neutral.600", "variant.neutral.700", "variant.neutral.800"],
+    tint: ["variant.neutral.200", "variant.neutral.300", "variant.neutral.400"],
     foreground: [
-      variant("neutral", "700"),
-      variant("neutral", "800"),
-      variant("neutral", "900"),
+      "variant.neutral.700",
+      "variant.neutral.800",
+      "variant.neutral.900",
     ],
     fillForeground: [base.white, base.white, base.white],
   },
   success: {
-    focusRing: color("green", "200"),
+    focusRing: "palette.green.200",
     border: [
-      variant("success", "300"),
-      variant("success", "400"),
-      variant("success", "500"),
+      "variant.success.300",
+      "variant.success.400",
+      "variant.success.500",
     ],
-    fill: [
-      variant("success", "600"),
-      variant("success", "700"),
-      variant("success", "800"),
-    ],
-    tint: [
-      variant("success", "50"),
-      variant("success", "100"),
-      variant("success", "200"),
-    ],
+    fill: ["variant.success.600", "variant.success.700", "variant.success.800"],
+    tint: ["variant.success.50", "variant.success.100", "variant.success.200"],
     foreground: [
-      variant("success", "600"),
-      variant("success", "700"),
-      variant("success", "800"),
+      "variant.success.600",
+      "variant.success.700",
+      "variant.success.800",
     ],
     fillForeground: [base.white, base.white, base.white],
   },
   warning: {
-    focusRing: variant("warning", "200"),
+    focusRing: "variant.warning.200",
     border: [
-      variant("warning", "300"),
-      variant("warning", "400"),
-      variant("warning", "500"),
+      "variant.warning.300",
+      "variant.warning.400",
+      "variant.warning.500",
     ],
-    fill: [
-      variant("warning", "400"),
-      variant("warning", "500"),
-      variant("warning", "600"),
-    ],
-    tint: [
-      variant("warning", "50"),
-      variant("warning", "100"),
-      variant("warning", "200"),
-    ],
+    fill: ["variant.warning.400", "variant.warning.500", "variant.warning.600"],
+    tint: ["variant.warning.50", "variant.warning.100", "variant.warning.200"],
     foreground: [
-      variant("warning", "600"),
-      variant("warning", "700"),
-      variant("warning", "900"),
+      "variant.warning.600",
+      "variant.warning.700",
+      "variant.warning.900",
     ],
     fillForeground: [base.black, base.black, base.black],
   },
   danger: {
-    focusRing: variant("danger", "200"),
-    border: [
-      variant("danger", "300"),
-      variant("danger", "400"),
-      variant("danger", "500"),
-    ],
-    fill: [
-      variant("danger", "500"),
-      variant("danger", "600"),
-      variant("danger", "700"),
-    ],
-    tint: [
-      variant("danger", "50"),
-      variant("danger", "100"),
-      variant("danger", "200"),
-    ],
+    focusRing: "variant.danger.200",
+    border: ["variant.danger.300", "variant.danger.400", "variant.danger.500"],
+    fill: ["variant.danger.500", "variant.danger.600", "variant.danger.700"],
+    tint: ["variant.danger.50", "variant.danger.100", "variant.danger.200"],
     foreground: [
-      variant("danger", "600"),
-      variant("danger", "700"),
-      variant("danger", "800"),
+      "variant.danger.600",
+      "variant.danger.700",
+      "variant.danger.800",
     ],
     fillForeground: [base.white, base.white, base.white],
   },
   info: {
-    focusRing: variant("info", "200"),
-    border: [
-      variant("info", "300"),
-      variant("info", "400"),
-      variant("info", "500"),
-    ],
-    fill: [
-      variant("info", "500"),
-      variant("info", "600"),
-      variant("info", "700"),
-    ],
-    tint: [
-      variant("info", "50"),
-      variant("info", "100"),
-      variant("info", "200"),
-    ],
-    foreground: [
-      variant("info", "600"),
-      variant("info", "700"),
-      variant("info", "800"),
-    ],
+    focusRing: "variant.info.200",
+    border: ["variant.info.300", "variant.info.400", "variant.info.500"],
+    fill: ["variant.info.500", "variant.info.600", "variant.info.700"],
+    tint: ["variant.info.50", "variant.info.100", "variant.info.200"],
+    foreground: ["variant.info.600", "variant.info.700", "variant.info.800"],
     fillForeground: [base.white, base.white, base.white],
   },
 });
@@ -502,46 +470,46 @@ type SelectableColor = {
 
 const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
   orange: {
-    border: color("orange", "400"),
-    fill: color("orange", "500"),
+    border: "palette.orange.400",
+    fill: "palette.orange.500",
     fillForeground: "white",
-    foreground: color("orange", "600"),
-    tint: color("orange", "200"),
+    foreground: "palette.orange.600",
+    tint: "palette.orange.200",
   },
   gray: {
-    border: color("gray", "600"),
-    fill: color("gray", "700"),
+    border: "palette.gray.600",
+    fill: "palette.gray.700",
     fillForeground: "white",
-    foreground: color("gray", "700"),
-    tint: color("gray", "300"),
+    foreground: "palette.gray.700",
+    tint: "palette.gray.300",
   },
   blue: {
-    border: color("blue", "400"),
-    fill: color("blue", "500"),
+    border: "palette.blue.400",
+    fill: "palette.blue.500",
     fillForeground: "white",
-    foreground: color("blue", "600"),
-    tint: color("blue", "200"),
+    foreground: "palette.blue.600",
+    tint: "palette.blue.200",
   },
   magenta: {
-    border: color("magenta", "400"),
-    fill: color("magenta", "500"),
+    border: "palette.magenta.400",
+    fill: "palette.magenta.500",
     fillForeground: "white",
-    foreground: color("magenta", "600"),
-    tint: color("magenta", "200"),
+    foreground: "palette.magenta.600",
+    tint: "palette.magenta.200",
   },
   green: {
-    border: color("green", "400"),
-    fill: color("green", "500"),
+    border: "palette.green.400",
+    fill: "palette.green.500",
     fillForeground: "white",
-    foreground: color("green", "600"),
-    tint: color("green", "200"),
+    foreground: "palette.green.600",
+    tint: "palette.green.200",
   },
   purple: {
-    border: color("purple", "400"),
-    fill: color("purple", "500"),
+    border: "palette.purple.400",
+    fill: "palette.purple.500",
     fillForeground: "white",
-    foreground: color("purple", "600"),
-    tint: color("purple", "200"),
+    foreground: "palette.purple.600",
+    tint: "palette.purple.200",
   },
 });
 
@@ -584,48 +552,48 @@ type FieldTokens = FieldStateTokens & {
 
 const fields: FieldTokens = {
   controlBackground: "white",
-  controlBorderColor: variant("neutral", "300"),
+  controlBorderColor: "variant.neutral.300",
   controlBorderRadius: radii.small,
   controlBorderWidth: 2,
-  controlForeground: color("blue", "500"),
+  controlForeground: "palette.blue.500",
   // iconColor: variant('neutral', '500'), // TODO
-  inputBackground: variant("neutral", "100"),
-  inputBorderColor: variant("neutral", "300"),
+  inputBackground: "variant.neutral.100",
+  inputBorderColor: "variant.neutral.300",
   inputBorderRadius: radii.small,
   inputBorderWidth: 1,
-  inputForeground: variant("neutral", "800"),
-  inputPlaceholder: variant("neutral", "500"),
+  inputForeground: "variant.neutral.800",
+  inputPlaceholder: "variant.neutral.500",
 
-  labelColor: variant("neutral", "800"),
-  legendColor: variant("neutral", "600"),
+  labelColor: "variant.neutral.800",
+  legendColor: "variant.neutral.600",
   switchForeground: "white",
 
   hover: {
-    inputBorderColor: variant("neutral", "400"),
-    controlBorderColor: color("blue", "500"),
+    inputBorderColor: "variant.neutral.400",
+    controlBorderColor: "palette.blue.500",
   },
   focus: {
-    controlBorderColor: color("blue", "500"),
-    inputBorderColor: color("blue", "500"),
+    controlBorderColor: "palette.blue.500",
+    inputBorderColor: "palette.blue.500",
     inputBackground: "white",
     shadow: `0 0 0 2px ${modes.light.focusRing}`,
   },
   disabled: {
-    inputBackground: variant("neutral", "100"),
-    inputForeground: variant("neutral", "800"),
+    inputBackground: "variant.neutral.100",
+    inputForeground: "variant.neutral.800",
     inputBorderColor: base.transparent,
-    controlBackground: variant("neutral", "100"),
-    controlBorderColor: variant("neutral", "200"),
-    controlForeground: variant("neutral", "500"),
+    controlBackground: "variant.neutral.100",
+    controlBorderColor: "variant.neutral.200",
+    controlForeground: "variant.neutral.500",
   },
   invalid: {
-    inputBackground: variant("danger", "100"),
-    inputForeground: variant("neutral", "700"),
-    labelColor: variant("danger", "600"),
+    inputBackground: "variant.danger.100",
+    inputForeground: "variant.neutral.700",
+    labelColor: "variant.danger.600",
   },
   selected: {
-    controlBackground: color("blue", "500"),
-    controlBorderColor: color("blue", "500"),
+    controlBackground: "palette.blue.500",
+    controlBorderColor: "palette.blue.500",
     controlForeground: "white",
   },
 };

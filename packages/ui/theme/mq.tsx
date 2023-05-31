@@ -1,4 +1,5 @@
-import { Primitive } from "type-fest";
+"use client"
+
 import React, {
   createContext,
   useContext,
@@ -7,12 +8,11 @@ import React, {
   useMemo,
   PropsWithChildren,
 } from "react";
+import { Interpolation, CSSObject, ComponentSelector } from "@emotion/react";
 
-import { isObject, isPlainObject, variadic } from "../shared/utils";
+import { isObject, isPlainObject, variadic, ValueOf } from "../shared";
 
 import { useTheme } from "./hooks";
-import { ValueOf } from "../shared";
-import { Interpolation, CSSObject, ComponentSelector } from "@emotion/react";
 
 /**
  * `useMatchMedia`
@@ -147,7 +147,7 @@ export function parseMediaQueryStyles(
 }
 
 export const useMediaQuery = () => {
-  const { breakpoints } = useTheme()
+  const { theme: {breakpoints} } = useTheme()
 
   const mq = parseMediaQueryStyles(breakpoints);
 
@@ -254,7 +254,7 @@ export const MediaQueryContext = createContext<MediaQueryProviderProps | null>(
 export function MediaQueryProvider({
   children,
 }: PropsWithChildren<MediaQueryProviderProps>) {
-  const { breakpoints } = useTheme();
+  const { theme: {breakpoints} } = useTheme();
   const isSm = useMatchMedia(breakpoints.sm);
   const isMd = useMatchMedia(breakpoints.md);
   const isLg = useMatchMedia(breakpoints.lg);

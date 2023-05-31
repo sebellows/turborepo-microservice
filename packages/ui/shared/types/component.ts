@@ -47,10 +47,10 @@ export type RefForwardingComponentAs<
   displayName?: string;
 };
 
-export class AsComponent<
-  As extends React.ElementType,
-  P = unknown
-> extends React.Component<ReplaceProps<As, AsProp<As> & P>> {}
+// export class AsComponent<
+//   As extends React.ElementType,
+//   P = unknown
+// > extends React.Component<ReplaceProps<As, AsProp<As> & P>> {}
 
 export interface HTMLElements {
   // HTML

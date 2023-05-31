@@ -1,12 +1,13 @@
+"use client";
+
 import { CSSObject } from "@emotion/react";
-import "@emotion/serialize";
 import { ElementType } from "react";
 
 /**
  * Simple switch to return a child tag from a parent tag argument.
  * Returns a div by default.
  */
-export const getChildTag = (parentTag?: ElementType<any>) => {
+export const getChildTag = (parentTag?: ElementType<any>): "li" | "div" => {
   switch (parentTag) {
     case "ul":
     case "ol":
@@ -48,52 +49,6 @@ export function getBidiSuffix(placement: string, isRTL?: boolean) {
 
   return direction;
 }
-
-/** A logger for dev environment-only logging. */
-class DevLogger {
-  static instance: DevLogger;
-
-  readonly isDev = process.env.NODE_ENV !== "production";
-  readonly logger: Console;
-
-  private constructor(logger = console) {
-    this.logger = logger;
-  }
-
-  static getInstance() {
-    if (!this.instance) {
-      this.instance = new DevLogger();
-    }
-
-    return this.instance;
-  }
-
-  log(condition: boolean, ...messages: any[]): void {
-    if (this.isDev && condition) {
-      this.logger.log(...messages);
-    }
-  }
-
-  error(condition: boolean, ...messages: any[]): void {
-    if (this.isDev && condition) {
-      this.logger.error(...messages);
-    }
-  }
-
-  info(condition: boolean, ...messages: any[]): void {
-    if (this.isDev && condition) {
-      this.logger.info(...messages);
-    }
-  }
-
-  warn(condition: boolean, ...messages: any[]): void {
-    if (this.isDev && condition) {
-      this.logger.warn(...messages);
-    }
-  }
-}
-
-export const devLogger = DevLogger.getInstance();
 
 export const mapResponsiveProp = <P extends CSSObject, K extends keyof P>(
   value: K | readonly (K | null)[],
