@@ -1,17 +1,15 @@
-import { ElementType, forwardRef } from "react";
-import { AsProp, ReplaceProps } from "../types";
+import {
+  ElementType,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+  WeakValidationMap,
+  forwardRef,
+} from "react";
+import { RefForwardingComponentAs } from "../types";
 
-export const forwardRefAs = <
-  As extends ElementType,
-  P,
-  El = As extends keyof HTMLElementTagNameMap
-    ? HTMLElementTagNameMap[As]
-    : As extends new (...args: any) => any
-    ? InstanceType<As>
-    : undefined,
-  RProps = AsProp<As, P> // Omit<React.PropsWithoutRef<As>, "as" | keyof P> // React.PropsWithoutRef<P> & React.RefAttributes<El>
->(
-  render: React.ForwardRefRenderFunction<El, RProps>
+export const forwardRefAs = <As extends React.ElementType, P = unknown>(
+  render: RefForwardingComponentAs<As, P>
 ) => {
-  return forwardRef<El, RProps>(render);
+  return forwardRef(render);
 };

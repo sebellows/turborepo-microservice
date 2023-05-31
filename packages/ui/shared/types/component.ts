@@ -1,5 +1,6 @@
 // import { SerializedStyles } from "@emotion/serialize";
 import React from "react";
+import { ValueOf } from "./utils";
 
 type ElementTagNameMap = HTMLElementTagNameMap &
   Pick<
@@ -32,19 +33,19 @@ export type AsProp<
 } & Omit<React.PropsWithoutRef<As>, "as"> &
   P;
 
-export interface RefForwardingComponentAs<
+/** @see {React.ForwardRefRenderFunction} */
+export type RefForwardingComponentAs<
   TInitial extends React.ElementType,
   P = unknown
-> {
+> = {
   <As extends React.ElementType = TInitial>(
     props: React.PropsWithChildren<ReplaceProps<As, AsProp<As> & P>>,
     context?: any
   ): React.ReactElement | null;
-  // propTypes?: any;
-  contextTypes?: any;
-  defaultProps?: Partial<P>;
+  defaultProps?: never | undefined;
+  propTypes?: never | undefined;
   displayName?: string;
-}
+};
 
 export class AsComponent<
   As extends React.ElementType,

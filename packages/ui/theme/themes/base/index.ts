@@ -1,7 +1,9 @@
+import { CSSProperties } from "@emotion/serialize";
 import colorUtils from "../../color/colorUtils";
 import { identityType, toRem } from "../../utils";
 
 import { colors } from "./colors";
+import { ReplaceKeys } from "../../../shared";
 
 const { color, variant } = colorUtils;
 
@@ -16,15 +18,15 @@ const typography = {
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
   },
   fontSize: {
-    "3xs": 9,
-    "2xs": 10,
+    xxxs: 9,
+    xxs: 10,
     xs: 12,
     sm: 14,
     md: 16,
     lg: 18,
     xl: 20,
-    "2xl": 24,
-    "3xl": 30,
+    xxl: 24,
+    xxxl: 30,
     display1: 36,
     display2: 48,
     display3: 64,
@@ -138,13 +140,23 @@ const opacity = {
  * Alias Tokens
  */
 
-type HeadingStyle = {
-  color: string;
-  family: string;
-  size: string;
-  transform: string;
-  weight: number;
-};
+type HeadingProperties = Pick<
+  CSSProperties,
+  "color" | "fontFamily" | "fontSize" | "textTransform" | "fontWeight"
+>;
+
+export const HeadingStyleMap = {
+  color: "color",
+  family: "fontFamily",
+  size: "fontSize",
+  transform: "textTransform",
+  weight: "fontWeight",
+} as const;
+
+export type HeadingStyle = ReplaceKeys<
+  HeadingProperties,
+  typeof HeadingStyleMap
+>;
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
@@ -617,79 +629,6 @@ const fields: FieldTokens = {
     controlForeground: "white",
   },
 };
-
-// export interface BaseTheme<TStyles = {}> {
-//   name: string;
-//   // Global Tokens
-//   typography: {
-//     fontFamily: {
-//       monospace: string;
-//       body: string;
-//       heading: string;
-//     };
-//     fontSize: {
-//       "3xs": number;
-//       "2xs": number;
-//       xs: number;
-//       sm: number;
-//       md: number;
-//       lg: number;
-//       xl: number;
-//       "2xl": number;
-//       "3xl": number;
-//       display1: number;
-//       display2: number;
-//       display3: number;
-//     };
-//     fontWeight: {
-//       light: number;
-//       regular: number;
-//       medium: number;
-//       semibold: number;
-//       bold: number;
-//       heavy: number;
-//     };
-//     leading: {
-//       tighter: 1;
-//       tight: 1.2;
-//       base: 1.4;
-//       loose: 1.6;
-//       looser: 1.8;
-//     };
-//     tracking: {
-//       tighter: -0.32;
-//       tight: -0.16;
-//       base: 0;
-//       loose: 0.16;
-//       looser: 0.32;
-//     };
-//   };
-//   // palette;
-//   breakpoints: {
-//     none: string;
-//     sm: string;
-//     md: string;
-//     lg: string;
-//     xl: string;
-//     prefersReducedMotion: string;
-//     [key: string]: string;
-//   };
-//   elevation: Record<string, number>;
-//   modes;
-//   radii: Record<string, number>;
-//   sizing: Record<string, number>;
-//   spacing: Record<string, number>;
-//   shadow;
-//   animation;
-//   opacity;
-//   // Alias Tokens
-//   headingStyles;
-//   controlSizes;
-//   colors;
-//   tones;
-//   selectableColors;
-//   fields;
-// }
 
 /**
  * Export

@@ -84,7 +84,6 @@ export type ValueOf<
   ValueType extends keyof ObjectType = keyof ObjectType
 > = ObjectType[ValueType];
 
-// export type ReplaceProps<ObjA, Inner extends ObjA, P> = Omit<ObjA<Inner>, P> & P;
 export type ReplaceKeys<
   T extends {},
   U extends Record<PropertyKey, keyof T>

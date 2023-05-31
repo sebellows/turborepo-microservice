@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from "../shared/styles";
-import { AsProp } from "../shared/types";
 import { forwardRefAs } from "../shared/utils/react";
 import { useBoxStyles } from "../theme";
 import { BoxProps } from "../theme/types";

@@ -14,6 +14,8 @@ export type ResponsiveProp<T> = T; // | readonly (T | null)[];
 
 export type DimensionType = number | string;
 
+export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
 export type TextAlign =
   | "left"
   | "right"
