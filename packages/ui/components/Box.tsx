@@ -1,6 +1,17 @@
+"use client";
+
 import { jsx } from "../shared/styles/css";
 import { forwardRefAs } from "../shared/utils";
-import { ColorProps, DimensionType, MarginProps, PaddingProps, RadiiProps, ResponsiveProp, TextAlignment, useBoxStyles } from "../theme";
+import {
+  ColorProps,
+  DimensionType,
+  MarginProps,
+  PaddingProps,
+  RadiiProps,
+  ResponsiveProp,
+  TextAlignment,
+  useBoxStyles,
+} from "../theme";
 
 export type BaseBoxProps = {
   /** text-align */

@@ -1,3 +1,5 @@
+"use client";
+
 import { jsx } from "../shared/styles/css";
 import { Children, Fragment, ReactNode, isValidElement } from "react";
 
@@ -58,7 +60,9 @@ export const Stack = forwardRefAs<"div", StackProps>(
     },
     ref
   ) => {
-    const { theme: { spacing } } = useTheme();
+    const {
+      theme: { spacing },
+    } = useTheme();
     const { mq } = useMediaQuery();
 
     const orientation = across ? "horizontal" : "vertical";

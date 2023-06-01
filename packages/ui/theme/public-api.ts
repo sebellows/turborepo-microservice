@@ -1,3 +1,5 @@
+"use client";
+
 export * from "./hooks";
 export * from "./color";
 export * from "./themes";

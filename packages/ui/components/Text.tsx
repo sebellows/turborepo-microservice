@@ -1,8 +1,16 @@
-import { jsx } from '../shared/styles/css'
+"use client";
+
+import { jsx } from "../shared/styles/css";
 import { PropsWithChildren } from "react";
 
 import { NoWrapStyles, forwardRefAs, set } from "../shared";
-import { TextStyleMap, Theme, resolveThemeColor, useMediaQuery, useTheme } from "../theme";
+import {
+  TextStyleMap,
+  Theme,
+  resolveThemeColor,
+  useMediaQuery,
+  useTheme,
+} from "../theme";
 
 import { Box, BoxProps } from "./Box";
 
@@ -35,7 +43,7 @@ const SpanWithTextOverflow = forwardRefAs<"span", PropsWithChildren<{}>>(
 export const Text = forwardRefAs<"p", TextProps>(
   (
     {
-      as: Tag = 'p',
+      as: Tag = "p",
       color: colorProp,
       leading = "base",
       size = "medium",
@@ -47,7 +55,10 @@ export const Text = forwardRefAs<"p", TextProps>(
     },
     ref
   ) => {
-    const { theme: { colors, modes, typography }, scheme } = useTheme();
+    const {
+      theme: { colors, modes, typography },
+      scheme,
+    } = useTheme();
 
     const { mq } = useMediaQuery();
 
@@ -69,6 +80,8 @@ export const Text = forwardRefAs<"p", TextProps>(
 
     const styles = mq(styleProps);
 
-    return <Box as={Tag} css={styles} ref={ref} {...props} children={children} />;
+    return (
+      <Box as={Tag} css={styles} ref={ref} {...props} children={children} />
+    );
   }
 );

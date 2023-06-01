@@ -1,3 +1,5 @@
+"use client";
+
 import { jsx } from "../shared/styles/css";
 
 import { useTheme } from "../theme";
@@ -5,7 +7,10 @@ import { forwardRefAs } from "../shared/utils";
 
 export const Link = forwardRefAs<"a", {}>(
   ({ as: Tag = "a", ...props }, ref) => {
-    const { theme: { typography }, scheme } = useTheme();
+    const {
+      theme: { typography },
+      scheme,
+    } = useTheme();
 
     const styles = {
       color: scheme.linkColor,

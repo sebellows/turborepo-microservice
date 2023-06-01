@@ -1,4 +1,6 @@
-import { jsx } from "../shared/styles";
+"use client";
+
+import { jsx } from "../shared/styles/css";
 
 import { forwardRefAs } from "../shared/utils";
 

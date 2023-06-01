@@ -1,3 +1,5 @@
+"use client";
+
 import { jsx } from "../shared/styles/css";
 
 import { MarginProps, resolveThemeColor, useTheme } from "../theme";
@@ -23,7 +25,10 @@ export const Divider = ({
   color,
   ...props
 }: DividerProps) => {
-  const { theme: { colors }, scheme } = useTheme();
+  const {
+    theme: { colors },
+    scheme,
+  } = useTheme();
 
   const dimension = orientationMap[orientation];
   const styles = {

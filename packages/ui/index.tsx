@@ -1,5 +1,4 @@
-import React from "react";
+"use client";
 
-// component exports
 export * from "./components";
-export * from "./theme/public-api"
+export * from "./theme/public-api";
