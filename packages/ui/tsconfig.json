@@ -1,8 +1,7 @@
 {
   "extends": "tsconfig/react-library.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "jsxImportSource": "@emotion/react"
+    "baseUrl": "."
   },
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"]

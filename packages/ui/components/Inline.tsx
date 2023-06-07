@@ -1,43 +1,35 @@
-import { jsx } from "../shared/styles/css";
 import { Children } from "react";
 
-import { forwardRefAs, isNil } from "../shared";
-import { getChildTag, Theme, useTheme } from "../theme";
+import { forwardRefAs } from "../shared";
 
-import { Box, BoxProps } from "./Box";
+import { Box, BoxProps, parseBoxStyles } from "./Box";
 
-const alignment = {
-  center: "center",
-  end: "flex-end",
-  start: "flex-start",
-  stretch: "stretch",
-};
+type InlineProps = BoxProps;
 
-type InlineProps = {
-  /** The value of the "align-items" property. */
-  align?: keyof typeof alignment;
-  /** The size of the gap between each item. */
-  gap?: keyof Theme["spacing"];
-} & BoxProps;
+// const resolveStyles = ({ align = "start", flexWrap = "wrap", gap = 0, ...props }: InlineProps) => {
+//   const resolvedAlign = `items-${align}`;
+//   const resolvedGap = ['gap', axis, gap].filter(isNil).join('-');
+// }
 
 export const Inline = forwardRefAs<"div", InlineProps>(
-  ({ align = "start", children, flexWrap = "wrap", gap = "none", ...props }, ref) => {
-    const {
-      theme: { spacing },
-    } = useTheme();
-    const resolvedAlign = alignment[align];
-    const resolvedGap = spacing[gap];
+  (props, ref) => {
+    const propClasses = parseBoxStyles<InlineProps>({
+      align: "start",
+      flexWrap: "wrap",
+      gap: 0,
+      ...props
+    })
     const ChildWrapper = getChildTag(props.as);
 
     return (
       <Box
-        css={{
-          alignItems: resolvedAlign,
-          display: "flex",
-          flexWrap,
-          marginLeft: -resolvedGap,
-          marginTop: -resolvedGap,
-        }}
+        // css={{
+        //   alignItems: resolvedAlign,
+        //   display: "flex",
+        //   flexWrap,
+        //   marginLeft: -resolvedGap,
+        //   marginTop: -resolvedGap,
+        // }}
         ref={ref}
         {...props}
       >

@@ -1,0 +1,19 @@
+{
+  "name": "@trms/utils",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\""
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.3",
+    "config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "color": "^4.2.3"
+  }
+}

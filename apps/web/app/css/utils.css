@@ -1,0 +1,13 @@
+@tailwind utilities;
+
+.scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+.changing-theme,
+.changing-theme * {
+  transition: none !important;
+}

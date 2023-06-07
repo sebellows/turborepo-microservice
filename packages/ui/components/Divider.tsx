@@ -1,43 +1,47 @@
-"use client";
-
-import { jsx } from "../shared/styles/css";
-
-import { MarginProps, resolveThemeColor, useTheme } from "../theme";
-
+import { forwardRefAs } from "../shared";
+import { ColorTintKey, ColorVariantKey } from "../theme/color.types";
+import { classNames } from "../shared/utils/classNames";
 import { Box } from "./Box";
 
-// type ColorType = ResponsiveProp<keyof Theme["palette"]>;
-
-const orientationMap = {
-  horizontal: "width",
-  vertical: "height",
+const axes = {
+  x: "w",
+  y: "h",
 };
 
 type DividerProps = {
   children?: never;
-  color?: string;
-  orientation?: keyof typeof orientationMap;
+  variant?: ColorVariantKey;
+  tint?: ColorTintKey
+  margin?: number;
+  axis?: keyof typeof axes;
   className?: string;
-} & MarginProps;
-
-export const Divider = ({
-  orientation = "vertical",
-  color,
-  ...props
-}: DividerProps) => {
-  const {
-    theme: { colors },
-    scheme,
-  } = useTheme();
-
-  const dimension = orientationMap[orientation];
-  const styles = {
-    // default the background color to the theme border color
-    backgroundColor: resolveThemeColor(colors, color, scheme.border),
-    flexShrink: 0,
-    [dimension]: 1,
-  };
-
-  // if the color prop is defined, pass it as the background to the box
-  return <Box css={styles} background={color} {...props} />;
 };
+
+const defaultProps = {
+  axis: 'x',
+  margin: 4,
+  tint: '600',
+}
+
+const resolveClassNames = (props: DividerProps) => {
+  const { className, variant, margin, tint, axis } = { ...defaultProps, ...props }
+
+  const classes: string[] = []
+  if (variant) {
+    classes.push(`bg-${variant}-${tint}`)
+  }
+  if (axis === 'x') {
+    classes.push('my-0', `mx-${margin}`, 'h-auto', `w-${margin}`)
+  } else {
+    classes.push('mx-0', `my-${margin}`, 'w-auto', `h-${margin}`)
+  }
+
+  return classNames(classes, className)
+}
+
+export const Divider = forwardRefAs<'div', DividerProps>((props, ref) => {
+  const { className, variant, margin, tint, axis, ...attrs } = props
+  const classes = resolveClassNames({ className, variant, margin, tint, axis })
+
+  return <Box role="separator" className={classes} ref={ref} {...attrs} />
+})

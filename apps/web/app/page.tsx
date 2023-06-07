@@ -1,16 +1,13 @@
-import { Button, Header, RootContainer, Text, ThemeProvider } from "ui";
+"use client";
+import { Button, Header, Text } from "ui";
 
 export default function Page() {
   return (
-    <ThemeProvider>
-      <RootContainer>
-        <>
-          <Header text="Web" />
-          <Button>
-            <Text>BOOM!</Text>
-          </Button>
-        </>
-      </RootContainer>
-    </ThemeProvider>
+    <>
+      <Header text="Web" />
+      <Button variant="danger">
+        <Text as="span" color="inherit">BOOM!</Text>
+      </Button>
+    </>
   );
 }

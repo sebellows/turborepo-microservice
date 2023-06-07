@@ -1,6 +1,6 @@
 "use client";
 
-import { jsx } from "../shared/styles/css";
+import { jsx, styled } from "../shared/styles/css";
 import { PropsWithChildren } from "react";
 
 import { NoWrapStyles, forwardRefAs, set } from "../shared";
@@ -35,8 +35,11 @@ type TextProps = {
 } & BoxProps;
 
 const SpanWithTextOverflow = forwardRefAs<"span", PropsWithChildren<{}>>(
-  ({ as: Tag = "span", children }, ref) => {
-    return <Tag ref={ref} css={[NoWrapStyles]} children={children} />;
+  ({ as = "span", children }, ref) => {
+    const Component = styled[as]`
+      ${NoWrapStyles}
+    `;
+    return <Component ref={ref} css={[NoWrapStyles]} children={children} />;
   }
 );
 
@@ -62,7 +65,7 @@ export const Text = forwardRefAs<"p", TextProps>(
 
     const { mq } = useMediaQuery();
 
-    const color = resolveThemeColor(colors, colorProp, scheme.foreground);
+    const initStyles = colorProp ? { color: resolveThemeColor(colors, colorProp) } : {};
 
     let children = childrenProp;
     if (textOverflow === "ellipsis") {
@@ -75,7 +78,7 @@ export const Text = forwardRefAs<"p", TextProps>(
 
         return acc;
       },
-      { color }
+      initStyles
     );
 
     const styles = mq(styleProps);
