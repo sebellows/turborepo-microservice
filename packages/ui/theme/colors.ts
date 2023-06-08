@@ -1,6 +1,7 @@
 import { BlendFn, Color, multiply, screen } from '@trms/utils'
 
 import { palette } from './palette'
+import { ColorVariantKey, PaletteKey } from './color.types'
 
 const { black, gray: neutral, white } = palette
 
@@ -9,32 +10,79 @@ const baseDark = neutral['900']
 const borderLightTranslucent = Color(black).alpha(0.12)
 const borderDarkTranslucent = Color(white).alpha(0.12)
 
-const variants = {
-  primary: palette.orange,
-  secondary: palette.purple,
-  info: palette.cyan,
-  neutral: palette.gray,
-  success: palette.green,
-  danger: palette.red,
-  warning: palette.yellow,
+type VariantsConfig = Record<ColorVariantKey, PaletteKey | null>
+const DefaultVariants: VariantsConfig = {
+  default: null,
+  primary: 'orange',
+  secondary: 'purple',
+  info: 'cyan',
+  neutral: 'gray',
+  success: 'green',
+  danger: 'red',
+  warning: 'yellow',
 }
 
-const setTranslucent = (color: string) => Color(color).alpha(0.12)
+const setVariants = (variants: VariantsConfig = DefaultVariants) => {
+  return Object.entries(variants).reduce((acc, [variant, hue]) => {
+    if (!hue) return acc
 
-const setVariants = (base: string, mix: BlendFn) => {
-  const fg = mix(base, white)
+    const color = palette[hue]
 
-  return Object.entries(variants).reduce((acc, [variant, tones]) => {
-    acc[`${variant}`] = tones['500']
-    acc[`${variant}-light`] = mix(base, tones['500'])
-    acc[`${variant}-hover`] = mix(base, tones['600'])
-    acc[`${variant}-active`] = mix(base, tones['800'])
-    acc[`${variant}-disabled`] = mix(base, tones['200'])
-    acc[`${variant}-fg`] = fg
-    acc[`${variant}-fg-hover`] = tones['400']
-    acc[`${variant}-fg-active`] = tones['700']
-    acc[`${variant}-fg-disabled`] = fg
-    acc[`${variant}-trans`] = setTranslucent(tones['900'])
+    acc[`${variant}`] = {
+      bg: [`bg-${color}-600`, `dark:bg-${color}-400`],
+      bgAction: [
+        `bg-${color}-600`,
+        `hover:bg-${color}-700`,
+        `active:bg-${color}-800`,
+        `disabled:bg-${color}-600`,
+        `dark:bg-${color}-400`,
+        `dark:hover:bg-${color}-500`,
+        `dark:active:bg-${color}-600`,
+        `dark:disabled:bg-${color}-400`,
+        `disabled:point-events-none`,
+      ],
+      translucent: [`bg-${color}-200`, `dark:bg-${color}-200`],
+      translucentAction: [
+        `bg-${color}-200`,
+        `dark:bg-${color}-200`,
+        `hover:bg-${color}-300`,
+        `dark:hover:bg-${color}-300`,
+        `active:bg-${color}-400`,
+        `dark:active:bg-${color}-400`,
+        `disabled:bg-${color}-100`,
+        `dark:disabled:bg-${color}-100`,
+        `disabled:point-events-none`,
+      ],
+      border: [`border-${color}-900/12`],
+      text: [`text-neutral-900 dark:text-neutral-50`],
+      invertedText: [`text-${color}-600`, `dark:text-${color}-400`],
+      link: [
+        `text-black`,
+        'dark:text-white',
+        'underline',
+        `hover:text-neutral-900`,
+        `dark:hover:text-neutral-200`,
+        `active:text-neutral-700`,
+        `dark:active:text-neutral-300`,
+        `disabled:text-black`,
+        `dark:disabled:text-white`,
+        `disabled:opacity-0.5`,
+        'disabled:pointer-events-none',
+      ],
+      navLink: [
+        `text-black`,
+        'dark:text-white',
+        'no-underline',
+        `hover:text-neutral-900`,
+        `dark:hover:text-neutral-200`,
+        `active:text-neutral-700`,
+        `dark:active:text-neutral-300`,
+        `disabled:text-black`,
+        `dark:disabled:text-white`,
+        `disabled:opacity-0.5`,
+        'disabled:pointer-events-none',
+      ],
+    }
 
     return acc
   }, {})

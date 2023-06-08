@@ -1,8 +1,9 @@
 import { Children } from "react";
 
-import { forwardRefAs } from "../shared";
+import { BreakpointObj, forwardRefAs, getChildTag } from "../shared";
 
 import { Box, BoxProps, parseBoxStyles } from "./Box";
+import { isNil } from "@trms/utils";
 
 type InlineProps = BoxProps;
 
@@ -12,42 +13,43 @@ type InlineProps = BoxProps;
 // }
 
 export const Inline = forwardRefAs<"div", InlineProps>(
-  (props, ref) => {
+  ({ gap = 0, align, flexWrap = 'wrap', ...props }, ref) => {
+    let resolvedGap: number | BreakpointObj 
+    const boxClasses = {
+      align,
+      flexWrap,
+      gap,
+      ml: -gap,
+      mt: -gap,
+    }
+
     const propClasses = parseBoxStyles<InlineProps>({
-      align: "start",
-      flexWrap: "wrap",
+      align: 'start',
+      flexWrap: 'wrap',
       gap: 0,
-      ...props
+      ml: -resolvedGap,
+      mt: -resolvedGap,
+      ...props,
     })
     const ChildWrapper = getChildTag(props.as);
 
     return (
-      <Box
-        // css={{
-        //   alignItems: resolvedAlign,
-        //   display: "flex",
-        //   flexWrap,
-        //   marginLeft: -resolvedGap,
-        //   marginTop: -resolvedGap,
-        // }}
-        ref={ref}
-        {...props}
-      >
-        {Children.map(children, (child) =>
+      <Box ref={ref} {...boxClasses} {...props}>
+        {Children.map(children, child =>
           !isNil(child) ? (
             <ChildWrapper
               css={{
-                display: "flex",
-                flexWrap: "wrap",
+                display: 'flex',
+                flexWrap: 'wrap',
                 paddingLeft: resolvedGap,
                 paddingTop: resolvedGap,
               }}
             >
               {child}
             </ChildWrapper>
-          ) : null
+          ) : null,
         )}
       </Box>
-    );
+    )
   }
 );

@@ -1,6 +1,7 @@
 import React from "react";
 import { forwardRefAs } from "../shared/react.utils";
 import { classNames, isNil } from "@trms/utils";
+import { SpacingProps, spacingResolver } from "../shared";
 
 const displayOptions = {
   block: 'block',
@@ -65,15 +66,14 @@ export type BoxProps = {
   display?: keyof typeof displayOptions
   flex?: keyof typeof flexOptions
   flexWrap?: keyof typeof flexWrapOptions
-  gap?: number
   justify?: keyof typeof justifyOptions
   position?: keyof typeof positionOptions
-}
+} & Partial<SpacingProps>
 
 export const parseBoxStyles = <P extends BoxProps>(props: P) => {
   let classes: string[] = []
 
-  const { align, axis, display, flex, flexDirection, flexWrap, gap, justify, position } = props
+  const { align, axis, display, flex, flexDirection, flexWrap, gap: gapProp = 0, justify, position, ...rest } = props
 
   let isFlex = false
 
@@ -94,16 +94,17 @@ export const parseBoxStyles = <P extends BoxProps>(props: P) => {
     if (justify && justifyOptions?.[justify]) {
       classes.push(`justify-${justifyOptions[justify]}`)
     }
-    if (!isNil(gap)) {
-      const gapClass = ['gap', axis, gap].filter(isNil).join('-')
-      classes.push(gapClass)
-    }
+
     if (flexDirection && directionOptions?.[flexDirection]) {
       classes.push(`flex-${directionOptions[flexDirection]}`)
     }
     if (flex && flexOptions?.[flex]) {
       classes.push(`flex-${flex}`)
     }
+
+    const gap = axis ? `gap-${axis}` : 'gap'
+    const spacingClasses = spacingResolver({ [gap]: gapProp, ...rest })
+    classes.push(...spacingClasses)
   }
 
   return classNames(classes, props?.className)

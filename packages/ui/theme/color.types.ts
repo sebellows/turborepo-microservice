@@ -54,13 +54,14 @@ export type PaletteKey = keyof ColorPalette
 // export type PaletteConfig = Record<string | PaletteKey, Record<string, string>>;
 
 export const ColorVariantKeys = [
+  'danger',
   'default', // actually, this will just be "neutral"
-  'neutral',
   'info',
+  'neutral',
   'primary',
+  'secondary',
   'success',
   'warning',
-  'danger',
 ] as const
 export type ColorVariantKey = (typeof ColorVariantKeys)[number]
 export type ColorVariants = Record<ColorVariantKey, ColorTints>

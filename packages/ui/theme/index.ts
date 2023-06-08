@@ -45,7 +45,7 @@ const breakpoints = {
   sm: '640px', // smallest tablet dimensions are 601x962/600x1024
   md: '960px',
   lg: '1280px',
-  xl: '1440px',
+  xl: '1536px',
   '2xl': '1920px',
 }
 
@@ -56,20 +56,6 @@ const zIndex = {
   400: '400', // Modals
   500: '500', // Toasts (notifications)
 }
-
-// const spacing = {
-//   0: toRem(0),
-//   '2xs': toRem(2),
-//   xs: toRem(4),
-//   sm: toRem(8),
-//   md: toRem(12),
-//   lg: toRem(16),
-//   xl: toRem(24),
-//   '2xl': toRem(32),
-//   '3xl': toRem(48),
-//   '4xl': toRem(64),
-//   '5xl': toRem(96),
-// }
 
 module.exports = {
   breakpoints,
@@ -86,6 +72,9 @@ module.exports = {
   extend: {
     fontFamily,
     fontSize,
+    opacity: {
+      '12': '0.125',
+    },
     zIndex,
   },
 }

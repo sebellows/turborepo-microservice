@@ -105,6 +105,9 @@ export type FixedByteLength<T extends Float32Array | Float64Array, L extends num
   readonly byteLength: L
 }
 
+export type Lookup<T> = { [key: string | number]: undefined | T }
+export type DefinedLookup<T> = { [key: string | number]: T }
+
 /**
  * Concatenate the keys of two objects using string literals.
  * @see {@link https://stackoverflow.com/a/72031355}
