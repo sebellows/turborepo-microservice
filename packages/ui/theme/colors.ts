@@ -1,17 +1,8 @@
-import { BlendFn, Color, multiply, screen } from '@trms/utils'
-
 import { palette } from './palette'
 import { ColorVariantKey, PaletteKey } from './color.types'
 
-const { black, gray: neutral, white } = palette
-
-const baseLight = neutral['50']
-const baseDark = neutral['900']
-const borderLightTranslucent = Color(black).alpha(0.12)
-const borderDarkTranslucent = Color(white).alpha(0.12)
-
 type VariantsConfig = Record<ColorVariantKey, PaletteKey | null>
-const DefaultVariants: VariantsConfig = {
+const variantsConfig: VariantsConfig = {
   default: null,
   primary: 'orange',
   secondary: 'purple',
@@ -22,106 +13,128 @@ const DefaultVariants: VariantsConfig = {
   warning: 'yellow',
 }
 
-const setVariants = (variants: VariantsConfig = DefaultVariants) => {
-  return Object.entries(variants).reduce((acc, [variant, hue]) => {
-    if (!hue) return acc
+const variants = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
+  if (!hue) return acc
 
-    const color = palette[hue]
+  const color = palette[hue]
 
-    acc[`${variant}`] = {
-      bg: [`bg-${color}-600`, `dark:bg-${color}-400`],
-      bgAction: [
-        `bg-${color}-600`,
-        `hover:bg-${color}-700`,
-        `active:bg-${color}-800`,
-        `disabled:bg-${color}-600`,
-        `dark:bg-${color}-400`,
-        `dark:hover:bg-${color}-500`,
-        `dark:active:bg-${color}-600`,
-        `dark:disabled:bg-${color}-400`,
-        `disabled:point-events-none`,
-      ],
-      translucent: [`bg-${color}-200`, `dark:bg-${color}-200`],
-      translucentAction: [
-        `bg-${color}-200`,
-        `dark:bg-${color}-200`,
-        `hover:bg-${color}-300`,
-        `dark:hover:bg-${color}-300`,
-        `active:bg-${color}-400`,
-        `dark:active:bg-${color}-400`,
-        `disabled:bg-${color}-100`,
-        `dark:disabled:bg-${color}-100`,
-        `disabled:point-events-none`,
-      ],
-      border: [`border-${color}-900/12`],
-      text: [`text-neutral-900 dark:text-neutral-50`],
-      invertedText: [`text-${color}-600`, `dark:text-${color}-400`],
-      link: [
-        `text-black`,
-        'dark:text-white',
-        'underline',
-        `hover:text-neutral-900`,
-        `dark:hover:text-neutral-200`,
-        `active:text-neutral-700`,
-        `dark:active:text-neutral-300`,
-        `disabled:text-black`,
-        `dark:disabled:text-white`,
-        `disabled:opacity-0.5`,
-        'disabled:pointer-events-none',
-      ],
-      navLink: [
-        `text-black`,
-        'dark:text-white',
-        'no-underline',
-        `hover:text-neutral-900`,
-        `dark:hover:text-neutral-200`,
-        `active:text-neutral-700`,
-        `dark:active:text-neutral-300`,
-        `disabled:text-black`,
-        `dark:disabled:text-white`,
-        `disabled:opacity-0.5`,
-        'disabled:pointer-events-none',
-      ],
-    }
+  acc[`${variant}`] = {
+    bg: [`bg-${color}-600`, `dark:bg-${color}-400`],
+    bgInteractive: [
+      `bg-${color}-600`,
+      `hover:bg-${color}-700`,
+      `active:bg-${color}-800`,
+      `disabled:bg-${color}-600`,
+      `dark:bg-${color}-400`,
+      `dark:hover:bg-${color}-500`,
+      `dark:active:bg-${color}-600`,
+      `dark:disabled:bg-${color}-400`,
+      'disabled:point-events-none',
+    ],
+    muted: [`bg-${color}-200`, `dark:bg-${color}-200`],
+    mutedInteractive: [
+      `bg-${color}-200`,
+      `dark:bg-${color}-200`,
+      `hover:bg-${color}-300`,
+      `dark:hover:bg-${color}-300`,
+      `active:bg-${color}-400`,
+      `dark:active:bg-${color}-400`,
+      `disabled:bg-${color}-100`,
+      `dark:disabled:bg-${color}-100`,
+      'disabled:point-events-none',
+    ],
+    border: [`border-${color}-900/12`],
+    foreground: [`text-neutral-900 dark:text-neutral-50`],
+    text: [`text-${color}-600`, `dark:text-${color}-400`],
+    link: [
+      'text-black',
+      'dark:text-white',
+      'underline',
+      'hover:text-neutral-900',
+      'dark:hover:text-neutral-200',
+      'active:text-neutral-700',
+      'dark:active:text-neutral-300',
+      'disabled:text-black',
+      'dark:disabled:text-white',
+      `disabled:opacity-0.5`,
+      'disabled:pointer-events-none',
+    ],
+    navLink: [
+      'text-black',
+      'dark:text-white',
+      'no-underline',
+      'hover:text-neutral-900',
+      'dark:hover:text-neutral-200',
+      'active:text-neutral-700',
+      'dark:active:text-neutral-300',
+      'disabled:text-black',
+      'dark:disabled:text-white',
+      `disabled:opacity-0.5`,
+      'disabled:pointer-events-none',
+    ],
+  }
 
-    return acc
-  }, {})
+  return acc
+}, {})
+
+const base = {
+  bg: ['bg-neutral-50', 'dark:bg-neutral-900'],
+  bgInteractive: [
+    'bg-neutral-50',
+    'dark:bg-neutral-900',
+    'hover:bg-neutral-200',
+    'dark:hover:bg-neutral-800',
+    'active:bg-neutral-300',
+    'dark:active:bg-neutral-700',
+    'disabled:bg-neutral-200',
+    'dark:disabled:bg-neutral-800',
+    'disabled:point-events-none',
+  ],
+  muted: ['bg-neutral-200', 'dark:bg-neutral-200'],
+  mutedInteractive: [
+    'bg-neutral-200',
+    'dark:bg-neutral-700',
+    'hover:bg-neutral-300',
+    'dark:hover:bg-neutral-600',
+    'active:bg-neutral-400',
+    'dark:active:bg-neutral-500',
+    'disabled:bg-neutral-300',
+    'dark:disabled:bg-neutral-600',
+    'disabled:point-events-none',
+  ],
+  border: ['border-neutral-900/12'],
+  foreground: ['text-neutral-900 dark:text-neutral-50'],
+  text: ['text-neutral-900', 'dark:text-neutral-50'],
+  link: [
+    'text-primary-600',
+    'dark:text-primary-400',
+    'underline',
+    'hover:text-primary-700',
+    'dark:hover:text-primary-300',
+    'active:text-primary-800',
+    'dark:active:text-primary-200',
+    'disabled:text-primary-600',
+    'dark:disabled:text-primary-400',
+    'disabled:opacity-0.5',
+    'disabled:pointer-events-none',
+  ],
+  navLink: [
+    'text-neutral-800',
+    'dark:text-neutral-100',
+    'no-underline',
+    'hover:text-neutral-900',
+    'dark:hover:text-neutral-200',
+    'active:text-neutral-950',
+    'dark:active:text-neutral-300',
+    'disabled:text-neutral-800',
+    'dark:disabled:text-neutral-100',
+    'disabled:opacity-0.5',
+    'disabled:pointer-events-none',
+  ],
 }
 
-const light = {
-  base: `${baseLight}`,
-  'base-inverted': baseDark,
-  'base-hover': neutral['100'],
-  'base-active': neutral['200'],
-  'base-disabled': baseLight,
-  'base-fg': baseDark,
-  'base-fg-inverted': baseLight,
-  'base-fg-hover': neutral['800'],
-  'base-fg-active': neutral['950'],
-  'base-fg-disabled': baseDark,
-  'base-trans': borderLightTranslucent,
-  'base-trans-inverted': borderDarkTranslucent,
-  ...setVariants(baseLight, multiply),
-}
-
-const dark = {
-  base: baseDark,
-  'base-inverted': baseLight,
-  'base-hover': neutral['800'],
-  'base-active': neutral['950'],
-  'base-disabled': baseDark,
-  'base-fg': baseLight,
-  'base-fg-inverted': baseDark,
-  'base-fg-hover': neutral['200'],
-  'base-fg-active': neutral['400'],
-  'base-fg-disabled': baseLight,
-  'base-trans': borderDarkTranslucent,
-  'base-trans-inverted': borderLightTranslucent,
-  ...setVariants(baseDark, screen),
-}
-
-export const themes = {
-  light,
-  dark,
+export const colors = {
   ...palette,
+  base,
+  variants,
 }

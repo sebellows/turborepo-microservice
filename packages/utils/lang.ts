@@ -1,26 +1,39 @@
 import { hasOwn } from './common'
 import { AsyncClosure, AsyncFunction, Closure, Constructor, ValueOf } from './types'
 
-export function isEmpty<O extends Object | undefined>(value: O) {
-  if (isNil(value)) return true
-
-  if (isPlainObject(value)) {
-    return !!Object.keys(value).length
-  } else if (hasOwn(value, 'length')) {
-    return !!(value as { length: number }).length
-  } else if (hasOwn(value, 'size')) {
-    return !!(value as { size: number }).size
-  }
-
-  return false
-}
+/**
+ * @internal
+ *
+ * Reference to the Object prototype's built-in `toString` method.
+ * @example
+ * ```
+ * _protoToString === {}.toString // TRUE
+ *
+ * const fn = () => 'hello'
+ * _protoToString === fn.toString // FALSE
+ * _protoToString === fn.__proto__.toString // FALSE
+ *
+ * console.log(fn.toString())
+ * => "() => 'hello'"
+ *
+ * console.log(fn.__proto__.toString())
+ * => 'function () { [native code] }'
+ *
+ * console.log(fn.constructor.prototype.toString())
+ * => 'function () { [native code] }'
+ *
+ * console.log(fn.constructor.toString())
+ * => 'function Function() { [native code] }'
+ * ```
+ */
+export const _protoToString = Object.prototype.toString
 
 export function getType(value: unknown): string {
   if (value === null) {
     return 'Null'
   }
 
-  return Object.prototype.toString.call(value).slice(8, -1)
+  return _protoToString.call(value).slice(8, -1)
 }
 
 /**
@@ -123,11 +136,15 @@ export function isError(value: unknown): value is Error {
 }
 
 /**
- * Verify that a value is a plain object created either by the
- * Object constructor or using `Object.create(null)`.
- *
- * @param {*} value
- * @returns {boolean}
+ * Verify that the value is a built-in, native JS or Browser object.
+ */
+export function isNativeObject(value: unknown) {
+  return !Object.is(_protoToString, value?.toString)
+}
+
+/**
+ * Verify that a value is a plain object created either by the Object constructor
+ * or using `Object.create(null)`.
  */
 export function isPlainObject<T extends object = Record<string, any>>(value: unknown): value is T {
   return is(value, 'object')
@@ -171,6 +188,20 @@ export function isAsyncIterable<T>(value: unknown): value is AsyncIterable<T> {
     !isNil(value) &&
     isFunction((value as AsyncIterable<any>)[Symbol.asyncIterator])
   )
+}
+
+export function isEmpty<O extends Object | undefined>(value: O) {
+  if (isNil(value)) return true
+
+  if (isPlainObject(value)) {
+    return !!Object.keys(value).length
+  } else if (hasOwn(value, 'length')) {
+    return !!(value as { length: number }).length
+  } else if (hasOwn(value, 'size')) {
+    return !!(value as { size: number }).size
+  }
+
+  return false
 }
 
 export function isClass<T, TArgs extends unknown[] = any>(

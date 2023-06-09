@@ -38,32 +38,3 @@ export const fontSize = {
     },
   ],
 }
-
-export const breakpoints = {
-  sm: '600px', // smallest tablet dimensions are 601x962/600x1024
-  md: '960px',
-  lg: '1440px',
-  xl: '1920px',
-}
-
-export const zIndex = {
-  100: '100', // Cards
-  200: '200', // Inline dialogs (popover)
-  300: '300', // Tooltip
-  400: '400', // Modals
-  500: '500', // Toasts (notifications)
-}
-
-export const spacing = {
-  0: toRem(0),
-  '2xs': toRem(2),
-  xs: toRem(4),
-  sm: toRem(8),
-  md: toRem(12),
-  lg: toRem(16),
-  xl: toRem(24),
-  '2xl': toRem(32),
-  '3xl': toRem(48),
-  '4xl': toRem(64),
-  '5xl': toRem(96),
-}

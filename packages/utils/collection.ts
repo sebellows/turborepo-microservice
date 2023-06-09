@@ -3,6 +3,7 @@ import { Closure, Get, ValueOf } from './types'
 import { cloneDeep } from './clone'
 import { hasOwn } from './common'
 import {
+  _protoToString,
   is,
   isDefined,
   isEmpty,
@@ -15,6 +16,25 @@ import {
   isUndefined,
   typeOf,
 } from './lang'
+
+/**
+ * Remove an item from an array.
+ */
+export function remove<T extends unknown = any>(arr: Array<T>, item: any): Array<T> | void {
+  const len = arr.length
+  if (len) {
+    // fast path for the only / last item
+    if (item === arr[len - 1]) {
+      arr.length = len - 1
+      return
+    }
+
+    const index = arr.indexOf(item)
+    if (index > -1) {
+      return arr.splice(index, 1)
+    }
+  }
+}
 
 export function getSymbol<BaseType, Path extends PropertyKey, TDefault extends unknown = any>(
   obj: BaseType,
@@ -121,6 +141,24 @@ export function range<T>(
   })
 }
 
+/**
+ * Mix properties into target object.
+ */
+export function extend<To extends Record<PropertyKey, any>, From extends Record<PropertyKey, any>>(
+  to: To,
+  _from?: From,
+): {
+  [ToKey in keyof To]: ValueOf<To, ToKey>
+} & {
+  [FromKey in keyof From]: ValueOf<From, FromKey>
+} {
+  for (const key in _from) {
+    to[key] = _from[key]
+  }
+
+  return to
+}
+
 /** Used as the maximum memoize cache size. */
 const MAX_MEMOIZE_SIZE = 500
 
@@ -128,11 +166,13 @@ const MAX_MEMOIZE_SIZE = 500
 export const memoize = <T>(fn: (str: string) => T, cap: number | boolean = false) => {
   const memoized = function (str: string) {
     const key = str
-    let cache = memoized.cache as Record<string, any>
+    // NOTE: Assignment here avoids type-juggling in other areas regarding (possibly) undefined values.
+    let cache = memoized.cache
 
     if (cap) {
       const cacheSize = isNumber(cap) && Number.isInteger(cap) ? cap : MAX_MEMOIZE_SIZE
       if (Object.keys(cache).length === cacheSize) {
+        // clear the cache when it's maxed out
         cache = {}
       }
     }
@@ -150,6 +190,24 @@ export const memoize = <T>(fn: (str: string) => T, cap: number | boolean = false
   memoized.cache = {}
 
   return memoized
+}
+
+/**
+ * Convert an input value to a number for persistence.
+ * If the conversion fails, return original string.
+ */
+export const toNumber = (val: string): number | string => {
+  const n = parseFloat(val)
+  return isNaN(n) ? val : n
+}
+
+/** Convert a value to a string that is actually rendered. */
+export const toString = (val: unknown): string => {
+  return val == null
+    ? ''
+    : Array.isArray(val) || (isPlainObject(val) && val.toString === _protoToString)
+    ? JSON.stringify(val, null, 2)
+    : String(val)
 }
 
 /** Used to match backslashes in property paths. */
@@ -212,15 +270,6 @@ export function toPath(value: string | Symbol | (string | Symbol)[]): (string | 
     return value.map(toKey)
   }
   return isSymbol(value) ? [value] : stringToPath(String(value))
-}
-
-/** Convert a value to a string that is actually rendered. */
-export const toString = (val: unknown): string => {
-  return val == null
-    ? ''
-    : Array.isArray(val) || (isPlainObject(val) && val.toString === Object.prototype.toString)
-    ? JSON.stringify(val, null, 2)
-    : String(val)
 }
 
 /** Casts `value` to a path array if it's not one. */
