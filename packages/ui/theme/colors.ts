@@ -13,7 +13,7 @@ const variantsConfig: VariantsConfig = {
   warning: 'yellow',
 }
 
-const variants = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
+const variantClasses = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
   if (!hue) return acc
 
   const color = palette[hue]
@@ -133,8 +133,11 @@ const base = {
   ],
 }
 
+export const variants = {
+  default: base,
+  ...variantClasses,
+}
+
 export const colors = {
   ...palette,
-  base,
-  variants,
 }

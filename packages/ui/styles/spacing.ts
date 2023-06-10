@@ -40,6 +40,7 @@ export const SpacingValues = [
   '72',
   '80',
   '96',
+  'auto',
 ] as const
 export type SpacingNumber = (typeof SpacingValues)[number]
 

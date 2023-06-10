@@ -47,7 +47,7 @@ const position = setPropertyMap(Positions)
 const placement = setUnitValuePropertyMap(Placement, PlacementValues)
 
 export const layout = {
-  ...display,
-  ...position,
+  display,
+  position,
   ...placement,
 }

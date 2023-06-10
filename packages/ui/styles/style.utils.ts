@@ -1,4 +1,4 @@
-import { camelCase, isNil, isRegExp, memoize } from '@trms/utils'
+import { camelCase, isRegExp, memoize } from '@trms/utils'
 
 /**
  * @internal

@@ -1,4 +1,4 @@
-import { get, isPlainObject } from '@trms/utils'
+import { get, isPlainObject, pick } from '@trms/utils'
 import { ValueOf } from '@trms/utils/types'
 
 import { WithBreakpoint } from './breakpoints'
@@ -9,6 +9,7 @@ import { TailwindPrefixes } from './tailwind'
 import { typography } from './typography'
 import { spacing } from './spacing'
 import { sizing } from './sizing'
+import { useMemo, useState } from 'react'
 
 export const UIComponentProps = {
   ...layout,
@@ -67,4 +68,21 @@ export const mapProps = (props: Partial<UIComponentProps>) => {
 
     return classes
   }, [] as string[])
+}
+
+export const UI_PROP_KEYS = Object.keys(UIComponentProps)
+
+export const useUIProps = <P = {}>(props: P & Partial<UIComponentProps>, deps: any[] = []) => {
+  const [nonUIProps, setNonUIProps] = useState<P | null>(null)
+  const uiClasses = useMemo(() => {
+    const uiProps = pick(props, ...UI_PROP_KEYS)
+    if (!nonUIProps) {
+      const extraKeys = Object.keys(props).filter(key => UI_PROP_KEYS.indexOf(key) === -1)
+      const extra = pick(props, ...extraKeys) as P
+      setNonUIProps(extra)
+    }
+    return mapProps(uiProps)
+  }, deps)
+
+  return [uiClasses, nonUIProps]
 }
