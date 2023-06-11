@@ -1,12 +1,12 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { classNames, toPx } from '@trms/utils'
 
-import { forwardRefAs } from "../shared";
+import { forwardRefAs } from "../../shared";
 
-import { BoxProps } from "./Box";
+import { BoxProps } from "../Box";
+import { Center } from '../Center'
 
-import '../css/spinner.css'
-import { Center } from "./Center";
+import './Spinner.style.css'
 
 export const Spinner = forwardRefAs<"div", BoxProps>(
   ({ as: Tag = "div", size = 80 }, ref) => {

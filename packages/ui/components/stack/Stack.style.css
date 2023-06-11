@@ -1,4 +1,4 @@
-.stack--vertical {
+.stack-vertical {
   @apply inline-grid;
   & > * {
     @apply col-start-1 row-start-1 w-full opacity-60;

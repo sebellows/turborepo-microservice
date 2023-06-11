@@ -1,7 +1,10 @@
 import { boxShadow, breakpoints, fontFamily, fontSize, zIndex } from './styles'
 import { colors } from './colors'
 
-module.exports = {
+export * from './styles'
+export { useVariant } from './useVariants'
+
+export const theme = {
   boxShadow,
   breakpoints,
   colors,

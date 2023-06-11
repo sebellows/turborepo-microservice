@@ -10,12 +10,13 @@ export type UIThemeProps = {
 
 export type BoxProps = {
   className?: string | undefined
+  excludeProps?: string[]
 } & UIComponentProps &
   UIThemeProps
 
 export const Box = forwardRefAs<'div', BoxProps>((props, ref) => {
-  const { as: Tag = 'div', children, className, variant = 'default', ...rest } = props
-  const [uiProps, nonUIProps] = useUIProps(rest)
+  const { as: Tag = 'div', children, className, excludeProps = [], variant = 'default', ...rest } = props
+  const [uiProps, nonUIProps] = useUIProps(rest, excludeProps)
   const classes = classNames(uiProps, className)
 
   return <Tag data-ui="box" className={classes} ref={ref} {...nonUIProps} />

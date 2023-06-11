@@ -5,8 +5,10 @@ import { ColorVariantKey } from "../theme/color.types";
 
 import { Box } from "./Box";
 import { Inline } from "./Inline";
-import { Spinner } from "./Spinner";
+import { Spinner } from "./spinner/Spinner";
 import { classNames } from "@trms/utils";
+import { useUIProps } from "../styles/style.props";
+import { useVariant } from "../theme";
 
 type LoadingBoxProps = {
   backgroundColor?: string
@@ -65,76 +67,6 @@ const resolveBaseStyles = ({ size, wide, block, square, circle }: ButtonProps) =
   return classes
 }
 
-const resolveVariant = (variant: ColorVariantKey, outline?: boolean) => {
-  if (variant === 'default' || variant === "neutral") {
-    if (outline) {
-      return [
-        `text-neutral-900`,
-        `bg-neutral-100`,
-        `hover:bg-neutral-200`,
-        `focus:bg-neutral-300`,
-        `disabled:opacity-75`,
-        `border-neutral-900`,
-        `hover:border-neutral-950`,
-        `focus:border-neutral-950`,
-        // dark
-        `dark:text-neutral-100`,
-        `dark:bg-neutral-900`,
-        `dark:hover:bg-neutral-950`,
-        `dark:focus:bg-neutral-950`,
-        `dark:border-neutral-100`,
-        `dark:hover:border-neutral-200`,
-        `dark:focus:border-neutral-300`,
-        `dark:disabled:opacity-75`,
-      ];
-    }
-
-    return [
-      `text-neutral-900`,
-      `bg-neutral-300`,
-      `hover:bg-neutral-400`,
-      `focus:bg-neutral-500`,
-      `border-neutral-400`,
-      `hover:border-neutral-500`,
-      `focus:border-neutral-600`,
-      `disabled:opacity-75`,
-    ];
-  }
-
-  if (outline) {
-    return [
-      `text-${variant}-600`,
-      `bg-neutral-100`,
-      `hover:bg-neutral-200`,
-      `focus:bg-neutral-300`,
-      `border-${variant}-600`,
-      `hover:border-${variant}-700`,
-      `focus:border-${variant}-800`,
-      `disabled:opacity-75`,
-      // dark
-      `text-${variant}-400`,
-      `dark:bg-neutral-900`,
-      `dark:hover:bg-neutral-950`,
-      `dark:focus:bg-neutral-950`,
-      `dark:border-${variant}-400`,
-      `dark:hover:border-${variant}-500`,
-      `dark:focus:border-${variant}-600`,
-      `dark:disabled:opacity-75`,
-    ];
-  }
-
-  return [
-    `text-white`,
-    `bg-${variant}-600`,
-    `hover:bg-${variant}-700`,
-    `focus:bg-${variant}-800`,
-    `border-${variant}-300`,
-    `hover:border-${variant}-400`,
-    `focus:border-${variant}-500`,
-    `disabled:opacity-75`,
-  ];
-}
-
 type ButtonProps = {
   disabled?: boolean;
   loading?: boolean;
@@ -152,6 +84,7 @@ type ButtonProps = {
 export const Button = forwardRefAs<"button", ButtonProps>(
   (
     {
+      align,
       children,
       className,
       disabled,
@@ -164,12 +97,14 @@ export const Button = forwardRefAs<"button", ButtonProps>(
     },
     ref
   ) => {
-    const variantClasses = useMemo(() => resolveVariant(variant, outline), [variant, outline])
-    const classes = resolveBaseStyles(props)
-    const isDisabled = useMemo(
-      () => Boolean(loading || disabled),
-      [loading, disabled]
-    );
+    // const variantClasses = useMemo(() => resolveVariant(variant, outline), [variant, outline])
+    // const { as: Tag = 'div', children, className, variant = 'default', ...rest } = props
+    const variantClasses = useVariant(variant)
+    const [uiProps, nonUIProps] = useUIProps(props)
+    const btnClasses = resolveBaseStyles(props)
+    const classes = classNames(uiProps, variantClasses, btnClasses, className)
+
+    const isDisabled = useMemo(() => Boolean(loading || disabled), [loading, disabled])
 
     return (
       <Box
@@ -195,3 +130,74 @@ export const Button = forwardRefAs<"button", ButtonProps>(
     )
   }
 );
+
+
+// const resolveVariant = (variant: ColorVariantKey, outline?: boolean) => {
+//   if (variant === 'default' || variant === 'neutral') {
+//     if (outline) {
+//       return [
+//         `text-neutral-900`,
+//         `bg-neutral-100`,
+//         `hover:bg-neutral-200`,
+//         `focus:bg-neutral-300`,
+//         `disabled:opacity-75`,
+//         `border-neutral-900`,
+//         `hover:border-neutral-950`,
+//         `focus:border-neutral-950`,
+//         // dark
+//         `dark:text-neutral-100`,
+//         `dark:bg-neutral-900`,
+//         `dark:hover:bg-neutral-950`,
+//         `dark:focus:bg-neutral-950`,
+//         `dark:border-neutral-100`,
+//         `dark:hover:border-neutral-200`,
+//         `dark:focus:border-neutral-300`,
+//         `dark:disabled:opacity-75`,
+//       ]
+//     }
+
+//     return [
+//       `text-neutral-900`,
+//       `bg-neutral-300`,
+//       `hover:bg-neutral-400`,
+//       `focus:bg-neutral-500`,
+//       `border-neutral-400`,
+//       `hover:border-neutral-500`,
+//       `focus:border-neutral-600`,
+//       `disabled:opacity-75`,
+//     ]
+//   }
+
+//   if (outline) {
+//     return [
+//       `text-${variant}-600`,
+//       `bg-neutral-100`,
+//       `hover:bg-neutral-200`,
+//       `focus:bg-neutral-300`,
+//       `border-${variant}-600`,
+//       `hover:border-${variant}-700`,
+//       `focus:border-${variant}-800`,
+//       `disabled:opacity-75`,
+//       // dark
+//       `text-${variant}-400`,
+//       `dark:bg-neutral-900`,
+//       `dark:hover:bg-neutral-950`,
+//       `dark:focus:bg-neutral-950`,
+//       `dark:border-${variant}-400`,
+//       `dark:hover:border-${variant}-500`,
+//       `dark:focus:border-${variant}-600`,
+//       `dark:disabled:opacity-75`,
+//     ]
+//   }
+
+//   return [
+//     `text-white`,
+//     `bg-${variant}-600`,
+//     `hover:bg-${variant}-700`,
+//     `focus:bg-${variant}-800`,
+//     `border-${variant}-300`,
+//     `hover:border-${variant}-400`,
+//     `focus:border-${variant}-500`,
+//     `disabled:opacity-75`,
+//   ]
+// }

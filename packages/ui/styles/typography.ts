@@ -41,8 +41,10 @@ const Leading = [
   'loose', // 2
 ]
 const TextAlignments = ['left', 'right', 'center', 'justify', 'start', 'end'] as const
+const TextOverflow = ['ellipsis', 'clip'] as const
 const ClampableLines = [..._Range6, 'none'] as const
 const ListStyles = ['none', 'disc', 'decimal'] as const
+const Truncate = ['truncate'] as const
 
 const fontFamily = setPropertyMap(FontFamilies, 'font')
 const fontSize = setPropertyMap(FontSizes, 'text')
@@ -60,6 +62,8 @@ const listPosition = {
 }
 const listStyle = setPropertyMap(ListStyles, 'list')
 const textAlign = setPropertyMap(TextAlignments, 'text')
+const textOverflow = setPropertyMap(TextOverflow, 'text-overflow')
+const truncate = setPropertyMap(Truncate)
 
 export const typography = {
   fontFamily,
@@ -72,4 +76,6 @@ export const typography = {
   listPosition,
   listStyle,
   textAlign,
+  textOverflow,
+  truncate,
 }

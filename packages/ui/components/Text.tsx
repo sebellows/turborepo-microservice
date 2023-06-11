@@ -1,90 +1,36 @@
-"use client";
-
-import { jsx, styled } from "../shared/styles/css";
-import { PropsWithChildren } from "react";
-
-import { NoWrapStyles, forwardRefAs, set } from "../shared";
-import {
-  TextStyleMap,
-  Theme,
-  resolveThemeColor,
-  useMediaQuery,
-  useTheme,
-} from "../theme";
+import { forwardRefAs } from "../shared";
 
 import { Box, BoxProps } from "./Box";
+import { TextOverflowBlock } from './TextOverflowBlock'
+import { ColorVariantKey } from "../theme/color.types";
+import { useVariant } from "../theme";
+import { pick } from "@trms/utils";
 
-type TextProps = {
-  /** The leading of the text. */
-  leading?: keyof Theme["typography"]["lineHeight"];
-
-  /** The size of the text. */
-  size?: keyof Theme["typography"]["fontSize"];
-
-  /** The tracking of the text. */
-  tracking?: keyof Theme["typography"]["letterSpacing"];
-
-  /** The color of the text. */
-  color?: string; // keyof Theme["palette"];
-
-  /** The font-weight of the text. */
-  weight?: keyof Theme["typography"]["fontWeight"];
-
-  /** For occasions where it should be limited to a single line. */
-  textOverflow?: "ellipsis";
-} & BoxProps;
-
-const SpanWithTextOverflow = forwardRefAs<"span", PropsWithChildren<{}>>(
-  ({ as = "span", children }, ref) => {
-    const Component = styled[as]`
-      ${NoWrapStyles}
-    `;
-    return <Component ref={ref} css={[NoWrapStyles]} children={children} />;
-  }
-);
+export type TextProps = {
+  muted?: boolean
+  variant?: ColorVariantKey
+} & BoxProps
 
 export const Text = forwardRefAs<"p", TextProps>(
   (
     {
       as: Tag = "p",
-      color: colorProp,
-      leading = "base",
-      size = "medium",
-      tracking = "base",
-      weight = "regular",
-      textOverflow,
+      muted = false,
+      variant = 'default',
       children: childrenProp,
       ...props
     },
     ref
   ) => {
-    const {
-      theme: { colors, modes, typography },
-      scheme,
-    } = useTheme();
-
-    const { mq } = useMediaQuery();
-
-    const initStyles = colorProp ? { color: resolveThemeColor(colors, colorProp) } : {};
+    const variantClasses = useVariant(variant);
+    const textClasses = muted ? variantClasses.muted : variantClasses.text
 
     let children = childrenProp;
-    if (textOverflow === "ellipsis") {
-      children = <SpanWithTextOverflow children={children} />;
+    if (props?.textOverflow || props?.truncate || props?.lineClamp) {
+      const overflowProps = pick(props, 'lineClamp', 'textOverflow', 'truncate')
+      children = <TextOverflowBlock {...overflowProps}>{children}</TextOverflowBlock>
     }
 
-    const styleProps = Object.entries(TextStyleMap).reduce(
-      (acc, [key, prop]) => {
-        set(acc, prop, typography[prop][key]);
-
-        return acc;
-      },
-      initStyles
-    );
-
-    const styles = mq(styleProps);
-
-    return (
-      <Box as={Tag} css={styles} ref={ref} {...props} children={children} />
-    );
+    return <Box as={Tag} className={textClasses} ref={ref} {...props} children={children} />
   }
 );

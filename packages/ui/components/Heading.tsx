@@ -1,61 +1,32 @@
-"use client";
-
 import { PropsWithChildren } from "react";
+import { pick } from '@trms/utils'
 
-import { jsx, styled } from "../shared/styles/css";
-
-import { forwardRefAs, NoWrapStyles, set } from "../shared";
-import { HeadingLevel, HeadingStyleMap, useTheme } from "../theme";
+import { forwardRefAs } from "../shared";
 
 import { Box, BoxProps } from "./Box";
+import { TextOverflowBlock } from "./TextOverflowBlock";
+
+export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
 export type HeadingProps = {
-  as?: React.ElementType | keyof JSX.IntrinsicElements;
+  as?: React.ElementType | keyof JSX.IntrinsicElements
+} & BoxProps
 
-  /** The level of the heading. [Default: 'h1'] */
-  level?: HeadingLevel;
+const overflowPropKeys = ['lineClamp', 'textOverflow', 'truncate']
 
-  size?: HeadingLevel;
+export const Heading = forwardRefAs<HeadingLevel, PropsWithChildren<HeadingProps>>(
+  ({ as: Tag = 'h1', children: childrenProp, ...props }, ref) => {
+    let children = childrenProp
 
-  /** For occasions where it should be limited to a single line. */
-  textOverflow?: "ellipsis";
-} & BoxProps;
-
-const SpanWithTextOverflow = forwardRefAs<"span", PropsWithChildren<{}>>(
-  ({ as = 'span', children }, ref) => {
-    const Component = styled[as]`
-      ${NoWrapStyles}
-    `;
-    return <Component ref={ref} css={[NoWrapStyles]} children={children} />;
-  }
-);
-
-type HeadingLevelTag<TLevel extends number> = `h${TLevel}`
-
-export const Heading = forwardRefAs<HeadingLevelTag<HeadingLevel>, PropsWithChildren<HeadingProps>>(
-  ({ as: Tag = "h1", size = Tag, children: childrenProp, ...props }, ref) => {
-    const {
-      theme: { headingStyles },
-    } = useTheme();
-    const { textOverflow, ...attrs } = props;
-    const headingStyle = headingStyles[size];
-
-    let children = childrenProp;
-    if (textOverflow === "ellipsis") {
-      children = <SpanWithTextOverflow children={children} />;
+    if (props?.textOverflow || props?.truncate || props?.lineClamp) {
+      const overflowProps = pick(props, 'lineClamp', 'textOverflow', 'truncate')
+      children = <TextOverflowBlock {...overflowProps}>{children}</TextOverflowBlock>
     }
 
-    const styles = Object.entries(HeadingStyleMap).reduce(
-      (acc, [key, prop]) => {
-        set(acc, prop, headingStyle[key]);
-
-        return acc;
-      },
-      { margin: 0 }
-    );
-
     return (
-      <Box as={Tag} css={styles} ref={ref} {...attrs} children={children} />
-    );
-  }
-);
+      <Box as={Tag} excludeProps={overflowPropKeys} ref={ref} {...props}>
+        {children}
+      </Box>
+    )
+  },
+)

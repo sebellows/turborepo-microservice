@@ -1,9 +1,4 @@
-"use client";
-
-import { jsx } from "../shared/styles/css";
-
-import { forwardRefAs } from "../shared/utils";
-
+import { forwardRefAs } from "../shared";
 import { Box, BoxProps } from "./Box";
 
 type CenterProps = {
@@ -15,13 +10,11 @@ export const Center = forwardRefAs<"div", CenterProps>(
     return (
       <Box
         ref={ref}
-        css={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "center",
-          height: fillView ? "100vh" : undefined,
-          width: fillView ? "100vw" : undefined,
-        }}
+        alignItems="center"
+        display="flex"
+        justifyContent="center"
+        height={fillView ? "100vh" : undefined}
+        width={fillView ? "100vw" : 'undefined'}
         {...props}
       />
     );

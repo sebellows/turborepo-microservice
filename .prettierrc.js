@@ -1,3 +1,3 @@
 module.exports = {
-  ...require('config/prettierrc.js'),
+  ...require('@trms/config/prettierrc.js'),
 }

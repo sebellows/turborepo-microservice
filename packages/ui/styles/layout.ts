@@ -42,12 +42,31 @@ export const PlacementValues = [
   'auto',
 ] as const
 
+const OverflowValues = [
+  'auto',
+  'hidden',
+  'clip',
+  'visible',
+  'scroll',
+  'x-auto',
+  'y-auto',
+  'x-hidden',
+  'y-hidden',
+  'x-clip',
+  'y-clip',
+  'x-visible',
+  'y-visible',
+  'x-scroll',
+  'y-scroll',
+] as const
 const display = setPropertyMap(DisplayValues)
+const overflow = setPropertyMap(OverflowValues, 'overflow')
 const position = setPropertyMap(Positions)
 const placement = setUnitValuePropertyMap(Placement, PlacementValues)
 
 export const layout = {
   display,
+  overflow,
   position,
   ...placement,
 }

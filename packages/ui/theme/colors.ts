@@ -1,9 +1,9 @@
 import { palette } from './palette'
 import { ColorVariantKey, PaletteKey } from './color.types'
 
-type VariantsConfig = Record<ColorVariantKey, PaletteKey | null>
+type VariantsConfig = Record<ColorVariantKey, PaletteKey>
 const variantsConfig: VariantsConfig = {
-  default: null,
+  default: 'gray',
   primary: 'orange',
   secondary: 'purple',
   info: 'cyan',
@@ -13,23 +13,36 @@ const variantsConfig: VariantsConfig = {
   warning: 'yellow',
 }
 
-const variantClasses = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
-  if (!hue) return acc
+const VariantColorSchemeKeys = [
+  'bg',
+  'bgInteractive',
+  'muted',
+  'mutedInteractive',
+  'border',
+  'link',
+  'text',
+  'foreground',
+  'navLink',
+] as const
+type VariantColorSchemeKey = (typeof VariantColorSchemeKeys)[number]
+type VariantColorScheme = Record<VariantColorSchemeKey, string[]>
+type VariantColorSchemes = Record<ColorVariantKey, VariantColorScheme>
 
+const variantClasses = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
   const color = palette[hue]
 
   acc[`${variant}`] = {
     bg: [`bg-${color}-600`, `dark:bg-${color}-400`],
     bgInteractive: [
       `bg-${color}-600`,
-      `hover:bg-${color}-700`,
-      `active:bg-${color}-800`,
-      `disabled:bg-${color}-600`,
       `dark:bg-${color}-400`,
+      `hover:bg-${color}-700`,
       `dark:hover:bg-${color}-500`,
+      `active:bg-${color}-800`,
       `dark:active:bg-${color}-600`,
+      `disabled:bg-${color}-600`,
       `dark:disabled:bg-${color}-400`,
-      'disabled:point-events-none',
+      'disabled:pointer-events-none',
     ],
     muted: [`bg-${color}-200`, `dark:bg-${color}-200`],
     mutedInteractive: [
@@ -41,7 +54,7 @@ const variantClasses = Object.entries(variantsConfig).reduce((acc, [variant, hue
       `dark:active:bg-${color}-400`,
       `disabled:bg-${color}-100`,
       `dark:disabled:bg-${color}-100`,
-      'disabled:point-events-none',
+      'disabled:pointer-events-none',
     ],
     border: [`border-${color}-900/12`],
     foreground: [`text-neutral-900 dark:text-neutral-50`],
@@ -69,13 +82,75 @@ const variantClasses = Object.entries(variantsConfig).reduce((acc, [variant, hue
       'dark:active:text-neutral-300',
       'disabled:text-black',
       'dark:disabled:text-white',
-      `disabled:opacity-0.5`,
+      'disabled:opacity-0.5',
       'disabled:pointer-events-none',
     ],
   }
 
   return acc
-}, {})
+}, {}) as VariantColorSchemes
+
+const variantClassesInverted = Object.entries(variantsConfig).reduce((acc, [variant, hue]) => {
+  const color = !hue ? palette.gray : palette[hue]
+
+  acc[variant] = {
+    bg: [`bg-neutral-50`, `dark:bg-neutral-900`],
+    bgInteractive: [
+      `hover:bg-neutral-100`,
+      `dark:hover:bg-neutral-800`,
+      `focus:bg-neutral-200`,
+      `dark:focus:bg-neutral-700`,
+      `active:bg-neutral-300`,
+      `dark:active:bg-neutral-600`,
+      `disabled:bg-neutral-50`,
+      `dark:disabled:bg-neutral-900`,
+      'disabled:pointer-events-none',
+    ],
+    muted: [`bg-${color}-200`, `dark:bg-${color}-700`],
+    mutedInteractive: [
+      `hover:bg-neutral-300`,
+      `dark:hover:bg-neutral-800`,
+      `focus:bg-neutral-400`,
+      `dark:focus:bg-neutral-700`,
+      `active:bg-neutral-500`,
+      `dark:active:bg-neutral-600`,
+      `disabled:bg-neutral-200`,
+      `dark:disabled:bg-neutral-700`,
+      'disabled:pointer-events-none',
+    ],
+    border: [`border-${color}-600`, `dark:border-${color}-400`],
+    foreground: [`bg-${color}-600`, `dark:bg-${color}-400`],
+    text: [`text-${color}-600`, `dark:text-${color}-400`],
+    link: [
+      'text-white',
+      'dark:text-black',
+      'underline',
+      'hover:text-neutral-200',
+      'dark:hover:text-neutral-900',
+      'active:text-neutral-300',
+      'dark:active:text-neutral-700',
+      'disabled:text-white',
+      'dark:disabled:text-black',
+      `disabled:opacity-0.5`,
+      'disabled:pointer-events-none',
+    ],
+    navLink: [
+      'text-black',
+      'dark:text-white',
+      'no-underline',
+      'hover:text-neutral-900',
+      'dark:hover:text-neutral-200',
+      'active:text-neutral-700',
+      'dark:active:text-neutral-300',
+      'disabled:text-black',
+      'dark:disabled:text-white',
+      'disabled:opacity-0.5',
+      'disabled:pointer-events-none',
+    ],
+  }
+
+  return acc
+}, {}) as VariantColorSchemes
 
 const base = {
   bg: ['bg-neutral-50', 'dark:bg-neutral-900'],
@@ -88,7 +163,7 @@ const base = {
     'dark:active:bg-neutral-700',
     'disabled:bg-neutral-200',
     'dark:disabled:bg-neutral-800',
-    'disabled:point-events-none',
+    'disabled:pointer-events-none',
   ],
   muted: ['bg-neutral-200', 'dark:bg-neutral-200'],
   mutedInteractive: [
@@ -100,7 +175,7 @@ const base = {
     'dark:active:bg-neutral-500',
     'disabled:bg-neutral-300',
     'dark:disabled:bg-neutral-600',
-    'disabled:point-events-none',
+    'disabled:pointer-events-none',
   ],
   border: ['border-neutral-900/12'],
   foreground: ['text-neutral-900 dark:text-neutral-50'],
@@ -131,11 +206,11 @@ const base = {
     'disabled:opacity-0.5',
     'disabled:pointer-events-none',
   ],
-}
+} as VariantColorScheme
 
 export const variants = {
-  default: base,
   ...variantClasses,
+  inverted: variantClassesInverted,
 }
 
 export const colors = {

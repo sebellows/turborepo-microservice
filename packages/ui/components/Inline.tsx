@@ -1,52 +1,46 @@
 import { Children } from "react";
+import { isNil, isPlainObject } from '@trms/utils'
 
-import { BreakpointObj, forwardRefAs, getChildTag } from "../shared";
+import { forwardRefAs, getChildTag } from "../shared";
 
-import { Box, BoxProps, parseBoxStyles } from "./Box";
-import { isNil } from "@trms/utils";
+import { Box, BoxProps } from "./Box";
+import { WithBreakpoint, negateUiValue } from "../styles";
 
 type InlineProps = BoxProps;
 
-// const resolveStyles = ({ align = "start", flexWrap = "wrap", gap = 0, ...props }: InlineProps) => {
-//   const resolvedAlign = `items-${align}`;
-//   const resolvedGap = ['gap', axis, gap].filter(isNil).join('-');
-// }
-
 export const Inline = forwardRefAs<"div", InlineProps>(
-  ({ gap = 0, align, flexWrap = 'wrap', ...props }, ref) => {
-    let resolvedGap: number | BreakpointObj 
+  ({ children, gap = 0, align, flexWrap = 'wrap', ...props }, ref) => {
     const boxClasses = {
       align,
+      display: 'flex',
       flexWrap,
       gap,
-      ml: -gap,
-      mt: -gap,
+      ml: negateUiValue(gap),
+      mt: negateUiValue(gap),
+      ...props,
     }
 
-    const propClasses = parseBoxStyles<InlineProps>({
-      align: 'start',
+    const wrapperClasses = {
+      display: 'flex',
       flexWrap: 'wrap',
-      gap: 0,
-      ml: -resolvedGap,
-      mt: -resolvedGap,
-      ...props,
-    })
+      pl: gap,
+      pt: gap,
+    }
     const ChildWrapper = getChildTag(props.as);
 
     return (
-      <Box ref={ref} {...boxClasses} {...props}>
+      <Box ref={ref} {...boxClasses}>
         {Children.map(children, child =>
           !isNil(child) ? (
-            <ChildWrapper
-              css={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                paddingLeft: resolvedGap,
-                paddingTop: resolvedGap,
-              }}
+            <Box
+              as={ChildWrapper}
+              display='flex'
+              flexWrap='wrap'
+              pl={gap}
+              pt={gap}
             >
               {child}
-            </ChildWrapper>
+            </Box>
           ) : null,
         )}
       </Box>

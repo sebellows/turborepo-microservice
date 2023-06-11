@@ -1,5 +1,5 @@
 {
-  "name": "database",
+  "name": "@trms/database",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -11,6 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@trms/config": "workspace:*",
+    "@trms/tsconfig": "workspace:*",
+    "@trms/utils": "workspace:*",
     "@types/node": "^20.2.3",
     "prisma": "^4.14.1",
     "ts-node": "^10.0.0",

@@ -1,29 +1,13 @@
-"use client";
+import { classNames } from "@trms/utils";
+import { forwardRefAs } from "../shared";
+import { useVariant } from "../theme";
+import { ColorVariantKey } from "../theme/color.types";
 
-import { jsx } from "../shared/styles/css";
+export const Link = forwardRefAs<"a", { variant?: ColorVariantKey }>(
+  ({ as: Tag = "a", className, variant = 'default', ...props }, ref) => {
+    const colorScheme = useVariant(variant)
+    const classes = classNames(colorScheme.link, className)
 
-import { useTheme } from "../theme";
-import { forwardRefAs } from "../shared/utils";
-
-export const Link = forwardRefAs<"a", {}>(
-  ({ as: Tag = "a", ...props }, ref) => {
-    const {
-      theme: { typography },
-      scheme,
-    } = useTheme();
-
-    const styles = {
-      color: scheme.linkColor,
-      cursor: "pointer",
-      fontWeight: typography.fontWeight.medium,
-      textDecoration: "none",
-
-      ":hover, :focus": {
-        color: scheme.linkHoverColor,
-        textDecoration: "underline",
-      },
-    };
-
-    return <Tag css={styles} ref={ref} {...props} />;
+    return <Tag className={classes} ref={ref} {...props} />
   }
 );

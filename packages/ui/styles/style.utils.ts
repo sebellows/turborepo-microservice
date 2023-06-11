@@ -1,4 +1,5 @@
-import { camelCase, isRegExp, memoize } from '@trms/utils'
+import { camelCase, isPlainObject, isRegExp, memoize } from '@trms/utils'
+import { WithBreakpoint } from './breakpoints'
 
 /**
  * @internal
@@ -114,6 +115,19 @@ export const extractUnit = (value: string) => {
   const unit = ['px', 'em', 'rem'].find(suffix => value.endsWith(suffix))
 
   return unit
+}
+
+export const negateUiValue = <T extends number | string>(value: T | WithBreakpoint<T>) => {
+  if (isPlainObject(value)) {
+    for (const bp in value) {
+      value[bp] = value[bp] <= 0 ? value[bp] : -value[bp]
+    }
+    return value
+  } else if (typeof value === 'number') {
+    return value <= 0 ? value : -value
+  }
+
+  return value.startsWith('-') || value.startsWith('0') ? value : `-${value}`
 }
 
 // export const resolveUnitValue = (value: number | string, unit?: 'px' | 'em' | 'rem') => {

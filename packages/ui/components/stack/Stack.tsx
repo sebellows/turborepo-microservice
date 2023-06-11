@@ -1,110 +1,70 @@
 import { Children, Fragment, ReactNode, isValidElement } from "react";
 
-import {
-  getChildTag,
-  mapResponsiveProp,
-  Theme,
-  useMediaQuery,
-  useTheme,
-} from "../../theme";
-import { forwardRefAs } from "../../shared";
+import { forwardRefAs, getChildTag } from "../../shared";
 
 import { Box, BoxProps } from "../Box";
 import { Divider } from "../Divider";
-
-const alignment = {
-  center: "center",
-  end: "flex-end",
-  start: "flex-start",
-  stretch: "stretch",
-};
-
-const orientationMap = {
-  horizontal: {
-    flexDirection: "row",
-    marginProperty: "marginLeft",
-    dimension: "width",
-  },
-  vertical: {
-    flexDirection: "column",
-    marginProperty: "marginTop",
-    dimension: "height",
-  },
-} as const;
+import './Stack.style.css'
+import { classNames } from "@trms/utils";
 
 export type StackProps = {
   /** The value of the "align-items" property. */
-  align?: keyof typeof alignment;
+  // align?: keyof typeof alignment;
   /** Each element in the stack. */
   children: ReactNode;
   /** Causes items in the stack to be oriented horizontally, instead of vertically */
-  across?: boolean;
+  horizontal?: boolean;
   /** The placement, if any, of the dividing elements. */
   dividers?: "none" | "around" | "between" | "start" | "end";
   /** The size of the gap between each element in the stack. */
-  gap?: keyof Theme["spacing"];
+  // gap?: keyof Theme["spacing"];
 } & BoxProps;
 
-export const Stack = forwardRefAs<"div", StackProps>(
+export const Stack = forwardRefAs<'div', StackProps>(
   (
     {
-      across,
-      align = "stretch",
+      className,
+      horizontal = false,
+      alignItems = 'stretch',
       children,
-      dividers = "none",
-      gap = "none",
+      dividers = 'none',
+      gap = 'none',
       ...props
     },
-    ref
+    ref,
   ) => {
-    const {
-      theme: { spacing },
-    } = useTheme();
-    const { mq } = useMediaQuery();
-
-    const orientation = across ? "horizontal" : "vertical";
-    const { dimension, flexDirection, marginProperty } =
-      orientationMap[orientation];
-    const ChildWrapper = getChildTag(props.as);
+    const orientation = horizontal ? 'horizontal' : 'vertical'
+    const dimension = horizontal ? 'width' : 'height'
+    // const { dimension, flexDirection, marginProperty } = orientationMap[orientation]
+    const ChildWrapper = getChildTag(props.as)
+    const classes = classNames(className, !horizontal && 'stack-vertical')
 
     return (
       <Box
         ref={ref}
-        css={mq({
-          alignItems: alignment[align],
-          display: "flex",
-          flexDirection,
-          [dimension]: "fit-content",
-
-          "& > * + *": {
-            [marginProperty]: mapResponsiveProp(gap, spacing),
-          },
-        })}
+        className={classes}
+        alignItems={alignItems}
+        display="flex"
+        flexDirection={orientation === 'horizontal' ? 'row' : 'col'}
+        gap={gap}
+        {...{ [dimension]: 'fit-content' }}
         {...props}
       >
-        {["around", "start"].includes(dividers) && (
-          <Divider orientation={orientation} />
-        )}
+        {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
         {Children.toArray(children)
-          .filter((child) => isValidElement(child))
+          .filter(child => isValidElement(child))
           .map((child, index) => {
             return (
               <Fragment key={index}>
-                {dividers !== "none" && index ? (
-                  <Divider orientation={orientation} />
-                ) : null}
+                {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
 
                 {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <ChildWrapper css={{ ":empty": { display: "none" } }}>
-                  {child}
-                </ChildWrapper>
+                <ChildWrapper className="empty:hidden">{child}</ChildWrapper>
               </Fragment>
-            );
+            )
           })}
-        {["around", "end"].includes(dividers) && (
-          <Divider orientation={orientation} />
-        )}
+        {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
       </Box>
-    );
-  }
-);
+    )
+  },
+)
