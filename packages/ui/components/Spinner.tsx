@@ -4,9 +4,9 @@ import { classNames, toPx } from '@trms/utils'
 import { forwardRefAs } from "../shared";
 
 import { BoxProps } from "./Box";
+import { Center } from './Center'
 
 import '../css/spinner.css'
-import { Center } from "./Center";
 
 export const Spinner = forwardRefAs<"div", BoxProps>(
   ({ as: Tag = "div", size = 80 }, ref) => {

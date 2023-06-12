@@ -1,14 +1,13 @@
 import { PropsWithChildren, useMemo } from "react";
+import { ColorVariantKey } from '@trms/theme'
 
 import { forwardRefAs } from "../shared";
-import { ColorVariantKey } from "../theme/color.types";
 
 import { Box } from "./Box";
 import { Inline } from "./Inline";
 import { Spinner } from "./spinner/Spinner";
 import { classNames } from "@trms/utils";
-import { useUIProps } from "../styles/style.props";
-import { useVariant } from "../theme";
+import { useTW, useVariant } from "../hooks";
 
 type LoadingBoxProps = {
   backgroundColor?: string
@@ -16,7 +15,7 @@ type LoadingBoxProps = {
   zIndex?: number
 }
 const LoadingBox = forwardRefAs<"span", PropsWithChildren<LoadingBoxProps>>(
-  ({ as: Tag = "span", className, children }, ref) => {
+  ({ as: Tag = "span", children }, ref) => {
     return (
       <Tag
         ref={ref}
@@ -97,12 +96,10 @@ export const Button = forwardRefAs<"button", ButtonProps>(
     },
     ref
   ) => {
-    // const variantClasses = useMemo(() => resolveVariant(variant, outline), [variant, outline])
-    // const { as: Tag = 'div', children, className, variant = 'default', ...rest } = props
     const variantClasses = useVariant(variant)
-    const [uiProps, nonUIProps] = useUIProps(props)
+    const [twClasses, attrProps] = useTW(props)
     const btnClasses = resolveBaseStyles(props)
-    const classes = classNames(uiProps, variantClasses, btnClasses, className)
+    const classes = classNames(twClasses, variantClasses, btnClasses, className)
 
     const isDisabled = useMemo(() => Boolean(loading || disabled), [loading, disabled])
 
@@ -115,7 +112,7 @@ export const Button = forwardRefAs<"button", ButtonProps>(
         disabled={isDisabled}
         ref={ref}
         type={type}
-        {...props}
+        {...attrProps}
       >
         {!!loading && (
           <LoadingBox>

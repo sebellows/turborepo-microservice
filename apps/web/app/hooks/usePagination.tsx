@@ -1,6 +1,7 @@
 import { useContext } from "react";
+import { useRouter } from 'next/router'
+
 import { SidebarContext } from "../layouts/Sidebar.layout";
-import { useRouter } from "next/router";
 
 export function usePrevNext() {
   let router = useRouter();

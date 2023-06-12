@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 
 export function useMedia(query: string, defaultState = false) {

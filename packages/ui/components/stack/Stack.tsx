@@ -1,23 +1,20 @@
 import { Children, Fragment, ReactNode, isValidElement } from "react";
+import { classNames } from '@trms/utils'
 
 import { forwardRefAs, getChildTag } from "../../shared";
 
 import { Box, BoxProps } from "../Box";
 import { Divider } from "../Divider";
+
 import './Stack.style.css'
-import { classNames } from "@trms/utils";
 
 export type StackProps = {
-  /** The value of the "align-items" property. */
-  // align?: keyof typeof alignment;
   /** Each element in the stack. */
   children: ReactNode;
   /** Causes items in the stack to be oriented horizontally, instead of vertically */
   horizontal?: boolean;
   /** The placement, if any, of the dividing elements. */
   dividers?: "none" | "around" | "between" | "start" | "end";
-  /** The size of the gap between each element in the stack. */
-  // gap?: keyof Theme["spacing"];
 } & BoxProps;
 
 export const Stack = forwardRefAs<'div', StackProps>(

@@ -1,7 +1,6 @@
 {
-  "extends": "tsconfig/nextjs.json",
+  "extends": "@trms/tsconfig/nextjs.json",
   "compilerOptions": {
-    "jsxImportSource": "@emotion/react",
     "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

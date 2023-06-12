@@ -212,7 +212,3 @@ export const variants = {
   ...variantClasses,
   inverted: variantClassesInverted,
 }
-
-export const colors = {
-  ...palette,
-}

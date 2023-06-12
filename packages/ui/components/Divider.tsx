@@ -1,19 +1,20 @@
-import { forwardRefAs } from "../shared";
-import { ColorVariantKey } from "../theme/color.types";
+import { ColorVariantKey } from '@trms/theme'
 
-import { Box } from "./Box";
+import { forwardRefAs } from '../shared'
+
+import { Box } from './Box'
 
 const axes = {
-  x: "w",
-  y: "h",
-};
+  x: 'w',
+  y: 'h',
+}
 
 type DividerProps = {
-  children?: never;
-  variant?: ColorVariantKey;
-  axis?: keyof typeof axes;
-  className?: string;
-};
+  children?: never
+  variant?: ColorVariantKey
+  axis?: keyof typeof axes
+  className?: string
+}
 
 export const Divider = forwardRefAs<'div', DividerProps>(({ axis = 'x', ...props }, ref) => {
   return (

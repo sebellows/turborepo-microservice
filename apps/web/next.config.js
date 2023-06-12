@@ -3,5 +3,5 @@ module.exports = {
   compiler: {
     emotion: true,
   },
-  transpilePackages: ["ui"],
-};
+  transpilePackages: ['@trms/ui'],
+}

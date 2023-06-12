@@ -1,5 +1,4 @@
-"use client";
-import { Button, Header, Text } from "ui";
+import { Button, Header, Text } from "@trms/ui";
 
 export default function Page() {
   return (

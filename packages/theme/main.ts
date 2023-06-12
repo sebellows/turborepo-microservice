@@ -1,8 +1,5 @@
 import { boxShadow, breakpoints, fontFamily, fontSize, zIndex } from './styles'
-import { colors } from './colors'
-
-export * from './styles'
-export { useVariant } from './useVariants'
+import { colors } from './color.schemes'
 
 export const theme = {
   boxShadow,

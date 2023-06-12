@@ -1,10 +1,10 @@
 import { Children } from "react";
-import { isNil, isPlainObject } from '@trms/utils'
+import { isNil } from '@trms/utils'
 
 import { forwardRefAs, getChildTag } from "../shared";
+import { negateUiValue } from "../styles";
 
-import { Box, BoxProps } from "./Box";
-import { WithBreakpoint, negateUiValue } from "../styles";
+import { Box, BoxProps } from './Box'
 
 type InlineProps = BoxProps;
 
