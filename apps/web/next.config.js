@@ -1,7 +1,4 @@
 module.exports = {
   reactStrictMode: true,
-  compiler: {
-    emotion: true,
-  },
-  transpilePackages: ['@trms/ui'],
+  transpilePackages: ['@trms/theme', '@trms/ui'],
 }

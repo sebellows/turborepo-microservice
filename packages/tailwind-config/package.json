@@ -1,0 +1,10 @@
+{
+  "name": "@trms/tailwind-config",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.js",
+  "devDependencies": {
+    "@trms/theme": "workspace:*",
+    "tailwindcss": "^3.3.2"
+  }
+}

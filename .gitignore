@@ -1,6 +1,9 @@
 # compiled output
-/dist
-/build
+dist
+build
+**/*/dist
+**/*/build
+**/*/.turbo
 
 # dependencies
 node_modules

@@ -1,19 +1,29 @@
 {
   "name": "@trms/utils",
-  "version": "0.0.0",
-  "main": "./index.ts",
-  "types": "./index.ts",
+  "version": "0.0.1",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "license": "MIT",
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
-    "lint": "eslint \"**/*.ts*\""
-  },
-  "devDependencies": {
-    "@trms/config": "workspace:*",
-    "@trms/tsconfig": "workspace:*",
-    "@types/color": "^3.0.3",
-    "typescript": "^4.5.2"
+    "lint": "eslint \"**/*.ts*\"",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "color": "^4.2.3"
+  },
+  "devDependencies": {
+    "@trms/tsconfig": "workspace:*",
+    "@types/color": "^3.0.3",
+    "@types/node": "^20.3.1",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "tsup": "^6.7.0",
+    "typescript": "^4.5.2"
   }
 }

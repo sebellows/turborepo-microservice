@@ -1,5 +1,0 @@
-export { variants } from './color.schemes'
-export { palette } from './palette'
-export { theme } from './main'
-export * from './color.types'
-export * from './styles'
