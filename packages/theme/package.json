@@ -1,7 +1,8 @@
 {
   "name": "@trms/theme",
   "version": "0.0.1",
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@trms/tsconfig": "workspace:*",
+    "@types/react": "^18.2.12",
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
     "tsup": "^6.7.0"

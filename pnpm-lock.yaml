@@ -39,9 +39,6 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
-      '@trms/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@trms/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -54,6 +51,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.0.7
         version: 18.2.3
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
       typescript:
         specifier: ^4.5.3
         version: 4.9.5
@@ -184,6 +184,9 @@ importers:
       '@trms/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/react':
+        specifier: ^18.2.12
+        version: 18.2.12
       eslint:
         specifier: ^7.32.0
         version: 7.32.0
@@ -197,20 +200,19 @@ importers:
   packages/tsconfig: {}
 
   packages/ui:
-    dependencies:
-      '@trms/theme':
-        specifier: workspace:*
-        version: link:../theme
-      '@trms/utils':
-        specifier: workspace:*
-        version: link:../utils
     devDependencies:
       '@trms/tailwind-config':
         specifier: workspace:*
         version: link:../tailwind-config
+      '@trms/theme':
+        specifier: workspace:*
+        version: link:../theme
       '@trms/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@trms/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@types/color':
         specifier: ^3.0.3
         version: 3.0.3
@@ -836,7 +838,15 @@ packages:
   /@types/react-dom@18.2.3:
     resolution: {integrity: sha512-hxXEXWxFJXbY0LMj/T69mznqOZJXNtQMqVxIiirVAZnnpeYiD4zt+lPsgcr/cfWg2VLsxZ1y26vigG03prYB+Q==}
     dependencies:
-      '@types/react': 18.2.5
+      '@types/react': 18.2.12
+    dev: true
+
+  /@types/react@18.2.12:
+    resolution: {integrity: sha512-ndmBMLCgn38v3SntMeoJaIrO6tGHYKMEBohCUmw8HoLLQdRMOIGXfeYaBTLe2lsFaSB3MOK1VXscYFnmLtTSmw==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.3
+      csstype: 3.1.2
     dev: true
 
   /@types/react@18.2.5:

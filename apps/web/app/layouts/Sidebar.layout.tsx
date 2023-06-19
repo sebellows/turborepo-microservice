@@ -14,15 +14,13 @@ import { classNames, hasOwn } from '@trms/utils'
 
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { useActionKey } from '../hooks/useActionKey'
-// import { SearchButton } from "@/components/Search";
-// import { Dialog } from "@headlessui/react";
 
 const SearchContext = createContext<{
   onOpen?: EventHandler<MouseEvent>
   onInput?: EventHandler<MouseEvent>
 }>(null)
 
-export function SearchButton({ children, ...props }) {
+export const SearchButton = ({ children, ...props }) => {
   let searchButtonRef = useRef()
   let actionKey = useActionKey()
   let { onOpen, onInput } = useContext(SearchContext)
@@ -47,6 +45,7 @@ export function SearchButton({ children, ...props }) {
     </button>
   )
 }
+SearchButton.displayName = 'SearchButton'
 
 export const SidebarContext = createContext<{
   nav?: any
@@ -80,6 +79,7 @@ const NavItem = forwardRef<
     </li>
   )
 })
+NavItem.displayName = "NavItem";
 
 /**
  * Find the nearst scrollable ancestor (or self if scrollable)
@@ -117,7 +117,7 @@ function nearestScrollableContainer<El extends HTMLElement | ShadowRoot>(elem: E
   return _el
 }
 
-function Nav({ nav, children, fallbackHref, mobile = false }) {
+const Nav = ({ nav, children, fallbackHref, mobile = false }) => {
   const router = useRouter()
   const activeItemRef = useRef<HTMLLIElement>()
   const previousActiveItemRef = useRef<HTMLLIElement>()
@@ -244,6 +244,7 @@ function Nav({ nav, children, fallbackHref, mobile = false }) {
     </nav>
   )
 }
+Nav.displayName = "Nav";
 
 interface TopLevelLinkProps {
   href?: string
@@ -256,7 +257,7 @@ interface TopLevelLinkProps {
   mobile?: boolean
 }
 
-function TopLevelLink({
+const TopLevelLink = ({
   children,
   href,
   className,
@@ -266,7 +267,7 @@ function TopLevelLink({
   shadow,
   activeBackground,
   mobile,
-}: PropsWithChildren<TopLevelLinkProps>) {
+}: PropsWithChildren<TopLevelLinkProps>) => {
   return (
     <li>
       <Link
@@ -300,8 +301,9 @@ function TopLevelLink({
     </li>
   )
 }
+TopLevelLink.displayName = "TopLevelLink";
 
-function TopLevelNav({ mobile }) {
+const TopLevelNav = ({ mobile }) => {
   let { pathname } = useRouter()
 
   return (
@@ -570,12 +572,14 @@ function TopLevelNav({ mobile }) {
     </>
   )
 }
+TopLevelNav.displayName = "TopLevelNav";
 
-function Wrapper({ allowOverflow, children }) {
+const Wrapper = ({ allowOverflow, children }) => {
   return <div className={allowOverflow ? undefined : 'overflow-hidden'}>{children}</div>
 }
+Wrapper.displayName = "Wrapper";
 
-export function SidebarLayout({
+const SidebarLayout = ({
   children,
   navIsOpen,
   setNavIsOpen,
@@ -583,7 +587,7 @@ export function SidebarLayout({
   sidebar,
   fallbackHref,
   layoutProps: { allowOverflow = true } = {},
-}) {
+}) => {
   return (
     <SidebarContext.Provider value={{ nav, navIsOpen, setNavIsOpen }}>
       <Wrapper allowOverflow={allowOverflow}>
@@ -599,3 +603,6 @@ export function SidebarLayout({
     </SidebarContext.Provider>
   )
 }
+
+SidebarLayout.displayName = "SidebarLayout";
+export { SidebarLayout };

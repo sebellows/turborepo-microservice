@@ -1,5 +1,3 @@
-// import { memoize } from './collection'
-
 function cached<T>(fn: (str: string) => T) {
   const cache = Object.create(null);
   return function cachedFn(str: string) {

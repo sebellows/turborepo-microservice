@@ -3,7 +3,6 @@
   "display": "Tailwind Theme",
   "extends": "@trms/tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "module": "ESNext",
     "target": "ESNext"
   },

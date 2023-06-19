@@ -37,7 +37,7 @@ export const SpacingValues = [
   "72",
   "80",
   "96",
-];
+] as const;
 export type SpacingNumber = (typeof SpacingValues)[number];
 
 export const MarginValues = [...SpacingValues, "auto"] as const;

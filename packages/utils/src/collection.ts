@@ -1,7 +1,7 @@
-import { Closure, Get, ValueOf } from './types'
+import { Closure, Get, ValueOf } from "./types";
 
-import { cloneDeep } from './clone'
-import { hasOwn } from './common'
+import { cloneDeep } from "./clone";
+import { hasOwn } from "./common";
 import {
   _protoToString,
   is,
@@ -15,99 +15,102 @@ import {
   isSymbol,
   isUndefined,
   typeOf,
-} from './lang'
+} from "./lang";
 
 /**
  * Remove an item from an array.
  */
-export function remove<T extends unknown = any>(arr: Array<T>, item: any): Array<T> | void {
-  const len = arr.length
+export function remove<T extends unknown = any>(
+  arr: Array<T>,
+  item: any
+): Array<T> | void {
+  const len = arr.length;
   if (len) {
     // fast path for the only / last item
     if (item === arr[len - 1]) {
-      arr.length = len - 1
-      return
+      arr.length = len - 1;
+      return;
     }
 
-    const index = arr.indexOf(item)
+    const index = arr.indexOf(item);
     if (index > -1) {
-      return arr.splice(index, 1)
+      return arr.splice(index, 1);
     }
   }
 }
 
-export function getSymbol<BaseType, Path extends PropertyKey, TDefault extends unknown = any>(
-  obj: BaseType,
-  path: Path,
-  defaultValue?: TDefault,
-) {
-  const syms = Object.getOwnPropertySymbols(obj)
-  const values = syms.valueOf()
+export function getSymbol<
+  BaseType,
+  Path extends PropertyKey,
+  TDefault extends unknown = any
+>(obj: BaseType, path: Path, defaultValue?: TDefault) {
+  const syms = Object.getOwnPropertySymbols(obj);
+  const values = syms.valueOf();
 
   if (Array.isArray(values) && values.includes(path)) {
-    return obj[path as PropertyKey]
+    return obj[path as PropertyKey];
   }
 
-  return defaultValue
+  return defaultValue;
 }
 
 export function get<
   BaseType,
   Path extends string | readonly string[],
-  TDefault extends unknown = any,
+  TDefault extends unknown = any
 >(obj: BaseType, path: Path, defaultValue?: TDefault): any {
   let i = 0,
     key: PropertyKey,
     value = undefined,
-    currObj: any = obj
+    currObj: any = obj;
   // currValue: unknown
-  let paths: string[] = []
+  let paths: string[] = [];
   if (Array.isArray(path)) {
-    paths = path
-  } else if (typeof path === 'string') {
-    paths = (path as string).split('.')
+    paths = path;
+  } else if (typeof path === "string") {
+    paths = (path as string).split(".");
   }
 
   paths = paths.reduce((acc, p) => {
     if (/\[(\d+)\]/.test(p)) {
-      let [p1, p2] = p.split('[')
-      p2 = p2.slice(0, -1)
-      acc.push(p1, p2)
+      let [p1, p2] = p.split("[");
+      p2 = p2.slice(0, -1);
+      acc.push(p1, p2);
     } else {
-      acc.push(p)
+      acc.push(p);
     }
-    return acc
-  }, [] as string[])
+    return acc;
+  }, [] as string[]);
 
-  if (!paths.length) return defaultValue
+  if (!paths.length) return defaultValue;
 
-  const len = paths.length
+  const len = paths.length;
 
   for (let p of paths) {
-    ++i
-    key = isNaN(+p) ? p : +p
+    ++i;
+    key = isNaN(+p) ? p : +p;
 
     if (currObj[key]) {
-      currObj = currObj[key]
+      currObj = currObj[key];
 
-      value = currObj
+      value = currObj;
     } else if (i == len) {
-      value = currObj
+      value = currObj;
     }
   }
 
   if (isUndefined(value) && isDefined(defaultValue)) {
-    return defaultValue
+    return defaultValue;
   }
 
-  return value
+  return value;
 }
 
 /**
  * Get the last item in a array.
  */
 export function last<T>(arr: T[]): T | undefined {
-  return arr.length ? arr[arr.length - 1] : undefined
+  return arr.length ? arr[arr.length - 1] : undefined;
 }
 
 /**
@@ -123,139 +126,200 @@ export function range<T>(
   start: number,
   stop?: number,
   step = 1,
-  value: T | undefined = undefined,
+  value: T | undefined = undefined
 ): (T | number)[] {
   if (!stop) {
-    stop = start
-    start = 0
+    stop = start;
+    start = 0;
   }
 
   return Array.from({ length: (stop - start) / step }, (_, i) => {
-    let index = i
+    let index = i;
 
     if (step > 1) {
-      index = ++i
+      index = ++i;
     }
 
-    return value ?? start + index * step
-  })
+    return value ?? start + index * step;
+  });
 }
 
 /**
  * Mix properties into target object.
  */
-export function extend<To extends Record<PropertyKey, any>, From extends Record<PropertyKey, any>>(
+export function extend<
+  To extends Record<PropertyKey, any>,
+  From extends Record<PropertyKey, any>
+>(
   to: To,
-  _from?: From,
+  _from?: From
 ): {
-  [ToKey in keyof To]: ValueOf<To, ToKey>
+  [ToKey in keyof To]: ValueOf<To, ToKey>;
 } & {
-  [FromKey in keyof From]: ValueOf<From, FromKey>
+  [FromKey in keyof From]: ValueOf<From, FromKey>;
 } {
   for (const key in _from) {
-    to[key] = _from[key]
+    to[key] = _from[key];
   }
 
-  return to
+  return to;
 }
 
 /** Used as the maximum memoize cache size. */
-const MAX_MEMOIZE_SIZE = 500
+const MAX_MEMOIZE_SIZE = 500;
+
+type MemoizedFn<T, TArgs extends unknown[] = any[]> = {
+  (...args: TArgs): T;
+  cache: {};
+};
 
 /** Create a memoized version of a pure function. */
-export const memoize = <T>(fn: (str: string) => T, cap: number | boolean = false) => {
-  const memoized = function (str: string) {
-    const key = str
-    // NOTE: Assignment here avoids type-juggling in other areas regarding (possibly) undefined values.
-    let cache = memoized.cache
+export const memoize = <T, TArgs extends unknown[] = any[]>(
+  fn: (...args: TArgs) => T,
+  cap: number | boolean = false
+): MemoizedFn<T, TArgs> => {
+  const cacheSize =
+    isNumber(cap) && Number.isInteger(cap) ? cap : MAX_MEMOIZE_SIZE;
+  // NOTE: Assignment here avoids type-juggling in other areas regarding (possibly) undefined values.
+  let cache: Record<string, any> = {};
 
-    if (cap) {
-      const cacheSize = isNumber(cap) && Number.isInteger(cap) ? cap : MAX_MEMOIZE_SIZE
-      if (Object.keys(cache).length === cacheSize) {
-        // clear the cache when it's maxed out
-        cache = {}
-      }
+  function memoized(...args: TArgs): T {
+    if (memoized.cache) {
+      cache = memoized.cache;
+    }
+
+    let key = args.map(toString).join(",");
+
+    if (Object.keys(cache).length === cacheSize) {
+      // clear the cache when it's maxed out
+      cache = {};
     }
 
     if (cache[key]) {
-      return cache[key]
+      return cache[key];
     }
 
-    const result = fn(str)
-    memoized.cache = { ...cache, [key]: result } || cache
+    const result = fn(...args);
+    memoized.cache = cache;
+    memoized.cache[key] = result;
 
-    return result
+    return result;
   }
 
-  memoized.cache = {}
+  memoized.cache = {};
 
-  return memoized
-}
+  return memoized;
+};
 
 /**
  * Convert an input value to a number for persistence.
  * If the conversion fails, return original string.
  */
 export const toNumber = (val: string): number | string => {
-  const n = parseFloat(val)
-  return isNaN(n) ? val : n
-}
+  const n = parseFloat(val);
+  return isNaN(n) ? val : n;
+};
 
 /** Convert a value to a string that is actually rendered. */
-export const toString = (val: unknown): string => {
+export const renderToString = (val: unknown): string => {
   return val == null
-    ? ''
-    : Array.isArray(val) || (isPlainObject(val) && val.toString === _protoToString)
+    ? ""
+    : Array.isArray(val) ||
+      (isPlainObject(val) && val.toString === _protoToString)
     ? JSON.stringify(val, null, 2)
-    : String(val)
+    : String(val);
+};
+
+function getConstructor(value: unknown) {
+  if (value?.constructor) {
+    return value.constructor;
+  }
+  return undefined;
 }
 
+export const toString = (o: unknown): string => {
+  if (isNil(o)) return "";
+  const ctor = getConstructor(o);
+
+  if (!ctor) return "";
+
+  const proto = ctor.prototype;
+  let result: string;
+
+  switch (ctor) {
+    case Map:
+    case Set:
+      result = JSON.stringify(Array.from((o as typeof proto).entries()));
+      break;
+    case Object:
+    case Array:
+      result = JSON.stringify(o);
+      break;
+    default:
+      result = (o as typeof proto).toString();
+  }
+
+  return result;
+};
+
 /** Used to match backslashes in property paths. */
-const escapeCharRE = /\\(\\)?/g
+const escapeCharRE = /\\(\\)?/g;
 
 /** Used to match property names within property paths. */
-const deepPropRE = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/
-const plainPropRE = /^\w*$/
+const deepPropRE = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/;
+const plainPropRE = /^\w*$/;
 const propNameRE =
-  /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g
+  /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
 /** Converts `value` to a string key if it's not a string or symbol. */
 function toKey(value: string | Symbol): string | Symbol {
   if (isString(value) || isSymbol(value)) {
-    return value
+    return value;
   }
   // eslint-disable-next-line eqeqeq
-  return `${value}` == '0' && 1 / Number(value) == -Infinity ? '-0' : `${value}`
+  return `${value}` == "0" && 1 / Number(value) == -Infinity
+    ? "-0"
+    : `${value}`;
 }
 
 /** Checks if `value` is a property name and not a property path. */
 function isKey<T extends Object>(value: any, object: T): boolean {
-  if (Array.isArray(value)) return false
+  if (Array.isArray(value)) return false;
 
-  if (value == null || is(value, 'boolean') || isNumber(value) || isSymbol(value)) {
-    return true
+  if (
+    value == null ||
+    is(value, "boolean") ||
+    isNumber(value) ||
+    isSymbol(value)
+  ) {
+    return true;
   }
 
   return (
     plainPropRE.test(value) ||
     !deepPropRE.test(value) ||
     (object != null && value in Object(object))
-  )
+  );
 }
 
 /** Converts `string` to a property path array. */
 const stringToPath = memoize((str: string): string[] => {
-  const result: string[] = []
+  const result: string[] = [];
   if (str.charCodeAt(0) === 46 /* '.' */) {
-    result.push('')
+    result.push("");
   }
-  str.replace(propNameRE, (match: string, num: number, quote: string, substr: string): string => {
-    const replacement = quote ? substr.replace(escapeCharRE, '$1') : num || match
-    result.push(replacement as string)
-    return String(replacement)
-  })
-  return result
-}, true)
+  str.replace(
+    propNameRE,
+    (match: string, num: number, quote: string, substr: string): string => {
+      const replacement = quote
+        ? substr.replace(escapeCharRE, "$1")
+        : num || match;
+      result.push(replacement as string);
+      return String(replacement);
+    }
+  );
+  return result;
+}, true);
 
 /**
  * Converts `value` to a property path array.
@@ -265,20 +329,22 @@ const stringToPath = memoize((str: string): string[] => {
  * toPath('a[0].b.c'); // => ['a', '0', 'b', 'c']
  * ```
  */
-export function toPath(value: string | Symbol | (string | Symbol)[]): (string | Symbol)[] {
+export function toPath(
+  value: string | Symbol | (string | Symbol)[]
+): (string | Symbol)[] {
   if (Array.isArray(value)) {
-    return value.map(toKey)
+    return value.map(toKey);
   }
-  return isSymbol(value) ? [value] : stringToPath(String(value))
+  return isSymbol(value) ? [value] : stringToPath(String(value));
 }
 
 /** Casts `value` to a path array if it's not one. */
 function castPath<T extends Object>(value: any, obj: T): string[] {
-  if (Array.isArray(value)) return value
+  if (Array.isArray(value)) return value;
 
-  if (isKey(value, obj)) return [value]
+  if (isKey(value, obj)) return [value];
 
-  return stringToPath(toString(value))
+  return stringToPath(renderToString(value));
 }
 
 /**
@@ -290,115 +356,124 @@ export function set<T>(
   obj: T,
   path: string | Symbol | (string | Symbol)[],
   value: any,
-  customizer?: Function,
+  customizer?: Function
 ): T {
-  if (!isObject(obj) || isNil(obj)) return obj
+  if (!isObject(obj) || isNil(obj)) return obj;
 
-  const paths = castPath(path, obj)
+  const paths = castPath(path, obj);
 
-  let i = -1
-  let nested: Record<string, any> = obj
+  let i = -1;
+  let nested: Record<string, any> = obj;
 
   while (!isNil(nested) && ++i < paths.length) {
-    let key = toKey(String(paths[i])) as keyof typeof nested
-    let newValue = value
+    let key = toKey(String(paths[i])) as keyof typeof nested;
+    let newValue = value;
 
     if (i !== paths.length - 1) {
-      const objValue = nested[key]
-      newValue = customizer ? customizer(objValue, key, nested) : undefined
+      const objValue = nested[key];
+      newValue = customizer ? customizer(objValue, key, nested) : undefined;
       if (isNil(newValue)) {
-        newValue = isObject(objValue) ? objValue : isNumber(paths[i + 1]) ? [] : {}
+        newValue = isObject(objValue)
+          ? objValue
+          : isNumber(paths[i + 1])
+          ? []
+          : {};
       }
     }
 
-    nested[key] = newValue
-    nested = nested[key]
+    nested[key] = newValue;
+    nested = nested[key];
   }
 
-  return obj
+  return obj;
 }
 
 export function chunk<T>(arr: T[], size: number): Array<T[]> {
-  const chunks: Array<T[]> = []
-  let index = 0
+  const chunks: Array<T[]> = [];
+  let index = 0;
 
   do {
-    const items = arr.slice(index, index + size)
+    const items = arr.slice(index, index + size);
 
-    chunks.push(items)
-    index += size
-  } while (index < arr.length)
+    chunks.push(items);
+    index += size;
+  } while (index < arr.length);
 
-  return chunks
+  return chunks;
 }
 
-type Comparators = '==' | '===' | '!=' | '<>' | '!==' | '<' | '<=' | '>' | '>='
+type Comparators = "==" | "===" | "!=" | "<>" | "!==" | "<" | "<=" | ">" | ">=";
 export function where<T extends object>(
   obj: T,
   key: string,
   operator: Comparators | boolean | ((item: any, i: number) => boolean),
-  value?: any,
-): any
-export function where<T extends object>(obj: T, key: string, operator: any, value?: any): any {
-  let comparisonOperator = operator
-  let comparisonValue = value
+  value?: any
+): any;
+export function where<T extends object>(
+  obj: T,
+  key: string,
+  operator: any,
+  value?: any
+): any {
+  let comparisonOperator = operator;
+  let comparisonValue = value;
 
-  const items = Object.values(obj)
+  const items = Object.values(obj);
 
   if (operator === undefined || operator === true) {
-    return items.filter(item => get(item, key))
+    return items.filter((item) => get(item, key));
   }
 
   if (operator === false) {
-    return items.filter(item => !get(item, key))
+    return items.filter((item) => !get(item, key));
   }
 
-  if (typeof operator === 'function') {
-    return items.find(operator)
+  if (typeof operator === "function") {
+    return items.find(operator);
   }
 
   if (value === undefined) {
-    comparisonValue = operator
-    comparisonOperator = '==='
+    comparisonValue = operator;
+    comparisonOperator = "===";
   }
 
-  const collection = items.filter(item => {
+  const collection = items.filter((item) => {
     switch (comparisonOperator) {
-      case '==':
+      case "==":
         return (
           get(item, key) === Number(comparisonValue) ||
           get(item, key) === comparisonValue.toString()
-        )
+        );
 
-      case '!=':
-      case '<>':
+      case "!=":
+      case "<>":
         return (
           get(item, key) !== Number(comparisonValue) &&
           get(item, key) !== comparisonValue.toString()
-        )
+        );
 
-      case '!==':
-        return get(item, key) !== comparisonValue
+      case "!==":
+        return get(item, key) !== comparisonValue;
 
-      case '<':
-        return get(item, key) < comparisonValue
+      case "<":
+        return get(item, key) < comparisonValue;
 
-      case '<=':
-        return get(item, key) <= comparisonValue
+      case "<=":
+        return get(item, key) <= comparisonValue;
 
-      case '>':
-        return get(item, key) > comparisonValue
+      case ">":
+        return get(item, key) > comparisonValue;
 
-      case '>=':
-        return get(item, key) >= comparisonValue
+      case ">=":
+        return get(item, key) >= comparisonValue;
 
-      case '===':
+      case "===":
       default:
-        return get(item, key) === comparisonValue
+        return get(item, key) === comparisonValue;
     }
-  })
+  });
 
-  return collection
+  return collection;
 }
 
 /**
@@ -408,7 +483,9 @@ export function toClosure<T, TArgs extends unknown[] = any>(
   value: T,
   ...args: TArgs
 ): Closure<T, TArgs> {
-  return args.length ? () => ((..._args: TArgs) => value).apply(args) : () => value
+  return args.length
+    ? () => ((..._args: TArgs) => value).apply(args)
+    : () => value;
 }
 
 /**
@@ -422,95 +499,95 @@ export function toClosure<T, TArgs extends unknown[] = any>(
 export function exists<O extends object>(
   obj: O,
   key?: string,
-  options?: { omitEmpty?: boolean },
+  options?: { omitEmpty?: boolean }
 ): boolean {
-  const omitEmpty = options?.omitEmpty ?? true
+  const omitEmpty = options?.omitEmpty ?? true;
 
   if (isNil(obj)) {
-    return false
+    return false;
   }
 
-  const type = typeOf(obj)
-  let hasKey = false
-  let empty = true
-  let value: any
+  const type = typeOf(obj);
+  let hasKey = false;
+  let empty = true;
+  let value: any;
 
   switch (type) {
-    case 'object':
+    case "object":
       if (key) {
-        value = get(obj, key)
+        value = get(obj, key);
       }
-      hasKey = !!value
-      empty = isEmpty(value)
-      break
-    case 'array':
-      let isstring = isNaN(+key!)
-      hasKey = isstring ? (obj as unknown[]).includes(key) : !!obj[+key!]
-      empty = !(obj as unknown[]).length
-      break
-    case 'map':
-      const map = obj as Map<any, any>
-      hasKey = exists(Object.fromEntries(map.entries()), key)
-      empty = map.size === 0
-      break
-    case 'set':
-      const set = obj as Set<any>
-      hasKey = set.has(key)
-      empty = set.size === 0
-      break
+      hasKey = !!value;
+      empty = isEmpty(value);
+      break;
+    case "array":
+      let isstring = isNaN(+key!);
+      hasKey = isstring ? (obj as unknown[]).includes(key) : !!obj[+key!];
+      empty = !(obj as unknown[]).length;
+      break;
+    case "map":
+      const map = obj as Map<any, any>;
+      hasKey = exists(Object.fromEntries(map.entries()), key);
+      empty = map.size === 0;
+      break;
+    case "set":
+      const set = obj as Set<any>;
+      hasKey = set.has(key);
+      empty = set.size === 0;
+      break;
     default:
     // do nothing
   }
 
-  return omitEmpty ? !empty && hasKey : hasKey
+  return omitEmpty ? !empty && hasKey : hasKey;
 }
 
 function merge<O extends object, T extends Partial<O>>(target: T, obj: O) {
   for (const key in obj) {
-    if (key === '__proto__' || !hasOwn(obj, key)) {
-      continue
+    if (key === "__proto__" || !hasOwn(obj, key)) {
+      continue;
     }
 
-    const oldVal = obj[key]
-    const newVal = target[key]
+    const oldVal = obj[key];
+    const newVal = target[key];
 
     if (isObject(newVal) && isObject(oldVal)) {
-      target[key] = merge(newVal, oldVal)
+      target[key] = merge(newVal, oldVal);
     } else if (Array.isArray(newVal)) {
-      const oldValArray = Array.isArray(oldVal) ? oldVal : [oldVal]
-      target[key] = [newVal, oldValArray].flat() as any
+      const oldValArray = Array.isArray(oldVal) ? oldVal : [oldVal];
+      target[key] = [newVal, oldValArray].flat() as any;
     } else {
-      const init = Array.isArray(oldVal) ? [] : {}
-      target[key] = cloneDeep(oldVal, init)
+      const init = Array.isArray(oldVal) ? [] : {};
+      target[key] = cloneDeep(oldVal, init);
     }
   }
 
-  return target
+  return target;
 }
 
 export function mergeDeep<T extends unknown = {}>(orig: T, ...objs: any[]) {
   if (!isObject(orig) && !Array.isArray(orig)) {
-    orig = {} as T
+    orig = {} as T;
   }
 
-  const target = cloneDeep(orig)
-  const len = objs.length
-  let idx = -1
+  const target = cloneDeep(orig);
+  const len = objs.length;
+  let idx = -1;
 
   while (++idx < len) {
-    const val = objs[idx]
+    const val = objs[idx];
 
     if (isObject(val) || Array.isArray(val)) {
-      merge(target, val)
+      merge(target, val);
     }
   }
-  return target
+  return target;
 }
 
 export function pick<O extends {}, K extends string = string>(
   o: O,
   ...keys: K[]
-): Record<K, Get<O, K>>
+): Record<K, Get<O, K>>;
 export function pick<O extends {}, K extends keyof O = keyof O>(
   o: O,
   ...keys: K[]
@@ -518,10 +595,10 @@ export function pick<O extends {}, K extends keyof O = keyof O>(
   return keys.reduce((acc, key) => {
     if (o[key] !== undefined) {
       // console.log('pick', key, o[key])
-      acc[key] = o[key] as ValueOf<O, K>
+      acc[key] = o[key] as ValueOf<O, K>;
     }
-    return acc
-  }, {} as Record<K, ValueOf<O, K>>)
+    return acc;
+  }, {} as Record<K, ValueOf<O, K>>);
 }
 
 // export function pick<O extends {}, K extends string = string>(

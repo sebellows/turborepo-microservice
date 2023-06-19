@@ -1,4 +1,4 @@
-import { ValueOf } from "@trms/utils";
+import { StringKeyOf, ValueOf, getKeys, getValues, pick } from "@trms/utils";
 
 import { WithBreakpoint } from "./breakpoints";
 import { flexgrid } from "./flexgrid";
@@ -10,7 +10,7 @@ import { borders } from "./borders";
 import { shadow } from "./shadow";
 
 /** @internal */
-export const UIPropsToClassMap = {
+export const UIStyleCategoryMap = {
   borders,
   layout,
   flexgrid,
@@ -19,6 +19,8 @@ export const UIPropsToClassMap = {
   spacing,
   typography,
 };
+export type UIStyleCategoryMap = typeof UIStyleCategoryMap;
+export type UIStyleCategory = keyof UIStyleCategoryMap;
 
 /**
  * UIComponentProps Breakdown:
@@ -46,7 +48,7 @@ export const UIComponentProps = {
   ...borders,
   ...layout,
   ...flexgrid,
-  shadow,
+  ...shadow,
   ...sizing,
   ...spacing,
   ...typography,
@@ -54,14 +56,11 @@ export const UIComponentProps = {
 
 type UIComponentPropsType = typeof UIComponentProps;
 // Key of UIComponentProps: `flex`, `leading`, `alignItems`, etc.
-type UIPropertyKey = keyof UIComponentPropsType;
+type UIPropertyKey = StringKeyOf<UIComponentPropsType>;
 // i.e., key of UIComponentProps.flex: `none`, `1`, `auto`, etc.
-type UIPropertyValue<K extends UIPropertyKey> = keyof UIComponentPropsType[K];
-// i.e., `flex-none`, `flex-1`, etc.
-export type UIPropertyClass<
-  K extends UIPropertyKey,
-  K2 extends keyof UIComponentPropsType[K] = keyof UIComponentPropsType[K]
-> = ValueOf<UIComponentPropsType[K], K2>;
+type UIPropertyValue<K extends UIPropertyKey> = StringKeyOf<
+  UIComponentPropsType[K]
+>;
 
 /**
  * @example
@@ -72,5 +71,5 @@ export type UIPropertyClass<
 export type UIComponentProps = {
   [K in UIPropertyKey]:  // keyof typeof UIComponentProps (e.g., 'fontWeight')
     | UIPropertyValue<K> // keyof UIComponentPropsType[K] (e.g., 'thin')
-    | WithBreakpoint<Exclude<UIPropertyValue<K>, symbol>>; // <keyof UIComponentPropsType[K]> (e.g., `{ lg: 'thin' }`)
+    | WithBreakpoint<UIPropertyValue<K>>; // <keyof UIComponentPropsType[K]> (e.g., `{ lg: 'thin' }`)
 };

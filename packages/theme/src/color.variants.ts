@@ -1,4 +1,4 @@
-import { ColorVariantKey, ColorPaletteKey } from './color.types'
+import { ColorVariantKey, ColorPaletteKey } from './types/color.types'
 
 type VariantsConfig = Record<ColorVariantKey, ColorPaletteKey>
 const variantsConfig: VariantsConfig = {

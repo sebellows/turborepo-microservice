@@ -23,11 +23,11 @@ export const Positions = [
 ] as const;
 
 export const Placement = [
-  // "inset",
-  // "inset-x",
-  // "inset-y",
-  // "space-x",
-  // "space-y",
+  "inset",
+  "inset-x",
+  "inset-y",
+  "space-x",
+  "space-y",
   "start",
   "end",
   "top",
@@ -38,6 +38,7 @@ export const Placement = [
 
 export const PlacementValues = [
   ...SpacingValues,
+  "auto",
   "1/2",
   "1/3",
   "2/3",
@@ -65,9 +66,9 @@ const OverflowValues = [
   "x-scroll",
   "y-scroll",
 ] as const;
-const display = setPropertyMap(DisplayValues);
+const display = setPropertyMap(DisplayValues, "");
 const overflow = setPropertyMap(OverflowValues, "overflow");
-const position = setPropertyMap(Positions);
+const position = setPropertyMap(Positions, "");
 const placement = setUnitValuePropertyMap(Placement, PlacementValues);
 
 export const layout = {

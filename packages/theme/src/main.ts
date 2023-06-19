@@ -1,9 +1,10 @@
-import { boxShadow, breakpoints, fontFamily, fontSize, zIndex } from './config'
-import { palette } from './palette'
+import { boxShadow, fontFamily, fontSize, screens, zIndex } from "./config";
+import { palette } from "./palette";
+import { TailwindTheme } from "./types";
 
-export const theme = {
+export const theme: Partial<TailwindTheme> = {
   boxShadow,
-  breakpoints,
+  screens,
   colors: {
     ...palette,
     neutral: palette.gray,
@@ -12,8 +13,17 @@ export const theme = {
     fontFamily,
     fontSize,
     opacity: {
-      '12': '0.125',
+      "12": "0.125",
     },
     zIndex,
   },
-}
+};
+
+export type UiBaseTheme = typeof theme;
+
+type ReplaceThemeProps<
+  Inner extends TailwindTheme,
+  P extends keyof Inner = keyof Inner
+> = Omit<TailwindTheme, P> & Pick<Inner, P>;
+
+export type UiTheme = ReplaceThemeProps<UiBaseTheme>;

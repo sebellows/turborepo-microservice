@@ -1,11 +1,12 @@
-export { UIComponentProps } from "./style.props";
+export { UIComponentProps, UIStyleCategoryMap } from "./style.props";
 export {
   extractUnit,
   includes,
   isUnit,
-  mapProps,
   negateUiValue,
+  propsToTwClasses,
   setPropertyMap,
   setUnitValuePropertyMap,
 } from "./style.utils";
-export type { UIPropertyClass } from "./style.props";
+export type { WithBreakpoint } from "./breakpoints";
+export type { UIStyleCategory } from "./style.props";

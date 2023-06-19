@@ -20,22 +20,28 @@ export type BoxProps = {
   UIThemeProps
 
 export const Box = forwardRefAs<'div', BoxProps>((props, ref) => {
-  const { as: Tag = 'div', children, className, excludeProps = ['muted'], muted, interactive, inverted, variant, ...rest } = props
+  const {
+    as: Tag = "div",
+    children,
+    className,
+    excludeProps = ["muted", 'interactive', 'inverted', 'variant'],
+    ...rest
+  } = props;
   const [uiProps, nonUIProps] = useTW(rest, excludeProps)
-  const variantScheme = useVariant(variant)
-  let variantClasses: string[] = []
-  if (muted) {
-    if (interactive) {
-      variantClasses = variantScheme?.mutedInteractive ?? []
-    } else {
-      variantClasses = variantScheme?.muted ?? []
-    }
-  } 
+  // const variantScheme = useVariant(variant)
+  // let variantClasses: string[] = []
+  // if (muted) {
+  //   if (interactive) {
+  //     variantClasses = variantScheme?.mutedInteractive ?? []
+  //   } else {
+  //     variantClasses = variantScheme?.muted ?? []
+  //   }
+  // } 
 
   return (
     <Tag
       data-ui="box"
-      className={classNames(uiProps, variantClasses, className)}
+      className={classNames(uiProps, className)}
       ref={ref}
       {...nonUIProps}
     >

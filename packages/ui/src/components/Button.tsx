@@ -1,19 +1,19 @@
 import { Children, PropsWithChildren, useMemo } from "react";
 import { ColorVariantKey } from '@trms/theme'
+import { classNames, isNil } from "@trms/utils";
 
 import { forwardRefAs } from "../shared";
+import { useVariant } from "../hooks";
 
 import { Box, BoxProps } from "./Box";
 import { Text } from './Text'
 import { Spinner } from "./spinner/Spinner";
-import { classNames, isNil } from "@trms/utils";
-import { useTW, useVariant } from "../hooks";
 
-type LoadingBoxProps = {
+type LoadingBoxProps = Pick<BoxProps, 'radius'> & {
   backgroundColor?: string
-  borderRadius?: string
   zIndex?: number
 }
+
 const LoadingBox = forwardRefAs<"span", PropsWithChildren<LoadingBoxProps>>(
   ({ as: Tag = "span", children }, ref) => {
     return (
@@ -80,17 +80,23 @@ type ButtonProps = {
   variant?: ColorVariantKey;
 } & Partial<BoxProps>
 
-export const useVariantButton = ({ variant = 'default', ...props }: ButtonProps) => {
-  const variantScheme = useVariant(variant, props?.outline)
+export const useVariantButton = ({ variant = 'default', muted, ...props }: ButtonProps) => {
+  const [_variantScheme, variantClasses] = useVariant(variant, { muted, interactive: true, schemeKeys: ['bg', 'border', 'text'] })
   const btnClasses = resolveBaseStyles(props)
 
-  return { bg: variantScheme?.bgInteractive, text: variantScheme?.text, border: variantScheme?.border, variantClasses: btnClasses }
+  return {
+    bg: variantClasses?.bg,
+    text: variantClasses?.text,
+    border: variantClasses?.border,
+    uiClasses: btnClasses,
+  };
 }
 
-const buttonDefaults: Pick<BoxProps, 'border' | 'borderStyle' | 'radius'> = {
+const buttonDefaults: Pick<BoxProps, 'border' | 'borderStyle' | 'display' | 'radius'> = {
   radius: 'DEFAULT',
   border: 'DEFAULT',
   borderStyle: 'solid',
+  display: 'flex',
 }
 
 export const Button = forwardRefAs<"button", ButtonProps>(
@@ -109,7 +115,7 @@ export const Button = forwardRefAs<"button", ButtonProps>(
     },
     ref
   ) => {
-    const { bg, text, border, variantClasses } = useVariantButton({
+    const { bg, text, border, uiClasses } = useVariantButton({
       size,
       wide,
       block,
@@ -117,8 +123,8 @@ export const Button = forwardRefAs<"button", ButtonProps>(
       circle,
       variant,
     })
-    const [twClasses, attrProps] = useTW({ ...buttonDefaults, ...props })
-    const classes = classNames(twClasses, bg, border, variantClasses, className)
+    // const [twClasses, attrProps] = useTW({ ...buttonDefaults, ...props })
+    const classes = classNames(bg, border, uiClasses, className);
 
     const isDisabled = useMemo(
       () => Boolean(loading || disabled),
@@ -140,13 +146,14 @@ export const Button = forwardRefAs<"button", ButtonProps>(
     return (
       <Box
         as="button"
-        className={classNames(classes, variantClasses, className)}
+        className={classNames(classes, uiClasses, className)}
         data-disabled={isDisabled}
-        data-selected={selected ? '' : undefined}
+        data-selected={selected ? "" : undefined}
         disabled={isDisabled}
         ref={ref}
         type={type}
-        {...attrProps}
+        {...buttonDefaults}
+        {...props}
       >
         {!!loading && (
           <LoadingBox>
@@ -154,81 +161,10 @@ export const Button = forwardRefAs<"button", ButtonProps>(
           </LoadingBox>
         )}
 
-        {Children.map(children, child =>
-          !isNil(child) ? <ChildWrapper children={child} /> : null,
+        {Children.map(children, (child) =>
+          !isNil(child) ? <ChildWrapper children={child} /> : null
         )}
       </Box>
-    )
+    );
   }
 );
-
-
-// const resolveVariant = (variant: ColorVariantKey, outline?: boolean) => {
-//   if (variant === 'default' || variant === 'neutral') {
-//     if (outline) {
-//       return [
-//         `text-neutral-900`,
-//         `bg-neutral-100`,
-//         `hover:bg-neutral-200`,
-//         `focus:bg-neutral-300`,
-//         `disabled:opacity-75`,
-//         `border-neutral-900`,
-//         `hover:border-neutral-950`,
-//         `focus:border-neutral-950`,
-//         // dark
-//         `dark:text-neutral-100`,
-//         `dark:bg-neutral-900`,
-//         `dark:hover:bg-neutral-950`,
-//         `dark:focus:bg-neutral-950`,
-//         `dark:border-neutral-100`,
-//         `dark:hover:border-neutral-200`,
-//         `dark:focus:border-neutral-300`,
-//         `dark:disabled:opacity-75`,
-//       ]
-//     }
-
-//     return [
-//       `text-neutral-900`,
-//       `bg-neutral-300`,
-//       `hover:bg-neutral-400`,
-//       `focus:bg-neutral-500`,
-//       `border-neutral-400`,
-//       `hover:border-neutral-500`,
-//       `focus:border-neutral-600`,
-//       `disabled:opacity-75`,
-//     ]
-//   }
-
-//   if (outline) {
-//     return [
-//       `text-${variant}-600`,
-//       `bg-neutral-100`,
-//       `hover:bg-neutral-200`,
-//       `focus:bg-neutral-300`,
-//       `border-${variant}-600`,
-//       `hover:border-${variant}-700`,
-//       `focus:border-${variant}-800`,
-//       `disabled:opacity-75`,
-//       // dark
-//       `text-${variant}-400`,
-//       `dark:bg-neutral-900`,
-//       `dark:hover:bg-neutral-950`,
-//       `dark:focus:bg-neutral-950`,
-//       `dark:border-${variant}-400`,
-//       `dark:hover:border-${variant}-500`,
-//       `dark:focus:border-${variant}-600`,
-//       `dark:disabled:opacity-75`,
-//     ]
-//   }
-
-//   return [
-//     `text-white`,
-//     `bg-${variant}-600`,
-//     `hover:bg-${variant}-700`,
-//     `focus:bg-${variant}-800`,
-//     `border-${variant}-300`,
-//     `hover:border-${variant}-400`,
-//     `focus:border-${variant}-500`,
-//     `disabled:opacity-75`,
-//   ]
-// }

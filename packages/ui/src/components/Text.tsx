@@ -1,7 +1,6 @@
 import { ColorVariantKey } from '@trms/theme'
 import { pick } from '@trms/utils'
 
-import { useVariant } from '../hooks'
 import { forwardRefAs } from '../shared'
 
 import { Box, BoxProps } from './Box'

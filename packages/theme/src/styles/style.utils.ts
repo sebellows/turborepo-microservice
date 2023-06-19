@@ -5,6 +5,7 @@ import {
   isRegExp,
   kebabCase,
   memoize,
+  NonEmptyString,
 } from "@trms/utils";
 
 import { isWithBreakpoint, WithBreakpoint } from "./breakpoints";
@@ -24,11 +25,51 @@ const containsTailwindPrefixObject = <T extends Record<string, any>>(
   }
 };
 
+type FilteredPool = { regexes: RegExp[]; indices: (number | string)[] };
+const _filter = <TItems extends (number | string | RegExp)[]>(
+  items: TItems
+) => {
+  // const parsedItems = JSON.parse(items);
+  // console.log('filterProps', parsedItems)
+  const pool: FilteredPool = {
+    regexes: [],
+    indices: [],
+  };
+  for (const item of items) {
+    if (isRegExp(item)) pool.regexes.push(item);
+    else pool.indices.push(item);
+  }
+  return pool;
+};
+const filterProps = memoize(_filter);
+
 /**
- * Used in `@trms/ui` hook `useTW` for parsing component props to corresponding
- * Tailwind utility classes.
+ * VSCode/TS complains about typeof 'string' not being assignable to '"string" | "string"'
+ * when verifying as `ReadonlyArray.includes(string)`. Workaround is to create a custom
+ * `includes` function that accepts a readonly array and then we can imply that the
+ * string we're checking is readonly (wink, wink). Sadly, we need to pass it as rest
+ * parameters because `readonly (number | string)` won't work.
  */
-export const mapProps = (props: Partial<UIComponentProps>) => {
+export const includes = (
+  constProps: readonly (number | string | RegExp)[],
+  ...props: readonly (number | string)[]
+) => {
+  const pool = filterProps(constProps);
+  const { regexes, indices } = pool;
+
+  const propIncluded = (prop: number | string) => {
+    return (
+      regexes.some((regex) => regex.test(String(prop))) ||
+      indices.includes(prop)
+    );
+  };
+
+  const included = props.some(propIncluded);
+
+  return included;
+};
+
+export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
   try {
     const result = Object.entries(props).reduce((classes, [prop, value]) => {
       if (prop in UIComponentProps) {
@@ -36,13 +77,12 @@ export const mapProps = (props: Partial<UIComponentProps>) => {
           const twClass = get(UIComponentProps, [prop, value], undefined);
           classes.push(twClass);
         }
-        if (
-          isPlainObject(value) &&
-          containsTailwindPrefixObject(value as any)
-        ) {
+        if (isPlainObject(value) && containsTailwindPrefixObject(value)) {
           Object.entries(value).forEach(([bp, bpValue]) => {
-            const bpClass = get(UIComponentProps, [prop, bpValue]);
-            classes.push(`${bp}:${bpClass}`);
+            if (includes(TailwindPrefixes, bp)) {
+              const bpClass = get(UIComponentProps, [prop, bpValue]);
+              classes.push(`${bp}:${bpClass}`);
+            }
           });
         }
       }
@@ -51,18 +91,23 @@ export const mapProps = (props: Partial<UIComponentProps>) => {
     }, [] as string[]);
     return result;
   } catch (err) {
-    console.error("mapProps=>Error", err);
+    console.error("propsToTwClasses=>Error", err);
     throw new Error(`Failed to map properties`);
   }
 };
 
 type SetPropertyMapReturnType<
   TArray extends readonly string[],
-  TPrefix extends string | undefined = undefined
-> = Record<
-  TArray[number],
-  TPrefix extends string ? `${TPrefix}-${TArray[number]}` : TArray[number]
->;
+  TPrefix extends string = ""
+> = {
+  [K in TArray[number]]: TPrefix extends NonEmptyString<TPrefix>
+    ? `${TPrefix}-${K}`
+    : K;
+};
+// Record<
+//   TArray[number],
+//   TPrefix extends string ? `${TPrefix}-${TArray[number]}` : TArray[number]
+// >;
 
 /**
  * @internal
@@ -78,24 +123,24 @@ type SetPropertyMapReturnType<
  */
 export function setPropertyMap<
   TArray extends readonly string[],
-  TPrefix extends string | undefined = undefined
+  TPrefix extends string
 >(
   arr: TArray,
-  classPrefix?: TPrefix,
+  classPrefix: TPrefix,
   replacerMap?: Partial<Record<TArray[number], string>>
-): SetPropertyMapReturnType<TArray, TPrefix> | undefined {
+): SetPropertyMapReturnType<TArray, TPrefix> {
   const alt = replacerMap ?? {};
   try {
     const result = arr.reduce((klass, value) => {
       const key = value?.includes("-") ? camelCase(value) : value;
       let klassValue = value;
-      if (classPrefix) {
+      if (classPrefix.length > 0) {
         if (value.length && alt[value]) {
           klassValue = alt[value];
         } else {
           klassValue =
             !value.length || value === "DEFAULT"
-              ? classPrefix
+              ? String(classPrefix)
               : `${classPrefix}-${value}`;
         }
       }
@@ -105,6 +150,7 @@ export function setPropertyMap<
     return result;
   } catch (err) {
     console.error("setPropertyMap->Error", err);
+    throw new Error(`Could not set property map`);
   }
 }
 
@@ -127,56 +173,16 @@ export function setUnitValuePropertyMap<
   TPrefixes extends readonly string[],
   TValues extends readonly string[]
 >(prefixes: TPrefixes, values: TValues): UnitValueClassMap<TPrefixes, TValues> {
-  const result = prefixes?.reduce((klasses, prefix) => {
-    klasses[prefix] = values?.reduce((acc, value) => {
-      const key = value;
+  const result = prefixes.reduce((klasses, prefix) => {
+    klasses[prefix] = values.reduce((acc, value) => {
       const pathPrefix = kebabCase?.(prefix) ?? prefix;
-      acc[key] = `${pathPrefix}-${key}`;
+      acc[value] = `${pathPrefix}-${value}`;
       return acc;
     }, {});
     return klasses;
   }, {} as UnitValueClassMap<TPrefixes, TValues>);
   return result;
 }
-
-// const unitTypes = ['px', 'em', 'rem', '%', 'vh', 'vw']
-
-const filterProps = memoize((items: string) => {
-  const parsedItems = JSON.parse(items);
-  const pool: { regexes: RegExp[]; indices: (number | string)[] } = {
-    regexes: [],
-    indices: [],
-  };
-  for (const item of parsedItems) {
-    if (isRegExp(item)) pool.regexes.push(item);
-    else pool.indices.push(item);
-  }
-  return pool;
-});
-
-/**
- * VSCode/TS complains about typeof 'string' not being assignable to '"string" | "string"'
- * when verifying as `ReadonlyArray.includes(string)`. Workaround is to create a custom
- * `includes` function that accepts a readonly array and then we can imply that the
- * string we're checking is readonly (wink, wink). Sadly, we need to pass it as rest
- * parameters because `readonly (number | string)` won't work.
- */
-export const includes = (
-  constProps: readonly (number | string | RegExp)[],
-  ...props: readonly (number | string)[]
-) => {
-  const { regexes, indices } = filterProps(JSON.stringify(constProps));
-
-  const propIncluded = (prop: number | string) => {
-    if (
-      (regexes.length && regexes.some((regex) => regex.test(String(prop)))) ||
-      (indices.length && indices.includes(prop))
-    ) {
-    }
-  };
-
-  return props.every(propIncluded);
-};
 
 export const isUnit = (value: string) =>
   ["px", "em", "rem"].some((unit) => value.endsWith(unit));

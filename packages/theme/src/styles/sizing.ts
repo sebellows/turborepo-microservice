@@ -1,7 +1,7 @@
 import { SpacingValues } from "./spacing";
 import { setUnitValuePropertyMap } from "./style.utils";
 
-export const SizingValues = [
+const SizingValues = [
   ...SpacingValues,
   "1/2",
   "1/3",
@@ -38,8 +38,8 @@ export const SizingValues = [
 ] as const;
 // type SizingValueOption = (typeof SizingValues)[number];
 
-const MinWidthSizingValues = ["0", "full", "min", "max", "fit"] as const;
-const MaxWidthSizingValues = [
+const MinWidthValues = ["0", "full", "min", "max", "fit"] as const;
+const MaxWidthValues = [
   "0",
   "none",
   "xs",
@@ -64,8 +64,8 @@ const MaxWidthSizingValues = [
   "screen-xl",
   "screen-2xl",
 ] as const;
-const MinHeightSizingValues = [...MinWidthSizingValues, "screen"] as const;
-const MaxHeightSizingValues = [
+const MinHeightValues = [...MinWidthValues, "screen"] as const;
+const MaxHeightValues = [
   ...SpacingValues,
   "none",
   "fit",
@@ -75,11 +75,11 @@ const MaxHeightSizingValues = [
   "screen",
 ] as const;
 
-const SizingClasses = ["w", "h"] as const;
-const MinWidthSizingClasses = ["min-w"] as const;
-const MaxWidthSizingClasses = ["max-w"] as const;
-const MinHeightSizingClasses = ["min-h"] as const;
-const MaxHeightSizingClasses = ["max-h"] as const;
+const WidthHeightClasses = ["w", "h"] as const;
+const MinWidthClasses = ["minW"] as const;
+const MaxWidthClasses = ["maxW"] as const;
+const MinHeightClasses = ["minH"] as const;
+const MaxHeightClasses = ["maxH"] as const;
 
 /**
  * Can be a mix of property keys with numeric or breakpoint object values:
@@ -87,9 +87,9 @@ const MaxHeightSizingClasses = ["max-h"] as const;
  * { w: '5/12', h: { sm: 'max', lg: 'min' }, minW: 96 }
  */
 export const sizing = {
-  ...setUnitValuePropertyMap(SizingClasses, SizingValues),
-  ...setUnitValuePropertyMap(MinWidthSizingClasses, MinWidthSizingValues),
-  ...setUnitValuePropertyMap(MaxWidthSizingClasses, MaxWidthSizingValues),
-  ...setUnitValuePropertyMap(MinHeightSizingClasses, MinHeightSizingValues),
-  ...setUnitValuePropertyMap(MaxHeightSizingClasses, MaxHeightSizingValues),
+  ...setUnitValuePropertyMap(WidthHeightClasses, SizingValues),
+  ...setUnitValuePropertyMap(MinWidthClasses, MinWidthValues),
+  ...setUnitValuePropertyMap(MaxWidthClasses, MaxWidthValues),
+  ...setUnitValuePropertyMap(MinHeightClasses, MinHeightValues),
+  ...setUnitValuePropertyMap(MaxHeightClasses, MaxHeightValues),
 };

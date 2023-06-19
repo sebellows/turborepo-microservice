@@ -47,12 +47,12 @@ const shrink = {
   "0": "shrink-0",
 };
 const order = setPropertyMap(OrderValues, "order");
-const gridCol = setPropertyMap(FlexGridCols, "grid-cols");
-const gridRow = setPropertyMap(FlexGridRows, "grid-rows");
-// const colSpan = setPropertyMap(FlexGridColSpans, "col-span", { auto: "col" });
+const cols = setPropertyMap(FlexGridCols, "grid-cols");
+const rows = setPropertyMap(FlexGridRows, "grid-rows");
+const colSpan = setPropertyMap(FlexGridColSpans, "col-span", { auto: "col" });
 const colStart = setPropertyMap(FlexGridColPositions, "col-start");
 const colEnd = setPropertyMap(FlexGridColPositions, "col-end");
-// const rowSpan = setPropertyMap(GridRowSpans, "row-span", { auto: "row" });
+const rowSpan = setPropertyMap(GridRowSpans, "row-span", { auto: "row" });
 const rowStart = setPropertyMap(FlexGridRowPositions, "row-start");
 const rowEnd = setPropertyMap(FlexGridRowPositions, "row-end");
 
@@ -74,12 +74,12 @@ export const flexgrid = {
   grow,
   shrink,
   order,
-  gridCol,
-  gridRow,
-  // colSpan,
+  cols,
+  rows,
+  colSpan,
   colStart,
   colEnd,
-  // rowSpan,
+  rowSpan,
   rowStart,
   rowEnd,
 };

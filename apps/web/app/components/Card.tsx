@@ -1,12 +1,19 @@
-import { forwardRef } from 'react'
-import { Box, BoxProps, HeadingLevel, useTW, useVariant } from "@trms/ui";
+import { PropsWithChildren } from 'react'
+import {
+  Box,
+  BoxProps,
+  HeadingLevel,
+  forwardRefAs,
+  useTW,
+  useVariant,
+} from "@trms/ui";
 import { classNames } from "@trms/utils";
 
 export type CardProps = {
   inverted?: boolean
   level?: HeadingLevel
   muted?: boolean
-} & BoxProps
+} & PropsWithChildren<BoxProps>
 
 const cardDefaults: Partial<BoxProps> = {
   border: 'DEFAULT',
@@ -16,38 +23,53 @@ const cardDefaults: Partial<BoxProps> = {
   shadow: 'DEFAULT',
 }
 
-export const Card = forwardRef<Box, CardProps>(({
-  children,
-  className,
-  muted = false,
-  variant = 'default',
-  ...props
-}, ref) => {
-  const [uiClasses, attrProps] = useTW({ ...cardDefaults, ...props})
-  const variantScheme = useVariant(variant, props?.inverted)
-  const variantClasses = [variantScheme.bgInteractive, variantScheme.border, variantScheme.foreground]
+const Card = forwardRefAs<'div', CardProps>(
+  (
+    { as: Tag = 'div', children, className, muted = false, variant = "default", ...props },
+    ref
+  ) => {
+    const [_, attrProps] = useTW(props);
+    const variantScheme = useVariant(variant, props?.inverted);
+    const variantClasses = [
+      variantScheme.bgInteractive,
+      variantScheme.border,
+      variantScheme.foreground,
+    ];
 
-  return (
-    <Box className={classNames(variantClasses, uiClasses, className)} ref={ref} {...attrProps}>{children}</Box>
-  )
-})
+    return (
+      <Box
+        as={Tag}
+        className={classNames(variantClasses, className)}
+        ref={ref}
+        {...cardDefaults}
+        {...attrProps}
+      >
+        {children}
+      </Box>
+    );
+  }
+);
+Card.displayName = 'Card'
 
-export const CardBody = forwardRef<Box, CardProps>(
+const CardBody = forwardRefAs<'div', CardProps>(
   ({ as: Tag = 'div', flex = 'auto', py = '3', px = '4', ...props }, ref) => {
     return <Box as={Tag} flex={flex} py={py} px={px} {...props} ref={ref} />
   },
 )
+CardBody.displayName = 'CardBody'
 
 export type CardMediaProps = {
   aspectRatio?: string
+  fill?: string
   focusable?: boolean
+  labelFill?: string
   placeholder?: boolean
   placement?: 'top' | 'bottom' | 'fill'
   label?: string
   title?: string
   width?: number | string
   height?: number | string
-} & BoxProps
+} & Partial<BoxProps>
 
 const getMediaPlacementProps = (placement: CardMediaProps['placement']): Partial<BoxProps> => {
   if (placement === 'bottom') {
@@ -69,7 +91,7 @@ const getMediaPlacementProps = (placement: CardMediaProps['placement']): Partial
   }
 }
 
-export const CardMedia = forwardRef<SVGSVGElement, CardMediaProps>(
+const CardMedia = forwardRefAs<'svg', CardMediaProps>(
   (
     {
       aspectRatio = 'xMidYMid slice',
@@ -112,3 +134,6 @@ export const CardMedia = forwardRef<SVGSVGElement, CardMediaProps>(
     )
   },
 )
+CardMedia.displayName = 'CardMedia'
+
+export { Card, CardBody, CardMedia }

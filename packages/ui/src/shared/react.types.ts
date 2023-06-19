@@ -1,3 +1,4 @@
+import { CSSRuleObject } from "@trms/theme";
 import React from "react";
 
 type ElementTagNameMap = HTMLElementTagNameMap &
@@ -45,10 +46,21 @@ export type RefForwardingComponentAs<
   displayName?: string;
 };
 
-// export class AsComponent<
-//   As extends React.ElementType,
-//   P = unknown
-// > extends React.Component<ReplaceProps<As, AsProp<As> & P>> {}
+export class AsComponent<
+  As extends React.ElementType,
+  P = unknown
+> extends React.Component<ReplaceProps<As, AsProp<As> & P>> {}
+
+export type PropValue = null | string | string[] | undefined;
+
+export type UiStyle = CSSRuleObject;
+
+export type UiStyleProperty = keyof CSSRuleObject;
+
+export type AsComponentProps<
+  As extends React.ElementType = React.ElementType,
+  P = unknown
+> = React.PropsWithChildren<ReplaceProps<As, AsProp<As> & P>>;
 
 export interface HTMLElements {
   // HTML

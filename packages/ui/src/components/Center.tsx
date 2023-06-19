@@ -1,10 +1,11 @@
 import { forwardRefAs } from "../shared";
 
-import { Box, BoxProps } from "./Box";
+import { Box } from "./Box";
+import { UIProps } from "./compose";
 
-type CenterProps = {
+type CenterProps = UIProps<{
   fillView?: boolean;
-} & BoxProps;
+}>;
 
 export const Center = forwardRefAs<"div", CenterProps>(
   ({ fillView = false, ...props }, ref) => {
@@ -13,11 +14,24 @@ export const Center = forwardRefAs<"div", CenterProps>(
         ref={ref}
         alignItems="center"
         display="flex"
-        justifyContent="center"
-        height={fillView ? "100vh" : undefined}
-        width={fillView ? "100vw" : 'undefined'}
+        justify="center"
+        minH={fillView && "screen"}
+        w={fillView && "full"}
         {...props}
       />
     );
   }
 );
+
+// const CenterBox = createBox<"div", CenterProps>({
+//   defaultProps: {
+//     alignItems: "center",
+//     display: "flex",
+//     justify: "center",
+//   },
+//   displayName: "Center",
+// });
+
+// export const Center = forwardRefAs<"div", CenterProps>(({ fillView = false, ...props}, ref) => {
+//   return <CenterBox data-ui='center' minH={fillView && "screen"} w={fillView && 'full'} {...props} ref={ref} />;
+// })
