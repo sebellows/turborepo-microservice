@@ -1,14 +1,11 @@
 import { ElementType, forwardRef } from "react";
 
-import { RefForwardingComponentAs } from "./react.types";
+import { IntrinsicElement, RefForwardingComponentAs } from "./react.types";
 
-export const forwardRefAs = <
-  As extends React.ElementType = React.ElementType,
-  P = unknown
->(
-  render: RefForwardingComponentAs<As, P>
+export const forwardRefAs = <As extends React.ElementType = ElementType, P = unknown>(
+  render: RefForwardingComponentAs<IntrinsicElement<As>, P>
 ) => {
-  return forwardRef(render);
+  return forwardRef(render) as any;
 };
 
 export const getChildTag = (parentTag?: ElementType) => {
@@ -94,8 +91,8 @@ const inlineLevelTags = [
   "var",
 ];
 
-export const isBlockLevelTag = <As extends React.ElementType>(tag: As) =>
+export const isBlockLevelTag = <As extends React.ElementType | string>(tag: As) =>
   blockLevelTags.indexOf(String(tag)) > -1;
 
-export const isInlineLevelTag = <As extends React.ElementType>(tag: As) =>
+export const isInlineLevelTag = <As extends React.ElementType | string>(tag: As) =>
   inlineLevelTags.indexOf(String(tag)) > -1;

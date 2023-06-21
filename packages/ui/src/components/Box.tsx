@@ -2,7 +2,7 @@ import { classNames } from '@trms/utils'
 import { ColorVariantKey, UIComponentProps } from '@trms/theme'
 
 import { forwardRefAs } from '../shared'
-import { useTW, useVariant } from '../hooks'
+import { useTW } from '../hooks'
 
 export type UIThemeProps = {
   interactive?: boolean
@@ -22,21 +22,11 @@ export type BoxProps = {
 export const Box = forwardRefAs<'div', BoxProps>((props, ref) => {
   const {
     as: Tag = "div",
-    children,
     className,
     excludeProps = ["muted", 'interactive', 'inverted', 'variant'],
     ...rest
   } = props;
   const [uiProps, nonUIProps] = useTW(rest, excludeProps)
-  // const variantScheme = useVariant(variant)
-  // let variantClasses: string[] = []
-  // if (muted) {
-  //   if (interactive) {
-  //     variantClasses = variantScheme?.mutedInteractive ?? []
-  //   } else {
-  //     variantClasses = variantScheme?.muted ?? []
-  //   }
-  // } 
 
   return (
     <Tag
@@ -44,8 +34,6 @@ export const Box = forwardRefAs<'div', BoxProps>((props, ref) => {
       className={classNames(uiProps, className)}
       ref={ref}
       {...nonUIProps}
-    >
-      {children}
-    </Tag>
+    />
   )
 })

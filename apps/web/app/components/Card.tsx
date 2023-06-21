@@ -18,27 +18,27 @@ export type CardProps = {
 const cardDefaults: Partial<BoxProps> = {
   border: 'DEFAULT',
   borderStyle: 'solid',
-  p: '4',
+  p: '0',
+  position: 'relative',
   radius: 'DEFAULT',
   shadow: 'DEFAULT',
 }
 
 const Card = forwardRefAs<'div', CardProps>(
   (
-    { as: Tag = 'div', children, className, muted = false, variant = "default", ...props },
+    { children, className, inverted, muted = false, variant = "default", ...props },
     ref
   ) => {
     const [_, attrProps] = useTW(props);
-    const variantScheme = useVariant(variant, props?.inverted);
-    const variantClasses = [
-      variantScheme.bgInteractive,
-      variantScheme.border,
-      variantScheme.foreground,
-    ];
+    const [_variantScheme, variantClasses] = useVariant(variant, {
+      interactive: true,
+      inverted,
+      muted,
+      schemeKeys: ["bg", "border", "foreground"],
+    });
 
     return (
       <Box
-        as={Tag}
         className={classNames(variantClasses, className)}
         ref={ref}
         {...cardDefaults}
@@ -53,7 +53,7 @@ Card.displayName = 'Card'
 
 const CardBody = forwardRefAs<'div', CardProps>(
   ({ as: Tag = 'div', flex = 'auto', py = '3', px = '4', ...props }, ref) => {
-    return <Box as={Tag} flex={flex} py={py} px={px} {...props} ref={ref} />
+    return <Box as={Tag} flex={flex} py={py} px={px} position="relative" zIndex="20" {...props} ref={ref} />
   },
 )
 CardBody.displayName = 'CardBody'
@@ -90,6 +90,11 @@ const getMediaPlacementProps = (placement: CardMediaProps['placement']): Partial
     radiusT: 'DEFAULT',
   }
 }
+
+const CardScrim = () => {
+  return <Box position="absolute" top="0" left="0" w="full" h="full" className="bg-black/12 pointer-events-none z-10" />
+}
+CardScrim.displayName = 'CardScrim'
 
 const CardMedia = forwardRefAs<'svg', CardMediaProps>(
   (
@@ -136,4 +141,4 @@ const CardMedia = forwardRefAs<'svg', CardMediaProps>(
 )
 CardMedia.displayName = 'CardMedia'
 
-export { Card, CardBody, CardMedia }
+export { Card, CardBody, CardMedia, CardScrim };

@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { Button, Center, Header, Heading, Stack, Text } from "@trms/ui";
+import { Box, Button, Center, Header, Heading, Stack, Text } from "@trms/ui";
 import { lipsum } from '@trms/utils'
 
-import { Card, CardBody, CardMedia } from "./components/Card";
+import { Card, CardBody, CardMedia, CardScrim } from "./components/Card";
 
 export const metadata: Metadata = {
   title: "Web - Turborepo Example",
@@ -10,40 +10,54 @@ export const metadata: Metadata = {
 
 const CARD_CONTENT = [
   {
-    title: "Caching Tasks",
+    title: "Fresh Kicks!",
     href: "javascript(void)",
-    text: lipsum(1, { random: true }),
-    cta: "Read More",
+    label: "Shoes",
+    cta: "Shop",
   },
   {
-    title: "Running Tasks",
+    title: "See Our New Street Wear",
     href: "javascript(void)",
-    text: lipsum(1, { random: true }),
-    cta: "Read More",
+    label: "Shirts",
+    cta: "Shop",
   },
   {
-    title: "Configuration Options",
+    title: "Mom Jeans for Everyone!",
     href: "javascript(void)",
-    text: lipsum(1, { random: true }),
-    cta: "Read More",
+    label: "Pants",
+    cta: "Shop",
   },
 ];
 
 export default function Page() {
+  const minCardWidth = 320
+  const stackWidth =
+    minCardWidth * CARD_CONTENT.length + (16 * CARD_CONTENT.length - 1);
+
   return (
     <>
       <Header py="3" px="4">
         Generic Web Application
       </Header>
       <Center display="flex" w="full" minH="screen" variant="info" muted>
-        <Stack cols={{ xs: '1', md: '3' }} gap='4' placeContent='evenly'>
+        <Stack
+          className="grid-cols-1"
+          cols={{ xs: "1", md: "3" }}
+          gap="4"
+          orientation="horizontal"
+          placeContent="evenly"
+          style={{ width: `${stackWidth}px` }}
+        >
           {CARD_CONTENT.map((card) => (
-            <Card key={card.title} flex='1'>
-              <CardMedia />
+            <Card key={card.title} flex="1" h="96">
+              <CardMedia placement="fill" />
+              <CardScrim />
               <CardBody>
-                <Heading as="h3" fontSize="lg" fontWeight="bold">{card.title}</Heading>
-                <Text>{card.text}</Text>
-                <Button variant="danger" block>
+                <Text>{card.label}</Text>
+                <Heading as="h3" fontSize="lg" fontWeight="bold" mb="2">
+                  {card.title}
+                </Heading>
+                <Button variant="default" radius="3xl">
                   <Text as="span" color="inherit">
                     {card.cta}
                   </Text>
@@ -53,12 +67,6 @@ export default function Page() {
           ))}
         </Stack>
       </Center>
-      {/* <div className="flex w-full min-h-screen justify-center items-center bg-blue-50">
-        <div className="flex space-x-3 items-center">
-          <h1 className="font-bold text-lg text-red-500">Web</h1>
-          <Button variant="primary">Primary Button</Button>
-        </div>
-      </div> */}
     </>
   );
 }

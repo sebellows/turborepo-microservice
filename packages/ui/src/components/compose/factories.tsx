@@ -22,7 +22,7 @@ export type UIProps<P = {}> = {
   // role?: string;
   // type?: string;
 } & UIThemeProps &
-  Omit<UIComponentProps, keyof P>
+  Omit<UIComponentProps, keyof P> & P
 
 export type WrapUIProps<
   As extends React.ElementType = React.ElementType,
@@ -47,11 +47,12 @@ type AsTags<As extends React.ElementType = React.ElementType> = As[];
 
 type ComponentFactoryConfig<
   As extends React.ElementType,
-  P extends UIProps<P>,
+  P = {},
+  Props = UIProps<P>,
 > = {
   as?: As;
   displayName: string;
-  defaultProps?: Partial<P>;
+  defaultProps?: Partial<Props>;
   validTags?: AsTags;
   omittableStyleCategories?: UIStyleCategory[];
 };
@@ -70,7 +71,7 @@ export const createBox = <
     omittableStyleCategories = [],
   } = config;
 
-  const UiComponent = forwardRefAs<typeof initialAs, Props>((props, ref) => {
+  const UiComponent = forwardRefAs((props, ref) => {
     const {
       as: Tag = initialAs,
       children,

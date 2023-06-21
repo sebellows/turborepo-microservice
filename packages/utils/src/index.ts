@@ -9,3 +9,4 @@ export * from "./lang";
 export * from "./loremipsum";
 export * from "./string";
 export * from "./types";
+export * from "./warning";

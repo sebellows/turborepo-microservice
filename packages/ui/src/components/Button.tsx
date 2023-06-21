@@ -9,7 +9,7 @@ import { Box, BoxProps } from "./Box";
 import { Text } from './Text'
 import { Spinner } from "./spinner/Spinner";
 
-type LoadingBoxProps = Pick<BoxProps, 'radius'> & {
+type LoadingBoxProps = Partial<Pick<BoxProps, 'radius'>> & {
   backgroundColor?: string
   zIndex?: number
 }
@@ -102,7 +102,6 @@ const buttonDefaults: Pick<BoxProps, 'border' | 'borderStyle' | 'display' | 'rad
 export const Button = forwardRefAs<"button", ButtonProps>(
   (
     {
-      align,
       children,
       className,
       disabled,
@@ -133,14 +132,14 @@ export const Button = forwardRefAs<"button", ButtonProps>(
 
     const ChildWrapper = ({ children: child }: PropsWithChildren<{}>) => {
       if (typeof child === 'string') {
-        return <Text as='span' className={text}>{child}</Text>
+        return <Text as='span' className={classNames(text)}>{child}</Text>
       }
 
       return (
-        <Box as="span" className={text}>
+        <Box as="span" className={classNames(text)}>
           {child}
         </Box>
-      )
+      );
     }
 
     return (

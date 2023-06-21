@@ -1,7 +1,8 @@
-import { CSSRuleObject } from "@trms/theme";
 import React from "react";
+import { CSSRuleObject } from "@trms/theme";
+import { Get } from "@trms/utils";
 
-type ElementTagNameMap = HTMLElementTagNameMap &
+export type ElementTagNameMap = HTMLElementTagNameMap &
   Pick<
     SVGElementTagNameMap,
     Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>
@@ -9,47 +10,37 @@ type ElementTagNameMap = HTMLElementTagNameMap &
 
 export type ReplaceProps<
   Inner extends React.ElementType,
-  P extends PropertyKey | unknown
+  P extends PropertyKey | Record<string, any> = {}
 > = P extends PropertyKey
   ? Omit<React.ComponentPropsWithRef<Inner>, P> & P
-  : React.ComponentPropsWithRef<Inner>;
+  : Omit<React.ComponentPropsWithRef<Inner>, keyof P> & P;
 
-// export interface BsPrefixOnlyProps {
-//   bsPrefix?: string;
-// }
-export type AsProp<
-  As extends React.ElementType = React.ElementType,
-  P = unknown
-> = {
+export interface AsProp<As extends React.ElementType = React.ElementType> {
   as?: As;
-  ref?: React.Ref<
-    As extends keyof ElementTagNameMap
-      ? ElementTagNameMap[As]
-      : As extends new (...args: any) => any
-      ? InstanceType<As>
-      : undefined
-  >;
-} & Omit<React.PropsWithoutRef<As>, "as"> &
-  P;
+}
+
+export type IntrinsicElement<As> = As extends RefForwardingComponentAs<infer T, any>
+  ? T
+  : As;
 
 /** @see {React.ForwardRefRenderFunction} */
 export type RefForwardingComponentAs<
   TInitial extends React.ElementType,
-  P = unknown
+  P = {}
 > = {
   <As extends React.ElementType = TInitial>(
     props: React.PropsWithChildren<ReplaceProps<As, AsProp<As> & P>>,
-    context?: any
+    ref: React.ForwardedRef<any> // React.ForwardedRef<React.ElementRef<IntrinsicElement<As>>>
   ): React.ReactElement | null;
+  /** required here to improve debugging in React devtools. */
+  displayName?: string | undefined;
+  // explicit rejected with `never` required due to
+  // https://github.com/microsoft/TypeScript/issues/36826
+  /** defaultProps are not supported on render functions */
   defaultProps?: never | undefined;
+  /** propTypes are not supported on render functions */
   propTypes?: never | undefined;
-  displayName?: string;
 };
-
-export class AsComponent<
-  As extends React.ElementType,
-  P = unknown
-> extends React.Component<ReplaceProps<As, AsProp<As> & P>> {}
 
 export type PropValue = null | string | string[] | undefined;
 
@@ -61,6 +52,18 @@ export type AsComponentProps<
   As extends React.ElementType = React.ElementType,
   P = unknown
 > = React.PropsWithChildren<ReplaceProps<As, AsProp<As> & P>>;
+
+export type CompWithAsProp<
+  DefaultElementType extends React.ElementType,
+  Props = {}
+> = {
+  <As extends React.ElementType = DefaultElementType>(
+    props: React.PropsWithChildren<AsProp<As> & Props>
+  ): React.ReactElement | null;
+  defaultProps?: Partial<AsProp<DefaultElementType> & Props>;
+  displayName?: string;
+  propTypes?: never | undefined;
+};
 
 export interface HTMLElements {
   // HTML

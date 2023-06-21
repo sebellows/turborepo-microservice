@@ -8,7 +8,12 @@ import {
   NonEmptyString,
 } from "@trms/utils";
 
-import { isWithBreakpoint, WithBreakpoint } from "./breakpoints";
+import {
+  Breakpoint,
+  Breakpoints,
+  isWithBreakpoint,
+  WithBreakpoint,
+} from "./breakpoints";
 import { TailwindPrefixes } from "./tailwind";
 import { UIComponentProps } from "./style.props";
 
@@ -69,6 +74,8 @@ export const includes = (
   return included;
 };
 
+let bps = Breakpoints.map((bp) => bp.toString());
+
 export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
   try {
     const result = Object.entries(props).reduce((classes, [prop, value]) => {
@@ -78,9 +85,16 @@ export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
           classes.push(twClass);
         }
         if (isPlainObject(value) && containsTailwindPrefixObject(value)) {
+          const smallestBp = Object.keys(value).sort(
+            (a, b) => bps.indexOf(a) - bps.indexOf(b)
+          )[0];
+
           Object.entries(value).forEach(([bp, bpValue]) => {
             if (includes(TailwindPrefixes, bp)) {
               const bpClass = get(UIComponentProps, [prop, bpValue]);
+              if (bp === smallestBp) {
+                classes.push(bpClass);
+              }
               classes.push(`${bp}:${bpClass}`);
             }
           });

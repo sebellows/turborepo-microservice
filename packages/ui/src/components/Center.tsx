@@ -1,16 +1,17 @@
 import { forwardRefAs } from "../shared";
 
-import { Box } from "./Box";
-import { UIProps } from "./compose";
+import { Box, BoxProps } from "./Box";
+// import { UIProps } from "./compose";
 
-type CenterProps = UIProps<{
+type CenterProps = Partial<BoxProps> & {
   fillView?: boolean;
-}>;
+};
 
 export const Center = forwardRefAs<"div", CenterProps>(
-  ({ fillView = false, ...props }, ref) => {
+  ({ as = 'div', fillView = false, ...props }, ref) => {
     return (
       <Box
+        as={as}
         ref={ref}
         alignItems="center"
         display="flex"
