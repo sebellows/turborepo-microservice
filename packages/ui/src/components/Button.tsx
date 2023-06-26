@@ -80,16 +80,16 @@ type ButtonProps = {
   variant?: ColorVariantKey;
 } & Partial<BoxProps>
 
-export const useVariantButton = ({ variant = 'default', muted, ...props }: ButtonProps) => {
-  const [_variantScheme, variantClasses] = useVariant(variant, { muted, interactive: true, schemeKeys: ['bg', 'border', 'text'] })
+export const useVariantButton = ({ variant = 'default', muted, outline, ...props }: ButtonProps) => {
+  const [_variantScheme, variantClasses] = useVariant(variant, { muted, interactive: true, inverted: outline, schemeKeys: ['bg', 'border', 'borderInteractive', 'fgInteractive', 'text'] })
   const btnClasses = resolveBaseStyles(props)
 
   return {
-    bg: variantClasses?.bg,
-    text: variantClasses?.text,
-    border: variantClasses?.border,
+    bg: outline ? 'transparent' : variantClasses?.bg,
+    text: outline ? variantClasses?.fgInteractive : variantClasses?.text,
+    border: outline ? variantClasses?.borderInteractive : variantClasses?.border,
     uiClasses: btnClasses,
-  };
+  }
 }
 
 const buttonDefaults: Pick<BoxProps, 'border' | 'borderStyle' | 'display' | 'radius'> = {
@@ -123,24 +123,24 @@ export const Button = forwardRefAs<"button", ButtonProps>(
       variant,
     })
     // const [twClasses, attrProps] = useTW({ ...buttonDefaults, ...props })
-    const classes = classNames(bg, border, uiClasses, className);
+    const classes = classNames(bg, border, text, uiClasses, className);
 
     const isDisabled = useMemo(
       () => Boolean(loading || disabled),
       [loading, disabled],
     )
 
-    const ChildWrapper = ({ children: child }: PropsWithChildren<{}>) => {
-      if (typeof child === 'string') {
-        return <Text as='span' className={classNames(text)}>{child}</Text>
-      }
+    // const ChildWrapper = ({ children: child }: PropsWithChildren<{}>) => {
+    //   if (typeof child === 'string') {
+    //     return <Text as='span' className={classNames(text)}>{child}</Text>
+    //   }
 
-      return (
-        <Box as="span" className={classNames(text)}>
-          {child}
-        </Box>
-      );
-    }
+    //   return (
+    //     <Box as="span" className={classNames(text)}>
+    //       {child}
+    //     </Box>
+    //   );
+    // }
 
     return (
       <Box
@@ -160,9 +160,10 @@ export const Button = forwardRefAs<"button", ButtonProps>(
           </LoadingBox>
         )}
 
-        {Children.map(children, (child) =>
+        {children}
+        {/* {Children.map(children, (child) =>
           !isNil(child) ? <ChildWrapper children={child} /> : null
-        )}
+        )} */}
       </Box>
     );
   }

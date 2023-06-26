@@ -6,47 +6,36 @@ import {
   kebabCase,
   memoize,
   NonEmptyString,
-} from "@trms/utils";
+} from '@trms/utils'
 
-import {
-  Breakpoint,
-  Breakpoints,
-  isWithBreakpoint,
-  WithBreakpoint,
-} from "./breakpoints";
-import { TailwindPrefixes } from "./tailwind";
-import { UIComponentProps } from "./style.props";
+import { Breakpoints, isWithBreakpoint, WithBreakpoint } from './breakpoints'
+import { TailwindPrefixes } from './tailwind'
+import { UIComponentProps } from './style.props'
 
-const containsTailwindPrefixObject = <T extends Record<string, any>>(
-  value: T
-) => {
+const containsTailwindPrefixObject = <T extends Record<string, any>>(value: T) => {
   try {
-    const hasBreakpoint = Object.keys(value).some((val) =>
-      includes(TailwindPrefixes, val)
-    );
-    return hasBreakpoint;
+    const hasBreakpoint = Object.keys(value).some(val => includes(TailwindPrefixes, val))
+    return hasBreakpoint
   } catch (err) {
-    return false;
+    return false
   }
-};
+}
 
-type FilteredPool = { regexes: RegExp[]; indices: (number | string)[] };
-const _filter = <TItems extends (number | string | RegExp)[]>(
-  items: TItems
-) => {
+type FilteredPool = { regexes: RegExp[]; indices: (number | string)[] }
+const _filter = <TItems extends (number | string | RegExp)[]>(items: TItems) => {
   // const parsedItems = JSON.parse(items);
   // console.log('filterProps', parsedItems)
   const pool: FilteredPool = {
     regexes: [],
     indices: [],
-  };
-  for (const item of items) {
-    if (isRegExp(item)) pool.regexes.push(item);
-    else pool.indices.push(item);
   }
-  return pool;
-};
-const filterProps = memoize(_filter);
+  for (const item of items) {
+    if (isRegExp(item)) pool.regexes.push(item)
+    else pool.indices.push(item)
+  }
+  return pool
+}
+const filterProps = memoize(_filter)
 
 /**
  * VSCode/TS complains about typeof 'string' not being assignable to '"string" | "string"'
@@ -59,65 +48,58 @@ export const includes = (
   constProps: readonly (number | string | RegExp)[],
   ...props: readonly (number | string)[]
 ) => {
-  const pool = filterProps(constProps);
-  const { regexes, indices } = pool;
+  const pool = filterProps(constProps)
+  const { regexes, indices } = pool
 
   const propIncluded = (prop: number | string) => {
-    return (
-      regexes.some((regex) => regex.test(String(prop))) ||
-      indices.includes(prop)
-    );
-  };
+    return regexes.some(regex => regex.test(String(prop))) || indices.includes(prop)
+  }
 
-  const included = props.some(propIncluded);
+  const included = props.some(propIncluded)
 
-  return included;
-};
+  return included
+}
 
-let bps = Breakpoints.map((bp) => bp.toString());
+let bps = Breakpoints.map(bp => bp.toString())
 
 export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
   try {
+    const classSet = new Set<string>()
     const result = Object.entries(props).reduce((classes, [prop, value]) => {
       if (prop in UIComponentProps) {
-        if (typeof value === "string" && value in UIComponentProps[prop]) {
-          const twClass = get(UIComponentProps, [prop, value], undefined);
-          classes.push(twClass);
+        if (typeof value === 'string' && value in UIComponentProps[prop]) {
+          const twClass = get(UIComponentProps, [prop, value], undefined)
+          classes.add(twClass)
         }
         if (isPlainObject(value) && containsTailwindPrefixObject(value)) {
-          const smallestBp = Object.keys(value).sort(
-            (a, b) => bps.indexOf(a) - bps.indexOf(b)
-          )[0];
+          const sortedBps = Object.keys(value).sort((a, b) => bps.indexOf(a) - bps.indexOf(b))
 
-          Object.entries(value).forEach(([bp, bpValue]) => {
+          sortedBps.forEach((bp, i) => {
             if (includes(TailwindPrefixes, bp)) {
-              const bpClass = get(UIComponentProps, [prop, bpValue]);
-              if (bp === smallestBp) {
-                classes.push(bpClass);
-              }
-              classes.push(`${bp}:${bpClass}`);
+              const bpClass = get(UIComponentProps, [prop, value[bp]])
+              // if (i === 0) {
+              //   classes.add(bpClass)
+              // }
+              classes.add(`${bp}:${bpClass}`)
             }
-          });
+          })
         }
       }
 
-      return classes;
-    }, [] as string[]);
-    return result;
+      return classes
+    }, classSet)
+    const classResults = Array.from(result)
+    // console.log('classResults', classResults)
+    return classResults
   } catch (err) {
-    console.error("propsToTwClasses=>Error", err);
-    throw new Error(`Failed to map properties`);
+    console.error('propsToTwClasses=>Error', err)
+    throw new Error(`Failed to map properties`)
   }
-};
+}
 
-type SetPropertyMapReturnType<
-  TArray extends readonly string[],
-  TPrefix extends string = ""
-> = {
-  [K in TArray[number]]: TPrefix extends NonEmptyString<TPrefix>
-    ? `${TPrefix}-${K}`
-    : K;
-};
+type SetPropertyMapReturnType<TArray extends readonly string[], TPrefix extends string = ''> = {
+  [K in TArray[number]]: TPrefix extends NonEmptyString<TPrefix> ? `${TPrefix}-${K}` : K
+}
 // Record<
 //   TArray[number],
 //   TPrefix extends string ? `${TPrefix}-${TArray[number]}` : TArray[number]
@@ -135,47 +117,39 @@ type SetPropertyMapReturnType<
  * some one-off has to drop part of the prefix class for some reason and be `col-auto` 🤬.
  * @returns an object mapping a Tailwind suffix/value to the full Tailwind utility class name.
  */
-export function setPropertyMap<
-  TArray extends readonly string[],
-  TPrefix extends string
->(
+export function setPropertyMap<TArray extends readonly string[], TPrefix extends string>(
   arr: TArray,
   classPrefix: TPrefix,
-  replacerMap?: Partial<Record<TArray[number], string>>
+  replacerMap?: Partial<Record<TArray[number], string>>,
 ): SetPropertyMapReturnType<TArray, TPrefix> {
-  const alt = replacerMap ?? {};
+  const alt = replacerMap ?? {}
   try {
     const result = arr.reduce((klass, value) => {
-      const key = value?.includes("-") ? camelCase(value) : value;
-      let klassValue = value;
+      const key = value?.includes('-') ? camelCase(value) : value
+      let klassValue = value
       if (classPrefix.length > 0) {
         if (value.length && alt[value]) {
-          klassValue = alt[value];
+          klassValue = alt[value]
         } else {
           klassValue =
-            !value.length || value === "DEFAULT"
-              ? String(classPrefix)
-              : `${classPrefix}-${value}`;
+            !value.length || value === 'DEFAULT' ? String(classPrefix) : `${classPrefix}-${value}`
         }
       }
-      klass[`${key}`] = klassValue;
-      return klass;
-    }, {} as SetPropertyMapReturnType<TArray, TPrefix>);
-    return result;
+      klass[`${key}`] = klassValue
+      return klass
+    }, {} as SetPropertyMapReturnType<TArray, TPrefix>)
+    return result
   } catch (err) {
-    console.error("setPropertyMap->Error", err);
-    throw new Error(`Could not set property map`);
+    console.error('setPropertyMap->Error', err)
+    throw new Error(`Could not set property map`)
   }
 }
 
-type UnitValueClassMap<
-  TKeys extends readonly string[],
-  TValues extends readonly string[]
-> = {
+type UnitValueClassMap<TKeys extends readonly string[], TValues extends readonly string[]> = {
   [Key in TKeys[number]]: {
-    [ValueKey in TValues[number]]: `${Key}-${ValueKey}`;
-  };
-};
+    [ValueKey in TValues[number]]: `${Key}-${ValueKey}`
+  }
+}
 
 /**
  * @internal
@@ -185,40 +159,37 @@ type UnitValueClassMap<
  */
 export function setUnitValuePropertyMap<
   TPrefixes extends readonly string[],
-  TValues extends readonly string[]
+  TValues extends readonly string[],
 >(prefixes: TPrefixes, values: TValues): UnitValueClassMap<TPrefixes, TValues> {
   const result = prefixes.reduce((klasses, prefix) => {
     klasses[prefix] = values.reduce((acc, value) => {
-      const pathPrefix = kebabCase?.(prefix) ?? prefix;
-      acc[value] = `${pathPrefix}-${value}`;
-      return acc;
-    }, {});
-    return klasses;
-  }, {} as UnitValueClassMap<TPrefixes, TValues>);
-  return result;
+      const pathPrefix = kebabCase?.(prefix) ?? prefix
+      acc[value] = `${pathPrefix}-${value}`
+      return acc
+    }, {})
+    return klasses
+  }, {} as UnitValueClassMap<TPrefixes, TValues>)
+  return result
 }
 
-export const isUnit = (value: string) =>
-  ["px", "em", "rem"].some((unit) => value.endsWith(unit));
+export const isUnit = (value: string) => ['px', 'em', 'rem'].some(unit => value.endsWith(unit))
 
 export const extractUnit = (value: string) => {
-  const unit = ["px", "em", "rem"].find((suffix) => value.endsWith(suffix));
+  const unit = ['px', 'em', 'rem'].find(suffix => value.endsWith(suffix))
 
-  return unit;
-};
+  return unit
+}
 
-export const negateUiValue = <T extends string | number>(
-  value: T | WithBreakpoint<T>
-) => {
+export const negateUiValue = <T extends string | number>(value: T | WithBreakpoint<T>) => {
   if (isWithBreakpoint(value)) {
-    const bpObj: WithBreakpoint<T> = {};
+    const bpObj: WithBreakpoint<T> = {}
     for (const bp in value) {
-      bpObj[bp] = value[bp] <= 0 ? value[bp] : -value[bp];
+      bpObj[bp] = value[bp] <= 0 ? value[bp] : -value[bp]
     }
-    return bpObj;
-  } else if (typeof value === "number") {
-    return value <= 0 ? value : -value;
+    return bpObj
+  } else if (typeof value === 'number') {
+    return value <= 0 ? value : -value
   }
 
-  return value.startsWith("-") || value.startsWith("0") ? value : `-${value}`;
-};
+  return value.startsWith('-') || value.startsWith('0') ? value : `-${value}`
+}

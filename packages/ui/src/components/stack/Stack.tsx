@@ -19,6 +19,8 @@ export type StackProps = {
   orientation?: StackOrientation | WithBreakpoint<StackOrientation>;
   /** The placement, if any, of the dividing elements. */
   dividers?: "none" | "around" | "between" | "start" | "end";
+  /** Classes to apply to child wrapper elements */
+  childClassName?: string | string[]
 } & BoxProps;
 
 export const Stack = forwardRefAs<"div", StackProps>(
@@ -26,48 +28,46 @@ export const Stack = forwardRefAs<"div", StackProps>(
     {
       className,
       cols = '1',
+      display,
       grid = true,
       orientation = 'vertical',
       children,
       dividers = "none",
       gap = "none",
+      childClassName,
       ...props
     },
     ref
   ) => {
-    const ChildWrapper = getChildTag(props.as);
+    const ChildWrapper = getChildTag(props?.as || 'div');
     const classes = classNames(className, `stack-${orientation}`);
 
     return (
       <Box
         ref={ref}
         className={classes}
+        {...props}
         display={grid ? 'grid' : 'flex'}
         cols={grid && cols}
         gap={gap}
-        {...props}
       >
-        {["around", "start"].includes(dividers) && (
-          <Divider orientation={orientation} />
-        )}
+        {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
         {Children.toArray(children)
-          .filter((child) => isValidElement(child))
+          .filter(child => isValidElement(child))
           .map((child, index) => {
             return (
               <Fragment key={index}>
-                {dividers !== "none" && index ? (
-                  <Divider orientation={orientation} />
-                ) : null}
+                {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
 
                 {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <ChildWrapper className="empty:hidden">{child}</ChildWrapper>
+                <ChildWrapper className={classNames('empty:hidden', childClassName)}>
+                  {child}
+                </ChildWrapper>
               </Fragment>
-            );
+            )
           })}
-        {["around", "end"].includes(dividers) && (
-          <Divider orientation={orientation} />
-        )}
+        {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
       </Box>
-    );
+    )
   }
 );

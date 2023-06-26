@@ -1,16 +1,16 @@
-const sharedConfig = require("@trms/tailwind-config/tailwind.config");
+const sharedConfig = require('@trms/tailwind-config/tailwind.config')
 
 module.exports = {
   presets: [sharedConfig],
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [require('@tailwindcss/typography')],
   safelist: [
     {
       pattern:
-        /((bg|text|border)-(white|black|current|transparent|blue|cyan|gray|green|indigo|magenta|neutral|orange|purple|red|teal|yellow)?-(\d+))/,
-      variants: ["active", "dark", "disabled", "empty", "focus", "hover"],
+        /((bg|text|border)-(white|black|current|transparent|blue|cyan|gray|green|indigo|magenta|neutral|orange|purple|red|teal|yellow)?-(\d+))|(grid-cols-\d+)|((min|max)-\w+-\w+)/,
+      variants: ['xs', 'sm', 'md', 'lg', 'active', 'dark', 'disabled', 'empty', 'focus', 'hover'],
     },
   ],
-};
+}
 // const tailwindConfig = require('../../packages/ui/tailwind.config')
 
 // module.exports = {

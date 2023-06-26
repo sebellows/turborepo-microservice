@@ -34,9 +34,11 @@ export const resolveVariantClasses = <P extends UIThemeProps>(
   }
   const keys = [
     "border",
-    "foreground",
+    "borderInteractive",
+    "cta",
+    "fg",
+    "fgInteractive",
     "link",
-    "navLink",
     "text",
   ] as VariantColorSchemeKey[];
   const filteredKeys = keys.filter((key) => schemeKeys.includes(key));

@@ -1,0 +1,28 @@
+@layer utilities {
+  .u-scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme(colors.gray.500) transparent;
+  }
+  .u-scrollbar-hidden {
+    padding-top: 12px;
+    margin-top: 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    width: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none
+  }
+  .u-scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  @media screen(md) {
+    .u-scrollbar-hidden {
+      padding-left:0;
+      padding-top: 0;
+      margin-top: 12px;
+      width: auto;
+      overflow: visible
+    }
+  }
+}

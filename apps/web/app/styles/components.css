@@ -1,0 +1,86 @@
+@layer components {
+  /**
+   * Page Section Styles (vertical slices)
+   */
+  .section {
+    --carousel-padding: theme(spacing.12);
+
+    @apply relative w-full mt-16;
+  }
+
+  .section-wrapper {
+    @apply relative w-full;
+    padding: 0 var(--app-section-padding-x) var(--app-section-padding-y) var(--app-section-padding-x);
+  }
+
+  .section-header {
+    @apply relative flex justify-between items-center text-neutral-900 dark:text-neutral-50;
+    margin-block-end: theme(spacing.3);
+    padding: 0 var(--carousel-padding);
+  }
+
+  .section-title {
+    @apply text-2xl leading-snug tracking-tight;
+  }
+
+  /**
+   * Carousel Component Styles
+   */
+  .carousel {
+    @apply relative overflow-x-auto snap-mandatory snap-x;
+    padding-inline-start: var(--carousel-padding);
+    padding-bottom: var(--app-section-padding-y);
+    -webkit-scroll-padding: 0 var(--carousel-padding);
+    scroll-padding: 0 var(--carousel-padding);
+
+    -webkit-scrollbar-color: theme(colors.gray.500) transparent;
+    -moz-scrollbar-color: theme(colors.gray.500) transparent;
+    -ms-scrollbar-color: theme(colors.gray.500) transparent;
+    scrollbar-color: theme(colors.gray.500) transparent;
+    -webkit-scrollbar-width: thin;
+    -moz-scrollbar-width: thin;
+    -ms-scrollbar-width: thin;
+    scrollbar-width: thin;
+  }
+  .carousel::-webkit-scrollbar {
+    display: none;
+    width: 14px;
+  }
+  .carousel:hover::-webkit-scrollbar {
+    display: initial;
+  }
+  .carousel:hover::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+  .carousel:hover::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+  .carousel:hover::-webkit-scrollbar-track {
+    margin-inline-start: calc(var(--carousel-padding) - 8px);
+    margin-inline-end: calc(var(--carousel-padding) + 8px);
+  }
+  .carousel:hover::-webkit-scrollbar-thumb {
+    @apply bg-clip-content border-solid border-transparent border-y-4 border-x-0;
+    border-radius: 7px;
+    box-shadow: inset 0 0 0 10px theme(colors.gray.500);
+  }
+
+  /** Same as section-header */
+  .carousel-header {
+    @apply relative flex justify-between items-center text-neutral-900 dark:text-neutral-50;
+    margin-block-end: theme(spacing.3);
+    padding: 0 var(--carousel-padding);
+  }
+
+  /** Same as section-title */
+  .carousel-headline {
+    @apply text-2xl leading-snug tracking-tight;
+  }
+
+  .carousel-slide {
+    @apply flex pe-4;
+    flex: 0 0 calc(33% - theme(spacing.4));
+  }
+}

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 import {
   Box,
   BoxProps,
@@ -10,6 +10,7 @@ import {
 import { classNames } from "@trms/utils";
 
 export type CardProps = {
+  fill?: boolean
   inverted?: boolean
   level?: HeadingLevel
   muted?: boolean
@@ -18,6 +19,7 @@ export type CardProps = {
 const cardDefaults: Partial<BoxProps> = {
   border: 'DEFAULT',
   borderStyle: 'solid',
+  display: 'flex',
   p: '0',
   position: 'relative',
   radius: 'DEFAULT',
@@ -26,34 +28,30 @@ const cardDefaults: Partial<BoxProps> = {
 
 const Card = forwardRefAs<'div', CardProps>(
   (
-    { children, className, inverted, muted = false, variant = "default", ...props },
+    { children, className, fill = false, inverted, muted = false, variant = "default", ...props },
     ref
   ) => {
-    const [_, attrProps] = useTW(props);
-    const [_variantScheme, variantClasses] = useVariant(variant, {
-      interactive: true,
+    // const [uiProps, attrProps] = useTW(props);
+    const [_variantScheme, _variantClasses] = useVariant(variant, {
+      interactive: fill,
       inverted,
       muted,
-      schemeKeys: ["bg", "border", "foreground"],
-    });
+      schemeKeys: ['bg', 'border', 'text'],
+    })
+    const variantClasses = useMemo(() => Object.values(_variantClasses).flat(), [_variantClasses])
 
     return (
-      <Box
-        className={classNames(variantClasses, className)}
-        ref={ref}
-        {...cardDefaults}
-        {...attrProps}
-      >
+      <Box className={classNames(variantClasses, className)} ref={ref} {...cardDefaults} {...props}>
         {children}
       </Box>
-    );
+    )
   }
 );
 Card.displayName = 'Card'
 
 const CardBody = forwardRefAs<'div', CardProps>(
-  ({ as: Tag = 'div', flex = 'auto', py = '3', px = '4', ...props }, ref) => {
-    return <Box as={Tag} flex={flex} py={py} px={px} position="relative" zIndex="20" {...props} ref={ref} />
+  ({ as: Tag = 'div', flex = 'auto', p = '4', ...props }, ref) => {
+    return <Box as={Tag} flex={flex} p={p} position="relative" zIndex='20' {...props} ref={ref} />
   },
 )
 CardBody.displayName = 'CardBody'
@@ -91,8 +89,21 @@ const getMediaPlacementProps = (placement: CardMediaProps['placement']): Partial
   }
 }
 
-const CardScrim = () => {
-  return <Box position="absolute" top="0" left="0" w="full" h="full" className="bg-black/12 pointer-events-none z-10" />
+const CardScrim = ({ href = '#!' }: { href?: string }) => {
+  return (
+    <Box
+      as="a"
+      href={href}
+      display="block"
+      position="absolute"
+      top="0"
+      left="0"
+      w="full"
+      h="full"
+      zIndex="10"
+      className="bg-fixed bg-black opacity-12 transition duration-300 ease-in-out hover:opacity-30"
+    />
+  )
 }
 CardScrim.displayName = 'CardScrim'
 
@@ -132,7 +143,7 @@ const CardMedia = forwardRefAs<'svg', CardMediaProps>(
       >
         <title>{title}</title>
         <rect width="100%" height="100%" fill={fill}></rect>
-        <text x="50%" y="50%" fill={labelFill} dy=".3em">
+        <text textAnchor='middle' x="50%" y="50%" fill={labelFill} dy=".3em">
           {label}
         </text>
       </svg>

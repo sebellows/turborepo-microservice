@@ -1,0 +1,73 @@
+{
+  "stock": [
+    {
+      "id": "c1063000-3cfe-49b0-affe-611260db28ba",
+      "createdAt": "2023-05-19T04:00:00.000Z",
+      "updatedAt": "2023-05-19T04:00:00.000Z",
+      "quantity": 24,
+      "nextDelivery": null,
+      "nextDeliveryQuantity": null
+    }
+  ],
+  "products": [
+  // id                       String         @id @default(cuid())
+  // createdAt                DateTime?      @default(now())
+  // updatedAt                DateTime?      @default(now()) @updatedAt
+  // code                     String
+  // description              Json           @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  // categories               Category[]     @relation("Product_categories")
+  // images                   ProductImage[] @relation("Product_images")
+  // price                    Decimal?       @db.Decimal(18, 4)
+  // rating                   ProductRating? @relation("Product_rating", fields: [ratingId], references: [id])
+  // ratingId                 String?
+  // stock                    Stock?         @relation("Product_stock", fields: [stockId], references: [id])
+  // stockId                  String?        @map("stock")
+    {
+      "id": "86753-098675-30986-753098",
+      "categories": ["Accessories", "Luggage"],
+      "label": "NEWLY_ARRIVED",
+      "title": "Gigi Small Empire Logo Jacquard Messenger Bag",
+      "subtitle": "Guaranteed to complement almost any outfit",
+      "description": {
+        "type": "paragraph",
+        "children": [
+          {
+            "text": "The Gigi tote is guaranteed to complement almost any outfit thanks to its neutral logo chain jacquard pattern. The large, rectangular shape is perfectly sized to carry all your daily essentials, and it comes with a crossbody strap for added versatility. Inside you'll find handy slip pockets for storing your phone and keys"
+          }
+        ]
+      },
+      "pid": "1009805974",
+      "productType": "ACCESSORIES",
+      "pdpUrl": "{countryLang}/t/gigi-small-empire-logo-jacquard-messenger-bag",
+      "variants": [
+        {
+          "code": "1251",
+          "name": "BROWN",
+          "type": "hexcode", // either a swatch URL or a hexadecimal color code
+          "value": "#b09b8d" // If a swatch, a URL, else a hex value
+        }
+      ],
+      "price": {
+        "currency": "USD",
+        "currentPrice": 358,
+        "discounted": false,
+        "fullPrice": 150
+      },
+      "images": [
+        {
+          "id": "e53e1f9d-82b3-4937-ac9a-f4e029018f12",
+          "url": "/static/assets/images/arno-senoner-Sz4oJt_79_A-unsplash.jpg",
+          "altText": "Gigi Small Empire Logo Jacquard Messenger Bag",
+          "aspectRatio": "2:3",
+          "contentType": "image/jpg",
+          "credit": "Photo by <a href=\"https://unsplash.com/@arnosenoner?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Arno Senoner</a> on <a href=\"https://unsplash.com/t/fashion-beauty?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText\">Unsplash</a>",
+          "fileType": "JPG",
+          "format": "PORTRAIT",
+          "height": 5712,
+          "width": 3808
+        }
+      ],
+      "stockId": "c1063000-3cfe-49b0-affe-611260db28ba"
+    }
+  ]
+}

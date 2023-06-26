@@ -2,12 +2,18 @@ import { classNames } from '@trms/utils'
 
 import { forwardRefAs } from '../shared'
 import { useVariant } from '../hooks'
-import { UIThemeProps } from './Box'
+import { BoxProps } from './Box'
 
-export const Link = forwardRefAs<'a', UIThemeProps>(
-  ({ as: Tag = 'a', className, inverted, muted, variant = 'default', ...props }, ref) => {
-    const colorScheme = useVariant(variant, { inverted, muted, schemeKeys: ['link'] });
-    const classes = classNames(colorScheme, className)
+type LinkProps = { isCta?: boolean } & BoxProps
+
+export const Link = forwardRefAs<'a', LinkProps>(
+  ({ as: Tag = 'a', className, inverted, isCta = false, muted, variant = 'default', ...props }, ref) => {
+    const [_variantScheme, variantClasses] = useVariant(variant, {
+      inverted,
+      muted,
+      schemeKeys: ['cta', 'link'],
+    })
+    const classes = classNames(isCta ? variantClasses?.cta : variantClasses?.link, className)
 
     return <Tag className={classes} ref={ref} {...props} />
   },

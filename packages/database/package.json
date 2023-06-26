@@ -11,12 +11,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@prisma/client": "^4.16.1",
     "@trms/config": "workspace:*",
-    "eslint-config-custom": "workspace:*",
     "@trms/tsconfig": "workspace:*",
     "@trms/utils": "workspace:*",
     "@types/node": "^20.2.3",
     "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
     "prisma": "^4.14.1",
     "ts-node": "^10.0.0",
     "typescript": "^5.0.4"
