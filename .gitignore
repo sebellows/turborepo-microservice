@@ -63,3 +63,8 @@ build
 
 # vercel
 .vercel
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
