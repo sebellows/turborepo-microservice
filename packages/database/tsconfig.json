@@ -1,0 +1,9 @@
+{
+  "extends": "@trms/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "ES2022"
+  },
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"]
+}

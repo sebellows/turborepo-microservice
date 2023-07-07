@@ -1,37 +1,102 @@
 import bcrypt from 'bcryptjs'
-import { Gender, Role } from '@prisma/client'
-import { gen, uids } from './seed-ids'
+import { Role } from '@prisma/client'
 
-const userId = gen('users')
+// import { profiles } from './profiles'
 
 export const users = [
   {
-    id: userId.next(),
-    firstName: 'John',
-    middleName: 'Jacob',
-    lastName: 'Ganondorf',
+    // uid: at(0),
+    firstName: 'Ernest',
+    middleName: 'Miller',
+    lastName: 'Hemingway',
     email: 'admin@example.com',
     password: bcrypt.hashSync('123456789', 10),
-    phone: 15558675309,
+    phone: '15558675309',
     role: Role.ADMIN,
+    address: {
+      create: [
+        {
+          addressLine1: '2598 36th St.',
+          addressLine2: 'Apt 6J',
+          municipality: 'Astoria',
+          region: 'NY',
+          country: 'US',
+          postalCode: '11103',
+          isBillingAddress: true,
+          isPrimaryAddress: true,
+          isShippingAddress: true,
+          isValidAddress: true,
+          poBox: false,
+        },
+        // {
+        //   addressLine1: '19 W 21st St',
+        //   addressLine2: '#1101',
+        //   municipality: 'New York',
+        //   region: 'NY',
+        //   country: 'US',
+        //   postalCode: '10010',
+        //   isBillingAddress: false,
+        //   isPrimaryAddress: false,
+        //   isShippingAddress: true,
+        //   isValidAddress: true,
+        //   poBox: false,
+        // },
+      ],
+    },
+    // profile: { create: { ...profiles[0] } },
   },
   {
-    id: userId.next(),
+    // uid: at(1),
     firstName: 'Zelda',
-    lastName: 'Vai',
-    email: 'zvai@example.com',
+    lastName: 'Fitzgerald',
+    email: 'zeldahasfitz@example.com',
     password: bcrypt.hashSync('123456789', 10),
-    phone: 15553337777,
+    phone: '15553337777',
     role: Role.CUSTOMER,
+    address: {
+      create: [
+        {
+          addressLine1: '18 Avenue A',
+          addressLine2: 'Apt #1020',
+          municipality: 'New York',
+          region: 'NY',
+          country: 'US',
+          postalCode: '11105',
+          isBillingAddress: true,
+          isPrimaryAddress: true,
+          isShippingAddress: true,
+          isValidAddress: true,
+          poBox: false,
+        },
+      ],
+    },
+    // profile: { create: { ...profiles[1] } },
   },
   {
-    id: userId.next(),
-    firstName: 'Link',
-    lastName: 'Voe',
-    email: 'lvoe@example.com',
+    // uid: at(2),
+    firstName: 'Anais',
+    lastName: 'Nin',
+    email: 'aninymous@example.com',
     password: bcrypt.hashSync('123456789', 10),
-    gender: Gender.NON_BINARY,
-    phone: 15555555555,
+    phone: '15555555555',
     role: Role.CUSTOMER,
+    address: {
+      create: [
+        {
+          addressLine1: '55 44th Ave.',
+          addressLine2: 'Ste 10J',
+          municipality: 'Brooklyn',
+          region: 'NY',
+          country: 'US',
+          postalCode: '11112',
+          isBillingAddress: true,
+          isPrimaryAddress: true,
+          isShippingAddress: true,
+          isValidAddress: false,
+          poBox: false,
+        },
+      ],
+    },
+    // profile: { create: { ...profiles[2] } },
   },
 ]

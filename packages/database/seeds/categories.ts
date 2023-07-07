@@ -1,70 +1,70 @@
-import { gen } from './seed-ids'
+// import { gen } from './seed-ids'
 
-const at = gen.at('categories')
+// const at = gen.at('categories')
 
-const mensId = at(0)
-const womensId = at(1)
+// const mensId = at(0)
+// const womensId = at(1)
 
-export const categories = {
+const categories = {
   men: {
-    id: mensId,
+    // uid: mensId,
     name: 'Men',
     code: 'catalog_men',
-    url: '/catalog/men',
+    path: '/catalog/men',
     description: JSON.stringify({
       type: 'paragraph',
       children: [{ text: "Stylish and hip men's clothing." }],
     }),
   },
   women: {
-    id: womensId,
+    // uid: womensId,
     name: 'Women',
     code: 'catalog_women',
-    url: '/catalog/women',
+    path: '/catalog/women',
     description: JSON.stringify({
       type: 'paragraph',
       children: [{ text: 'Modern clothing for modern women' }],
     }),
   },
   menShirts: {
-    id: at(2),
+    // uid: at(2),
     name: "Men's Shirts",
     code: 'catalog_men_shirts',
-    parentId: mensId,
-    url: '/catalog/men/shirts/c',
+    // parentId: mensId,
+    path: '/catalog/men/shirts/c',
     description: JSON.stringify({
       type: 'h1',
       children: [{ text: "Men's Shirts" }],
     }),
   },
   menJeans: {
-    id: at(3),
+    // uid: at(3),
     name: "Men's Jeans",
     code: 'catalog_men_jeans',
-    parentId: mensId,
-    url: '/catalog/men/jeans/c',
+    // parentId: mensId,
+    path: '/catalog/men/jeans/c',
     description: JSON.stringify({
       type: 'h1',
       children: [{ text: "Men's Jeans" }],
     }),
   },
   menShoes: {
-    id: at(4),
+    // uid: at(4),
     name: "Men's Shoes",
     code: 'catalog_men_shoes',
-    parentId: mensId,
-    url: '/catalog/men/shoes/c',
+    // parentId: mensId,
+    path: '/catalog/men/shoes/c',
     description: JSON.stringify({
       type: 'h1',
       children: [{ text: "Men's Shoes" }],
     }),
   },
   dresses: {
-    id: at(5),
+    // uid: at(5),
     name: 'Dresses',
     code: 'catalog_women_dresses',
-    parentId: womensId,
-    url: '/catalog/women/dresses/c',
+    // parentId: womensId,
+    path: '/catalog/women/dresses/c',
     description: JSON.stringify({
       type: 'h1',
       children: [
@@ -75,22 +75,22 @@ export const categories = {
     }),
   },
   womenJeans: {
-    id: at(6),
+    // uid: at(6),
     name: "Women's Jeans",
     code: 'catalog_women_jeans',
-    parentId: womensId,
-    url: '/catalog/women/jeans/c',
+    // parentId: womensId,
+    path: '/catalog/women/jeans/c',
     description: JSON.stringify({
       type: 'paragraph',
       children: [{ text: "Women's Jeans" }],
     }),
   },
   womenShoes: {
-    id: at(7),
+    // uid: at(7),
     name: "Women's Shoes",
     code: 'catalog_women_shoes',
-    parentId: womensId,
-    url: '/catalog/women/shoes/c',
+    // parentId: womensId,
+    path: '/catalog/women/shoes/c',
     description: JSON.stringify({
       type: 'h1',
       children: [{ text: "Women's Shoes" }],
@@ -98,11 +98,13 @@ export const categories = {
   },
 }
 
+export { categories }
+
 // export const categories = [
 //   {
 //     id: uids.categories[0],
 //     name: 'Video Games',
-//     url: '/c/video-games',
+//     path: '/c/video-games',
 //     description: JSON.stringify({
 //       type: 'paragraph',
 //       children: [{ text: "Shop around for consoles, games, accessories, and more." }],
@@ -112,7 +114,7 @@ export const categories = {
 //     id: uids.categories[1],
 //     name: 'Consoles',
 //     code: 'video-games_consoles',
-//     url: '/c/consoles',
+//     path: '/c/consoles',
 //     description: JSON.stringify({
 //       type: 'paragraph',
 //       children: [{ text: 'Find the video game console that\'s right for you.' }],
@@ -122,7 +124,7 @@ export const categories = {
 //     id: uids.categories[2],
 //     name: 'Games',
 //     code: '',
-//     url: '/c/games',
+//     path: '/c/games',
 //     description: JSON.stringify({
 //       type: 'paragraph',
 //       children: [{ text: 'Video games for your platform of choice.' }],

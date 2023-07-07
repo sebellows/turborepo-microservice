@@ -8,11 +8,17 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "keywords": [],
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "scripts": {
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate",
-    "db:dotenv": "dotenv -e ../../.env --",
-    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev --name trms",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "with-env": "dotenv -e ../../.env --",
+    "db:generate": "pnpm run with-env prisma generate",
+    "db:push": "pnpm run with-env prisma db push --skip-generate",
+    "db:migrate": "pnpm run with-env prisma migrate dev --name trms",
+    "db:seed": "pnpm run with-env prisma db seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -21,13 +27,14 @@
     "@trms/tsconfig": "workspace:*",
     "@trms/utils": "workspace:*",
     "@types/bcryptjs": "^2.4.2",
-    "@types/node": "^20.2.3",
+    "@types/node": "^20.3.3",
     "@types/uuid": "^9.0.2",
     "bcryptjs": "^2.4.3",
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
     "prisma": "^4.14.1",
     "ts-node": "^10.0.0",
+    "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
