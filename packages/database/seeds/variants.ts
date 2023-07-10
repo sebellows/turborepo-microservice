@@ -1,87 +1,266 @@
+import { ImageFormat, ProductStatusType, StockStatus } from '@prisma/client'
 import { gen } from './seed-ids'
+import { images } from './images'
+import { swatches } from './swatches'
 
-const at = gen.at('variants')
+const at = gen.at('skus')
 
-export const variants = {
-  white: {
-    uid: at(0),
-    name: 'White',
-    hex: '#FEF8F8',
-  },
-  black: {
-    uid: at(1),
-    name: 'Black',
-    hex: '#1C1C1C',
-  },
-  bone: {
-    uid: at(2),
-    name: 'Bone White',
-    hex: '#D3C3AA',
-  },
-  brown: {
-    uid: at(3),
-    name: '',
-    hex: '#3B2119',
-  },
-  thinPlaid: {
-    uid: at(4),
-    name: 'Thin Plaid',
-    hex: '#E3455C',
-  },
-  fatPlaid: {
-    uid: at(5),
-    name: 'Fat Plaid',
-    hex: '#E3455C',
-  },
-  floralDark: {
-    uid: at(6),
-    name: 'Floral Dark',
-    hex: '#31211F',
-  },
-  floralPink: {
-    uid: at(7),
-    name: 'Floral Pink',
-    hex: '#F77E90',
-  },
-  floralTeal: {
-    uid: at(8),
-    name: 'Floral Teal',
-    hex: '#38B3BA',
-  },
-  denim: {
-    uid: at(9),
-    name: 'Denim',
-    swatch: JSON.stringify({
-      src: 'data:swatch/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9PjsBCgsLDg0OHBAQHDsoIig7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O//AABEIADcAUAMBEQACEQEDEQH/xABmAAADAQEBAAAAAAAAAAAAAAABAgMABAYQAQACAgICAQMEAwEAAAAAAAECEQAhEjEDQVEiYXEjMoHBQlJikQEBAQEBAAAAAAAAAAAAAAAAAAECAxEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A8cP6jKV0vzmnI8CJCLW4ydhgNAoWunr1gYYME/12npyg1Ln9JV9VgHyR5QipFk3beAGPKBv6o/JgUhOLGQ0LD2YROdPhZOzXWsAxZVFuz74VyKkk2F3rIKwXalg7wqqHjip8XfeECZKMTiV/HWBmo+UZP1fnKNziqMaDvAISv6ZJ6bwKeNIcZRa3V3/WBMkWrVllnvANwfEAPL2uBzSgs1NeqvIprU+oSq6cC0fJCciVFR7LwjThcJ1s9XgA4jGQ2sSso0+U5J7roLwAkovEV1f2cByQEENV24C+QjKTIC1O3TgLxXjw3IdmBO2y7Qu1yKeT+nW7Tu8IPhbX0h8YUxZP56e8IYL8cdARH13+HKFjM+ptjZ/5kGhKEiBq2NJ+MoaBNp4/SFYC+QY/e2/xgUjJhK4aYt3XWBCwolbG91kANIRJVswKRgQGUWTyN+qwAV81VfzgNL9keLxbdfOUCuSIfu11kAiRlxov/laTKHq4sealvE+MAeSbFhTyeKd9uA0p8py8lqaauqwIJSr0vfrIoXuUabvtwh4k2Ju9V3/WA2iUTl6pTKNKN+NNkiXvrIMa0KJ/k5RgkRsje+/eA0R2e/tgL5L5RWRC3t96wG6piWPu/eEQZRYN93oyKJyp65IYFCMpBK6OsKSUKHXJBvKgEokRtTv5MC8I8assr5wFksQiFfDgPCn5JH3wMwvx1IrjLW8DaqMJLcWjCP/Z',
-      width: 80,
-      height: 55,
-    }),
-  },
-  denimBlue: {
-    uid: at(10),
-    name: 'Denim Blue',
-    swatch: JSON.stringify({
-      src: 'data:swatch/jpeg;base64,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',
-      width: 80,
-      height: 55,
-    }),
-  },
-  denimDark: {
-    uid: at(11),
-    name: 'Denim Dark',
-    swatch: JSON.stringify({
-      src: 'data:swatch/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9PjsBCgsLDg0OHBAQHDsoIig7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O//AABEIADcAUAMBEQACEQEDEQH/xABeAAEBAQEBAAAAAAAAAAAAAAAAAQIDBxAAAgEDAwQDAAAAAAAAAAAAAAERITFBAhKBUWFxkaGx8AEBAQAAAAAAAAAAAAAAAAAAAAERAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/APJtSlkUSgCw4kCbQADICAEAOAqpVCLqQD0AiMgFOfADaA4AJVAkAUKU3II1qu5ywiIKfvAB3tAETrYByAYFXSAJ3YVVRqUEG6uAJSagXAFu59ATPUC0doAyk5ArYEczPyAyqhUdEwh5AAE60ASBrFACfID7ALur4As16kHN3KGbAAEgWQJIF0sABZlRYAo3JgZd2AwAAASQLkC2XcCO8oCzNwCA/9k=',
-      width: 80,
-      height: 55,
-    }),
-  },
-  denimFaded: {
-    uid: at(12),
-    name: 'Denim Faded',
-    swatch: JSON.stringify({
-      src: 'data:swatch/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9PjsBCgsLDg0OHBAQHDsoIig7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O//AABEIADcAUAMBEQACEQEDEQH/xABqAAADAQEBAQAAAAAAAAAAAAACAwQBBQAGEAACAgEDAwMFAQEAAAAAAAABEQACIQMxQRJRcSJhkQQTMoGxocEBAQEBAQEAAAAAAAAAAAAAAAEAAgMEEQEBAQAAAAAAAAAAAAAAAAAAARH/2gAMAwEAAhEDEQA/ALaPuUJ7HkNBVEN+II4ghWeD7wILMDxFFXYqPmQLOQxYniIZa1hlo9xIk2N7nNkAJqMkXvcsg4a395oAAt1AA5Hc7STp0DvZfipzaNrg8uBP3GThQID6WCeMRQb0HTgsL4kCSGNkVFFmpVmSogrUCqw9ueIwJSgGQXYh914mgGuOkVDL3knWpjwv+zm2b1O22HMkQP8AJIRIAQOZJnTnPHaSJ1ABYlpgbTQKuRyDgyCbVQsXYfqaCe1UWnNBj+1WtyKs9pJ164ZPfdzk2MDAG2YFrIwHgSQqXGOxKkhE9tu5kib/AI2MQktYh9VgTNBMT6iQtmBNAuqvepSA5kCr3+5qiwJQ94p3LMAlFkzk6GBADZwLKYOUpAfSBgE7yLweGU/aQBYg1MUl1KZtw8CLKHUxdo1C2mgXr6gpUVqid8+IwEaRJuACC0xNJ9EK4C5M4OjbBnDT+JIaHVUJfuSaX1cFwLGdnxEMv5bjARcekWHaIS/U6Y3wFNQIdahsGMNfyaAdL6ewIOUD/sqo+gI6QByy5xdBcErJ47QLKnI+ZAYHPkyIQxYMHaKe6SSuHIFWqRVKaCLXubXOChzNRkumjfUt78ER3BHrVvXUFRjDMk//2Q==',
-      width: 80,
-      height: 55,
-    }),
-  },
+const sizes = ['S', 'M', 'L']
+// const randomQuantity = (max = 10) => Math.floor(Math.random() * max) + 1
+
+let skuIndex = 0
+
+type VariantOptionType = {
+  SKU: string
+  size: string
+  price: {
+    create: {
+      isoCurrencyCode: string
+      currentPrice: number
+      formattedValue: string
+      fullPrice: number
+    }
+  }
+  stock: {
+    create: {
+      quantity: number
+      status: StockStatus
+    }
+  }
 }
+
+function generateVariantOptions(
+  sizeArr: string[],
+  stockAmt: number[],
+  currentPrice: number,
+  fullPrice = currentPrice,
+) {
+  return sizeArr.reduce((acc, size, i) => {
+    const stock = stockAmt[i]
+    acc.push({
+      SKU: at(skuIndex++),
+      size,
+      price: {
+        create: {
+          isoCurrencyCode: 'USD',
+          currentPrice: currentPrice,
+          formattedValue: `$${currentPrice}.00`,
+          fullPrice,
+        },
+      },
+      stock: {
+        create: {
+          quantity: stock,
+          status: stock > 0 ? StockStatus.IN_STOCK : StockStatus.NONE,
+        },
+      },
+    })
+    return acc
+  }, [] as VariantOptionType[])
+}
+
+type VariantParams = {
+  name: string
+  sizes: string[]
+  quantities: number[]
+  price: number
+  fullPrice: number
+  imageIndex: number
+  swatch: string
+}
+function generateProductVariant(...variantParams: VariantParams[]) {
+  function generateVariant(params: VariantParams, index: number) {
+    const _sizes = params.sizes
+    const isActive = index === 0
+    return {
+      name: params.name,
+      active: isActive,
+      size: _sizes,
+      options: {
+        create: generateVariantOptions(_sizes, params.quantities, params.price, params.fullPrice),
+      },
+      images: {
+        create: [
+          {
+            resource: JSON.stringify(images[`${params.imageIndex}`]),
+            format: ImageFormat.PORTRAIT,
+          },
+        ],
+      },
+      status: params.quantities.some(q => q > 0)
+        ? ProductStatusType.AVAILABLE
+        : ProductStatusType.UNAVAILABLE,
+      swatch: { create: swatches[params.swatch] },
+    }
+  }
+
+  return variantParams.map((params, i) => generateVariant(params, i))
+}
+
+export const variants = [
+  ...generateProductVariant(
+    {
+      name: 'Black',
+      sizes,
+      quantities: [10, 3, 7],
+      price: 190,
+      fullPrice: 190,
+      imageIndex: 15,
+      swatch: 'black',
+    },
+    {
+      name: 'White',
+      sizes,
+      quantities: [5, 0, 3],
+      price: 190,
+      fullPrice: 190,
+      imageIndex: 17,
+      swatch: 'white',
+    },
+  ),
+  ...generateProductVariant({
+    name: '',
+    sizes,
+    quantities: [20, 9, 13],
+    price: 35,
+    fullPrice: 50,
+    imageIndex: 16,
+    swatch: 'thinPlaid',
+  }),
+  ...generateProductVariant({
+    name: '',
+    sizes,
+    quantities: [4, 6, 0],
+    price: 300,
+    fullPrice: 300,
+    imageIndex: 14,
+    swatch: 'fatPlaid',
+  }),
+  ...generateProductVariant({
+    name: 'Medium Dark Wash',
+    sizes: ['30x30', '30x32', '30x34', '32x32', '32x34', '32x36', '34x32', '34x34', '34x36'],
+    quantities: [2, 3, 0, 1, 4, 2, 2, 0, 1],
+    price: 200,
+    fullPrice: 200,
+    imageIndex: 0,
+    swatch: 'denim',
+  }),
+  ...generateProductVariant({
+    name: 'Dark Wash',
+    sizes: ['30x30', '30x32', '30x34', '32x32', '32x34', '32x36', '34x32', '34x34', '34x36'],
+    quantities: [2, 3, 0, 1, 4, 2, 2, 0, 1],
+    price: 100,
+    fullPrice: 100,
+    imageIndex: 9,
+    swatch: 'denimDark',
+  }),
+  ...generateProductVariant({
+    name: 'Light Wash',
+    sizes: ['30x30', '30x32', '30x34', '32x32', '32x34', '32x36', '34x32', '34x34', '34x36'],
+    quantities: [2, 3, 0, 1, 4, 2, 2, 0, 1],
+    price: 500,
+    fullPrice: 500,
+    imageIndex: 11,
+    swatch: 'denimFaded',
+  }),
+  ...generateProductVariant({
+    name: 'Black Suede',
+    sizes: ['9', '10', '12'],
+    quantities: [0, 0, 0],
+    price: 180,
+    fullPrice: 180,
+    imageIndex: 8,
+    swatch: 'black',
+  }),
+  ...generateProductVariant({
+    name: 'Suede',
+    sizes: ['9', '10', '12'],
+    quantities: [7, 7, 7],
+    price: 190,
+    fullPrice: 190,
+    imageIndex: 10,
+    swatch: 'bone',
+  }),
+  ...generateProductVariant({
+    name: 'Leather',
+    sizes: ['9', '10', '12'],
+    quantities: [4, 1, 9],
+    price: 41,
+    fullPrice: 60,
+    imageIndex: 12,
+    swatch: 'brown',
+  }),
+  // Womens
+  ...generateProductVariant({
+    name: 'Floral',
+    sizes: ['XS', 'SM', 'MD'],
+    quantities: [2, 5, 5],
+    price: 134,
+    fullPrice: 134,
+    imageIndex: 2,
+    swatch: 'floralDark',
+  }),
+  ...generateProductVariant({
+    name: 'Striped Floral',
+    sizes: ['XS', 'SM', 'MD'],
+    quantities: [0, 1, 2],
+    price: 80,
+    fullPrice: 80,
+    imageIndex: 13,
+    swatch: 'floralPink',
+  }),
+  ...generateProductVariant({
+    name: 'A-Line',
+    sizes: ['SM', 'MD'],
+    quantities: [1, 2],
+    price: 85,
+    fullPrice: 85,
+    imageIndex: 4,
+    swatch: 'floralTeal',
+  }),
+  ...generateProductVariant({
+    name: 'Medium Wash',
+    sizes: ['24x30', '24x32', '26x30', '26x32', '27x30', '28x30', '30x30', '32x30', '32x32'],
+    quantities: [2, 3, 0, 1, 4, 2, 2, 0, 1],
+    price: 20,
+    fullPrice: 38,
+    imageIndex: 6,
+    swatch: 'denim',
+  }),
+  ...generateProductVariant({
+    name: 'Dark Wash',
+    sizes: ['24x30', '24x32', '26x30', '26x32', '27x30', '28x30', '30x30', '32x30', '32x32'],
+    quantities: [2, 3, 0, 1, 4, 2, 2, 0, 1],
+    price: 50,
+    fullPrice: 50,
+    imageIndex: 7,
+    swatch: 'denimDark',
+  }),
+  ...generateProductVariant({
+    name: 'Brown',
+    sizes: ['5', '6', '6.5', '7', '8.5'],
+    quantities: [1, 3, 14, 10, 22],
+    price: 90,
+    fullPrice: 90,
+    imageIndex: 1,
+    swatch: 'brown',
+  }),
+  ...generateProductVariant({
+    name: 'Black',
+    sizes: ['5', '6', '6.5', '7', '8.5'],
+    quantities: [1, 3, 14, 10, 22],
+    price: 399,
+    fullPrice: 399,
+    imageIndex: 5,
+    swatch: 'black',
+  }),
+  ...generateProductVariant({
+    name: 'White',
+    sizes: ['5', '6', '6.5', '7', '8.5'],
+    quantities: [11, 13, 4, 20, 12],
+    price: 72,
+    fullPrice: 72,
+    imageIndex: 3,
+    swatch: 'white',
+  }),
+]

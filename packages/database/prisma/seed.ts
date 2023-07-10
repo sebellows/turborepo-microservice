@@ -19,10 +19,9 @@ async function main() {
     products.map(
       async product =>
         await prisma.product.upsert({
-          where: { sku: product.sku },
+          where: { uid: product.uid },
           update: {},
           create: product,
-          // data: { ...product },
         }),
     ),
   )
