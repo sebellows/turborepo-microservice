@@ -1,16 +1,18 @@
-import { StringKeyOf, ValueOf, getKeys, getValues, pick } from "@trms/utils";
+import { StringKeyOf } from '@trms/utils'
 
-import { WithBreakpoint } from "./breakpoints";
-import { flexgrid } from "./flexgrid";
-import { layout } from "./layout";
-import { typography } from "./typography";
-import { spacing } from "./spacing";
-import { sizing } from "./sizing";
-import { borders } from "./borders";
-import { shadow } from "./shadow";
+import { bg } from './backgrounds'
+import { WithBreakpoint } from './breakpoints'
+import { flexgrid } from './flexgrid'
+import { layout } from './layout'
+import { typography } from './typography'
+import { spacing } from './spacing'
+import { sizing } from './sizing'
+import { borders } from './borders'
+import { shadow } from './shadow'
 
 /** @internal */
 export const UIStyleCategoryMap = {
+  background: { bg },
   borders,
   layout,
   flexgrid,
@@ -18,9 +20,9 @@ export const UIStyleCategoryMap = {
   sizing,
   spacing,
   typography,
-};
-export type UIStyleCategoryMap = typeof UIStyleCategoryMap;
-export type UIStyleCategory = keyof UIStyleCategoryMap;
+}
+export type UIStyleCategoryMap = typeof UIStyleCategoryMap
+export type UIStyleCategory = keyof UIStyleCategoryMap
 
 /**
  * UIComponentProps Breakdown:
@@ -45,6 +47,7 @@ export type UIStyleCategory = keyof UIStyleCategoryMap;
  * }
  */
 export const UIComponentProps = {
+  bg,
   ...borders,
   ...layout,
   ...flexgrid,
@@ -52,15 +55,13 @@ export const UIComponentProps = {
   ...sizing,
   ...spacing,
   ...typography,
-};
+}
 
-type UIComponentPropsType = typeof UIComponentProps;
+type UIComponentPropsType = typeof UIComponentProps
 // Key of UIComponentProps: `flex`, `leading`, `alignItems`, etc.
-type UIPropertyKey = StringKeyOf<UIComponentPropsType>;
+type UIPropertyKey = StringKeyOf<UIComponentPropsType>
 // i.e., key of UIComponentProps.flex: `none`, `1`, `auto`, etc.
-type UIPropertyValue<K extends UIPropertyKey> = StringKeyOf<
-  UIComponentPropsType[K]
->;
+type UIPropertyValue<K extends UIPropertyKey> = StringKeyOf<UIComponentPropsType[K]>
 
 /**
  * @example
@@ -71,5 +72,5 @@ type UIPropertyValue<K extends UIPropertyKey> = StringKeyOf<
 export type UIComponentProps = {
   [K in UIPropertyKey]:  // keyof typeof UIComponentProps (e.g., 'fontWeight')
     | UIPropertyValue<K> // keyof UIComponentPropsType[K] (e.g., 'thin')
-    | WithBreakpoint<UIPropertyValue<K>>; // <keyof UIComponentPropsType[K]> (e.g., `{ lg: 'thin' }`)
-};
+    | WithBreakpoint<UIPropertyValue<K>> // <keyof UIComponentPropsType[K]> (e.g., `{ lg: 'thin' }`)
+}

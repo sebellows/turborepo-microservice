@@ -1,11 +1,8 @@
 import bcrypt from 'bcryptjs'
 import { Role } from '@prisma/client'
 
-// import { profiles } from './profiles'
-
 export const users = [
   {
-    // uid: at(0),
     firstName: 'Ernest',
     middleName: 'Miller',
     lastName: 'Hemingway',
@@ -43,7 +40,6 @@ export const users = [
         // },
       ],
     },
-    // profile: { create: { ...profiles[0] } },
   },
   {
     // uid: at(1),
@@ -70,10 +66,8 @@ export const users = [
         },
       ],
     },
-    // profile: { create: { ...profiles[1] } },
   },
   {
-    // uid: at(2),
     firstName: 'Anais',
     lastName: 'Nin',
     email: 'aninymous@example.com',
@@ -97,6 +91,5 @@ export const users = [
         },
       ],
     },
-    // profile: { create: { ...profiles[2] } },
   },
 ]

@@ -1,5 +1,4 @@
 import { categories } from './categories'
-// import { getReviewsByProductId } from './reviews'
 import { gen } from './seed-ids'
 import { variants } from './variants'
 import { productCodes } from './product-codes'

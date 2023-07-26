@@ -1,132 +1,185 @@
-import { BoxProps, forwardRefAs } from '@trms/ui'
+import { Box, BoxProps, Link, Stack, Text, forwardRefAs } from '@trms/ui'
+import { CardScrim } from './Card'
 
-type ProductCardProps = { index?: number } & BoxProps
+type ProductCardProps = {
+  altText: string
+  ariaLabel: string
+  discount?: string
+  href: string
+  id: string
+  imageUrl: string
+  index?: number
+  imageWidth: number | string
+  imageHeight: number | string
+  kicker?: string
+  currentPrice: string
+  previousPrice?: string
+  subtitle?: string
+  swatches?: { name: string; src: string; width?: number; height?: number }[]
+  title: string
+} & BoxProps
 
-export const ProductCard = forwardRefAs(({ index = 0, ...props }: ProductCardProps, ref) => {
-  return (
-    <div
-      className="product-card product-grid__card  css-1xl2eyj"
-      data-product-position={index}
-      data-testid="product-card"
-      ref={ref}
-    >
-      <div className="product-card__body" data-el-type="Card" data-testid="product-card__body">
-        <figure>
-          <a
-            className="product-card__link-overlay opt-mobs-set"
+export const ProductCard = forwardRefAs(
+  (
+    {
+      altText = '',
+      ariaLabel,
+      currentPrice,
+      discount,
+      previousPrice,
+      href,
+      id,
+      imageUrl,
+      imageWidth = 400,
+      imageHeight = 600,
+      index = 0,
+      kicker,
+      subtitle,
+      swatches,
+      title,
+      ...props
+    }: ProductCardProps,
+    ref,
+  ) => {
+    return (
+      <Box
+        className="product-card"
+        data-el-type="Card"
+        data-testid="product-card"
+        ref={ref}
+        position="relative"
+        mb="4"
+        style={{ maxWidth: '592px' }}
+        {...props}
+      >
+        <Box as="figure">
+          <CardScrim
+            className="product-card__link-overlay"
             data-testid="product-card__link-overlay"
-            href="https://www.nike.com/t/nikecourt-air-zoom-gp-turbo-osaka-womens-hard-court-tennis-shoes-GPx5CL/DX6956-100"
-            tabIndex={-1}
+            href={href}
           >
-            NikeCourt Air Zoom GP Turbo Osaka
-          </a>
-          <a
-            aria-label="NikeCourt Air Zoom GP Turbo Osaka"
+            {title}
+          </CardScrim>
+          <Link
+            aria-label={ariaLabel}
             className="product-card__img-link-overlay"
             data-el-type="Hero"
             data-testid="product-card__img-link-overlay"
-            href="https://www.nike.com/t/nikecourt-air-zoom-gp-turbo-osaka-womens-hard-court-tennis-shoes-GPx5CL/DX6956-100"
+            href={href}
+            display="block"
+            zIndex="1"
+            position="relative"
           >
-            <div className="wall-image-loader  css-1la3v4n" data-testid="wall-image-loader">
+            <Box className="wall-image-loader" data-testid="wall-image-loader">
               <img
-                alt="NikeCourt Air Zoom GP Turbo Osaka Women's Hard Court Tennis Shoes"
-                className="product-card__hero-image css-1fxh5tw"
+                alt={altText}
+                className="w-fill h-auto block transition-opacity product-card__hero-image"
                 loading="eager"
                 sizes=""
-                src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/12554a94-9bd4-4305-9c2e-c6ba5da8e471/nikecourt-air-zoom-gp-turbo-osaka-womens-hard-court-tennis-shoes-GPx5CL.png"
+                src={imageUrl}
               />
               <noscript>
                 <img
-                  alt="NikeCourt Air Zoom GP Turbo Osaka Women&#x27;s Hard Court Tennis Shoes"
-                  className="product-card__hero-image css-1fxh5tw"
-                  height="400"
+                  alt={altText}
+                  className="w-fill h-auto block transition-opacity product-card__hero-image"
+                  height={imageHeight}
                   loading="lazy"
-                  width="400"
+                  width={imageWidth}
                 />
               </noscript>
-            </div>
-          </a>
-          <div className="product-card__info disable-animations for--product opt-inspected">
-            <div className="product_msg_info">
-              <div
-                data-testid="product-card__messaging"
-                className="product-card__messaging accent--color"
-              >
-                Just In
-              </div>
-              <div className="product-card__titles">
-                <div
+            </Box>
+          </Link>
+          <Box position="relative" pt="3" pb="0.5" className="min-h-[185px] product-card__info">
+            <Box className="product_msg_info">
+              {kicker && (
+                <Text
+                  as="span"
+                  variant="secondary"
+                  data-testid="product-card__kicker"
+                  className="-mt-0.5 product-card__kicker"
+                >
+                  {kicker}
+                </Text>
+              )}
+              <Box className="product-card__titles">
+                <Text
+                  as="span"
+                  display="block"
+                  fontWeight="medium"
                   className="product-card__title"
-                  id="NikeCourt Air Zoom GP Turbo Osaka"
+                  id={id}
                   role="link"
                 >
-                  NikeCourt Air Zoom GP Turbo Osaka
-                </div>
-                <div className="product-card__subtitle" role="link">
-                  Women's Hard Court Tennis Shoes
-                </div>
-              </div>
-            </div>
-            <div
-              className="product-card__count-wrapper show--all false"
-              data-testid="product-card__count-wrapper "
-            >
-              <div className="product-card__count-item">
-                <button
-                  aria-expanded="false"
-                  className="product-card__colorway-btn"
-                  data-testid="product-card__colorway-btn"
-                  type="button"
+                  {title}
+                </Text>
+                {subtitle && (
+                  <Text as="span" muted={true} className="product-card__subtitle" role="link">
+                    {subtitle}
+                  </Text>
+                )}
+              </Box>
+            </Box>
+            {swatches?.length && (
+              <Box
+                className="product-card__swatches-wrapper"
+                data-testid="product-card__swatches-wrapper "
+              >
+                <Stack
+                  as="ul"
+                  orientation="horizontal"
+                  grid={false}
+                  className="product-card__swatches-list"
                 >
-                  <div
-                    aria-label="Available in 1 Color"
-                    className="product-card__product-count font-override__body1"
+                  {swatches.map(swatch => {
+                    const { src, name, ...dimensions } = swatch
+                    return (
+                      <Box key={name}>
+                        <img src={src} alt={name} {...dimensions} tabIndex={0} role="button" />
+                      </Box>
+                    )
+                  })}
+                </Stack>
+              </Box>
+            )}
+            <Box className="product-card__price" data-testid="product-card__price" role="link">
+              <Box className="product-price__wrapper">
+                <Text
+                  as="span"
+                  fontWeight="medium"
+                  pr="1.5"
+                  className="product-price is--current-price"
+                  data-testid="product-price"
+                  role="link"
+                >
+                  {currentPrice}
+                </Text>
+                {previousPrice && (
+                  <Text
+                    as="s"
+                    muted={true}
+                    className="product-price is--previous-price"
+                    data-testid="product-price"
+                    role="link"
                   >
-                    1 Color
-                  </div>
-                </button>
-              </div>
-            </div>
-            <div className="product-card__animation_wrapper opt-inspected">
-              <div className="product-card__price-wrapper">
-                <div className="product-card__price" data-testid="product-card__price" role="link">
-                  <div className="product-price__wrapper css-1q1feg0">
-                    <div
-                      className="product-price us__styling is--current-price css-11s12ax"
-                      data-testid="product-price"
-                      role="link"
-                    >
-                      $150
-                    </div>
-                  </div>
-                  <div
-                    className="opt-pim opt-pim-desktop"
-                    style={{
-                      color: 'rgb(0, 125, 72)',
-                      fontWeight: 500,
-                      paddingTop: '8px',
-                      display: 'none',
-                    }}
-                  >
-                    Extra 20% Off w/ SUMMER
-                  </div>
-                  <div
-                    className="opt-pim opt-pim-mobile"
-                    style={{
-                      color: 'rgb(0, 125, 72)',
-                      fontWeight: 500,
-                      paddingTop: '8px',
-                      display: 'none',
-                    }}
-                  >
-                    Extra 20% Off w/ SUMMER
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </figure>
-      </div>
-    </div>
-  )
-})
+                    {previousPrice}
+                  </Text>
+                )}
+              </Box>
+              {discount && (
+                <Text
+                  mb="0"
+                  mt="2"
+                  textColor="red-500"
+                  fontWeight="medium"
+                  className="product-card__discount"
+                >
+                  {discount}
+                </Text>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    )
+  },
+)

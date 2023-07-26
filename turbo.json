@@ -6,8 +6,12 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "test": {},
+    "test:watch": {
+      "cache": false
+    },
     "lint": {},
-    "check-types": {},
+    "type-check": {},
     "dev": {
       "dependsOn": ["^db:generate"],
       "cache": false,

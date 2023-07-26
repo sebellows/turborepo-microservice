@@ -8,6 +8,7 @@ import {
   useVariant,
 } from "@trms/ui";
 import { classNames } from "@trms/utils";
+import Link from 'next/link';
 
 export type CardProps = {
   fill?: boolean
@@ -89,11 +90,23 @@ const getMediaPlacementProps = (placement: CardMediaProps['placement']): Partial
   }
 }
 
-const CardScrim = ({ href = '#!' }: { href?: string }) => {
+type CardScrimProps = { href?: string, transparent?: boolean } & BoxProps
+
+const CardScrim = forwardRefAs<'a', CardScrimProps>((
+  {
+    bg = 'black',
+    className,
+    href = '#!',
+    transparent = false,
+    ...props
+  },
+  ref
+) => {
   return (
     <Box
-      as="a"
+      as={Link}
       href={href}
+      bg={bg}
       display="block"
       position="absolute"
       top="0"
@@ -101,10 +114,13 @@ const CardScrim = ({ href = '#!' }: { href?: string }) => {
       w="full"
       h="full"
       zIndex="10"
-      className="bg-fixed bg-black opacity-12 transition duration-300 ease-in-out hover:opacity-30"
+      tabIndex={-1}
+      {...props}
+      ref={ref}
+      className={classNames("bg-fixed opacity-12 u-ease-300 u-text-0 hover:opacity-30", className)}
     />
   )
-}
+})
 CardScrim.displayName = 'CardScrim'
 
 const CardMedia = forwardRefAs<'svg', CardMediaProps>(

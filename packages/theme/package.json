@@ -13,7 +13,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check-types": "tsc --noEmit"
+    "type-check": "tsc --noEmit"
   },
   "author": "Sean Bellows",
   "dependencies": {

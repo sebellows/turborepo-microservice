@@ -17,6 +17,8 @@
     "migrate": "cd ./packages/database && pnpm run db:migrate",
     "lint": "dotenv -- turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
     "gen:workspace": "turbo gen workspace"
   },
   "devDependencies": {

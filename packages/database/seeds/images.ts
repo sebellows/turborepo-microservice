@@ -1,3 +1,5 @@
+const cloudinaryName = process.env.CLOUDINARY_NAME
+
 export const images = {
   avatar: {
     assetId: '1370ef031dfbd418551dd9aae42913fa',
@@ -11,9 +13,8 @@ export const images = {
     width: 600,
     height: 600,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688147328/shop/ugly-avatar_evave0.png',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688147328/shop/ugly-avatar_evave0.png',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688147328/shop/ugly-avatar_evave0.png`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688147328/shop/ugly-avatar_evave0.png`,
   },
   '0': {
     assetId: '3124df7e2ff03fb89ed4a66e7065d71b',
@@ -27,9 +28,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/mens-jeans-loose-fit_dkgqac.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/mens-jeans-loose-fit_dkgqac.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/mens-jeans-loose-fit_dkgqac.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/mens-jeans-loose-fit_dkgqac.jpg`,
   },
   '1': {
     assetId: '09c6485223039160e381ff63f2e18d04',
@@ -43,9 +43,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-shoes-high-heel-brown_qmkohg.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-shoes-high-heel-brown_qmkohg.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-shoes-high-heel-brown_qmkohg.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-shoes-high-heel-brown_qmkohg.jpg`,
   },
   '2': {
     assetId: '6af08ea9abd197af1e155c1de83afe3c',
@@ -59,9 +58,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/womens-dress-floral-01_or3sbs.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/womens-dress-floral-01_or3sbs.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/womens-dress-floral-01_or3sbs.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/womens-dress-floral-01_or3sbs.jpg`,
   },
   '3': {
     assetId: '88d96e96e597dc5f980beb43e9de1bcb',
@@ -75,9 +73,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/womens-shoes-nike-running_szzylp.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063237/shop/womens-shoes-nike-running_szzylp.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/womens-shoes-nike-running_szzylp.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063237/shop/womens-shoes-nike-running_szzylp.jpg`,
   },
   '4': {
     assetId: 'ebc4518dc5617ed13df87f90a32c385e',
@@ -91,9 +88,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-dress-floral-03_filqn2.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-dress-floral-03_filqn2.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-dress-floral-03_filqn2.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-dress-floral-03_filqn2.jpg`,
   },
   '5': {
     assetId: '1fab24a11814425c79efd532325686b2',
@@ -107,9 +103,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-shoes-high-heel-black_qhyv4s.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-shoes-high-heel-black_qhyv4s.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-shoes-high-heel-black_qhyv4s.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-shoes-high-heel-black_qhyv4s.jpg`,
   },
   '6': {
     assetId: '3a1bfd84e41971bf20c3f5e3c4185051',
@@ -123,9 +118,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-jeans-skinny_jogyyh.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-jeans-skinny_jogyyh.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-jeans-skinny_jogyyh.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-jeans-skinny_jogyyh.jpg`,
   },
   '7': {
     assetId: 'ad7bc4cf6267a5ff41afe4e57e90f688',
@@ -139,9 +133,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-jeans-slim-bootcut_clnizt.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063236/shop/womens-jeans-slim-bootcut_clnizt.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-jeans-slim-bootcut_clnizt.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063236/shop/womens-jeans-slim-bootcut_clnizt.jpg`,
   },
   '8': {
     assetId: '7e7e2197b6cb7378b783943b7900461b',
@@ -155,9 +148,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-moccasin_ydsoi0.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-moccasin_ydsoi0.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-moccasin_ydsoi0.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-moccasin_ydsoi0.jpg`,
   },
   '9': {
     assetId: '255e50eaad88eec88a599466ffeb845e',
@@ -171,9 +163,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-jeans-bootcut_r4ln7e.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-jeans-bootcut_r4ln7e.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-jeans-bootcut_r4ln7e.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-jeans-bootcut_r4ln7e.jpg`,
   },
   '10': {
     assetId: '97b84628497406372fa041c2d03d16f7',
@@ -187,9 +178,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-outdoors_zazg5t.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-outdoors_zazg5t.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-outdoors_zazg5t.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-outdoors_zazg5t.jpg`,
   },
   '11': {
     assetId: 'afddc9517b34e576ef2e6e5d9b662b6f',
@@ -203,9 +193,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-jeans-skinny_vdyqnn.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-jeans-skinny_vdyqnn.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-jeans-skinny_vdyqnn.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-jeans-skinny_vdyqnn.jpg`,
   },
   '12': {
     assetId: '342094eff09bff5d2013b868f93086b8',
@@ -219,9 +208,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-brown_pz2x2n.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/mens-shoes-brown_pz2x2n.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-brown_pz2x2n.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/mens-shoes-brown_pz2x2n.jpg`,
   },
   '13': {
     assetId: '9b6d1429473bb3bdfc6e48dddc4efb2a',
@@ -235,9 +223,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/womens-dress-floral-02_i4idic.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063235/shop/womens-dress-floral-02_i4idic.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/womens-dress-floral-02_i4idic.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063235/shop/womens-dress-floral-02_i4idic.jpg`,
   },
   '14': {
     assetId: 'bc48eb0d55dfbeaa5285d481fa78384f',
@@ -251,9 +238,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-plaid_d2hsng.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-plaid_d2hsng.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-plaid_d2hsng.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-plaid_d2hsng.jpg`,
   },
   '15': {
     assetId: '59e210de233f65c64b16f3db5423140a',
@@ -267,9 +253,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-black_ubopcn.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-black_ubopcn.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-black_ubopcn.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-black_ubopcn.jpg`,
   },
   '16': {
     assetId: 'cf7cf1d19f2e3f1d7ec33797d3a239fb',
@@ -283,9 +268,8 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-shortsleeve-plaid_xnlzvu.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063234/shop/mens-dress-shirt-shortsleeve-plaid_xnlzvu.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-shortsleeve-plaid_xnlzvu.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063234/shop/mens-dress-shirt-shortsleeve-plaid_xnlzvu.jpg`,
   },
   '17': {
     assetId: '3d0e6f627c3cbe69d097c94b4566e905',
@@ -299,8 +283,7 @@ export const images = {
     width: 600,
     height: 900,
     folder: 'shop',
-    url: 'http://res.cloudinary.com/dgpl87wy6/image/upload/v1688063233/shop/mens-dress-shirt-white_ng0zo1.jpg',
-    secureUrl:
-      'https://res.cloudinary.com/dgpl87wy6/image/upload/v1688063233/shop/mens-dress-shirt-white_ng0zo1.jpg',
+    url: `http://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063233/shop/mens-dress-shirt-white_ng0zo1.jpg`,
+    secureUrl: `https://res.cloudinary.com/${cloudinaryName}/image/upload/v1688063233/shop/mens-dress-shirt-white_ng0zo1.jpg`,
   },
 }

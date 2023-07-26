@@ -30,8 +30,8 @@ const _filter = <TItems extends (number | string | RegExp)[]>(items: TItems) => 
     indices: [],
   }
   for (const item of items) {
-    if (isRegExp(item)) pool.regexes.push(item)
-    else pool.indices.push(item)
+    if (isRegExp(item)) pool.regexes.push(item as RegExp)
+    else pool.indices.push(item as string | number)
   }
   return pool
 }
@@ -100,10 +100,6 @@ export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
 type SetPropertyMapReturnType<TArray extends readonly string[], TPrefix extends string = ''> = {
   [K in TArray[number]]: TPrefix extends NonEmptyString<TPrefix> ? `${TPrefix}-${K}` : K
 }
-// Record<
-//   TArray[number],
-//   TPrefix extends string ? `${TPrefix}-${TArray[number]}` : TArray[number]
-// >;
 
 /**
  * @internal
@@ -145,9 +141,15 @@ export function setPropertyMap<TArray extends readonly string[], TPrefix extends
   }
 }
 
-type UnitValueClassMap<TKeys extends readonly string[], TValues extends readonly string[]> = {
+type UnitValueClassMap<
+  TKeys extends readonly string[],
+  TValues extends readonly string[],
+  TClassPrefix extends string = '',
+> = {
   [Key in TKeys[number]]: {
-    [ValueKey in TValues[number]]: `${Key}-${ValueKey}`
+    [ValueKey in TValues[number]]: TClassPrefix extends NonEmptyString<TClassPrefix>
+      ? `${TClassPrefix}-${Key}-${ValueKey}`
+      : `${Key}-${ValueKey}`
   }
 }
 
@@ -160,15 +162,22 @@ type UnitValueClassMap<TKeys extends readonly string[], TValues extends readonly
 export function setUnitValuePropertyMap<
   TPrefixes extends readonly string[],
   TValues extends readonly string[],
->(prefixes: TPrefixes, values: TValues): UnitValueClassMap<TPrefixes, TValues> {
+  TClassPrefix extends string = '',
+>(
+  prefixes: TPrefixes,
+  values: TValues,
+  classPrefix?: TClassPrefix,
+): UnitValueClassMap<TPrefixes, TValues, TClassPrefix> {
   const result = prefixes.reduce((klasses, prefix) => {
     klasses[prefix] = values.reduce((acc, value) => {
       const pathPrefix = kebabCase?.(prefix) ?? prefix
-      acc[value] = `${pathPrefix}-${value}`
+      acc[value] = classPrefix?.length
+        ? `${classPrefix}-${pathPrefix}-${value}`
+        : `${pathPrefix}-${value}`
       return acc
     }, {})
     return klasses
-  }, {} as UnitValueClassMap<TPrefixes, TValues>)
+  }, {} as UnitValueClassMap<TPrefixes, TValues, TClassPrefix>)
   return result
 }
 
