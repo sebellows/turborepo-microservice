@@ -1,0 +1,6 @@
+{
+  "extends": "@trms/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "resolveJsonModule": true
+  }
+}
