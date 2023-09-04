@@ -1,57 +1,49 @@
-type DimensionValue = string | number | undefined;
+type DimensionValue = string | number | undefined
 
-const ROOT_FONT_SIZE = 16;
+const ROOT_FONT_SIZE = 16
 
 /**
  * Convert pixel value to em units
  */
-export function toPx(
-  value: DimensionValue,
-  baseFontSize: number = ROOT_FONT_SIZE
-) {
-  if (!value) return "0";
+export function toPx(value: DimensionValue, baseFontSize: number = ROOT_FONT_SIZE) {
+  if (!value) return '0'
 
-  let numericValue = +value;
-  let isRelativeUnit = false;
+  let numericValue = +value
+  let isRelativeUnit = false
 
-  if (typeof value === "string") {
-    isRelativeUnit = value.endsWith("em");
+  if (typeof value === 'string') {
+    isRelativeUnit = value.endsWith('em')
 
-    numericValue = parseFloat(value);
+    numericValue = parseFloat(value)
   }
 
-  numericValue = isRelativeUnit
-    ? numericValue * baseFontSize
-    : numericValue / baseFontSize;
+  numericValue = isRelativeUnit ? numericValue * baseFontSize : numericValue / baseFontSize
 
-  return `${numericValue}px`;
+  return `${numericValue}px`
 }
 
 const toRelativeUnit =
-  <U extends "em" | "rem">(unit: U) =>
-  (
-    value: DimensionValue,
-    baseFontSize: number = ROOT_FONT_SIZE
-  ): "0" | `${number}${U}` => {
-    if (!value) return "0";
+  <U extends 'em' | 'rem'>(unit: U) =>
+  (value: DimensionValue, baseFontSize: number = ROOT_FONT_SIZE): '0' | `${number}${U}` => {
+    if (!value) return '0'
 
-    let numericValue = +value;
+    let numericValue = +value
 
-    if (typeof value === "string") {
-      numericValue = parseFloat(value);
+    if (typeof value === 'string') {
+      numericValue = parseFloat(value)
     }
 
-    numericValue = numericValue / baseFontSize;
+    numericValue = numericValue / baseFontSize
 
-    return `${numericValue}${unit}`;
-  };
+    return `${numericValue}${unit}`
+  }
 
 /**
  * Convert pixel value to em units
  */
-export const toEm = toRelativeUnit("em");
+export const toEm = toRelativeUnit('em')
 
 /**
  * Convert pixel value to rem units
  */
-export const toRem = toRelativeUnit("rem");
+export const toRem = toRelativeUnit('rem')

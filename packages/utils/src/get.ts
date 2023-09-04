@@ -1,6 +1,8 @@
 import { isEmpty, isNil, isNumber, isPlainObject, isPrimitive, isString, isUndefined } from './lang'
 import { cloneDeep } from './clone'
 
+const withArrayIndexRE = /(?<=\[)\d+(?=\])/
+
 /**
  * NOTE:
  * The below is taken from `@types/lodash` because the `Get` type in type-fest could
@@ -29,7 +31,7 @@ type IndexedFieldWithPossiblyUndefined<T, Key> =
   | GetIndexedField<Exclude<T, undefined>, Key>
   | Extract<T, undefined>
 
-type GetFieldType<T, P> = P extends `${infer Left}.${infer Right}`
+export type GetFieldType<T, P> = P extends `${infer Left}.${infer Right}`
   ? Left extends keyof Exclude<T, undefined>
     ? FieldWithPossiblyUndefined<Exclude<T, undefined>[Left], Right> | Extract<T, undefined>
     : Left extends `${infer FieldKey}[${infer IndexKey}]`
@@ -162,8 +164,10 @@ function get<TObject, TPath extends string, TDefault = GetFieldType<TObject, TPa
   defaultValue: TDefault,
 ): Exclude<GetFieldType<TObject, TPath>, null | undefined> | TDefault
 function get(obj: any, path: PropertyKey, defaultValue?: any): any {
+  // return early if the value is a primitive
   if (isNil(obj) || isPrimitive(obj)) return obj ?? defaultValue
 
+  // return early if `obj` is an array or plain object that is empty
   if (isEmpty(path)) return defaultValue
 
   let currObj = cloneDeep(obj)
@@ -174,18 +178,37 @@ function get(obj: any, path: PropertyKey, defaultValue?: any): any {
   }
 
   for (let p of paths) {
-    if (isPlainObject(currObj) && currObj[p]) {
+    // console.log('\n***** utils.get() *****\n', currObj, p, paths)
+    if (withArrayIndexRE.test(p)) {
+      // `p` is of shape 'someArray[0]'
+      const matches = p.match(withArrayIndexRE)!
+      let index = matches[0]
+      let bracketIndex = matches.index ?? 0
+      p = p.slice(+bracketIndex)
+
+      currObj = currObj[p]?.[index]
+    } else if (isPlainObject(currObj) && currObj[p]) {
       currObj = currObj[p]
     } else if (Array.isArray(currObj)) {
-      let index = p.match(/(?<=\[)\d+(?=\])/)?.[0]
-
-      if (isUndefined(index)) break
-
-      if (isNumber(parseFloat(index))) {
-        currObj = currObj[parseFloat(index)]
-      } else if (parseFloat(p)) {
+      if (isNumber(p)) {
+        // convert `p` from an integer string to a number.
         currObj = currObj[parseFloat(p)]
+        break
       }
+
+      // Check if `p` is a bracketed integer (e.g., `*.[0].*`).
+      // `index` will be a number (as string) returned by `String.match()`.
+      let indexStr = p.match(withArrayIndexRE)?.[0]
+
+      // convert the formerly bracketed integer string to a number.
+      // (if `indexStr` is undefined we will get back `NaN`)
+      let index = parseFloat(String(indexStr))
+
+      // if `currObj` is an array but we cannot parse `p` to an index, then the path
+      // has been entered incorrectly and we'll break early and return undefined.
+      if (isNaN(index)) break
+
+      currObj = currObj[index]
     } else {
       currObj = undefined
       break

@@ -10,7 +10,7 @@
  * If you need a multi part message you can just do this: warning(condition, 'Hello, ${name} -
  * how are you today?')
  */
-const isProduction: boolean = process.env.NODE_ENV === "production";
+const isProduction: boolean = process.env.NODE_ENV === 'production'
 
 export function warning(condition: any, message: string): void {
   // don't do anything in production
@@ -18,16 +18,16 @@ export function warning(condition: any, message: string): void {
   if (!isProduction) {
     // condition passed: do not log
     if (condition) {
-      return;
+      return
     }
 
     // Condition not passed
-    const text: string = `Warning: ${message}`;
+    const text: string = `Warning: ${message}`
 
     // check console for IE9 support which provides console
     // only with open devtools
-    if (typeof console !== "undefined") {
-      console.warn(text);
+    if (typeof console !== 'undefined') {
+      console.warn(text)
     }
 
     // Throwing an error and catching it immediately
@@ -35,7 +35,7 @@ export function warning(condition: any, message: string): void {
     // A consumer can use 'pause on caught exceptions'
     // https://github.com/facebook/react/issues/4216
     try {
-      throw Error(text);
+      throw Error(text)
     } catch (x) {}
   }
 }

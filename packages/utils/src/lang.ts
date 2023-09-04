@@ -206,9 +206,9 @@ export function isEmpty<O extends Object | undefined>(value: O) {
   if (isPlainObject(value)) {
     return !!Object.keys(value).length
   } else if (hasOwn(value, 'length')) {
-    return !!(value as { length: number }).length
+    return (value as { length: number }).length <= 0
   } else if (hasOwn(value, 'size')) {
-    return !!(value as { size: number }).size
+    return (value as { size: number }).size <= 0
   }
 
   return false

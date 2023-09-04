@@ -1,13 +1,16 @@
 {
   "name": "@trms/database",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "The database for The Generic Co. website",
+  "author": "Sean Bellows",
   "private": true,
   "license": "UNLICENSED",
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "keywords": [],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
@@ -19,10 +22,10 @@
     "db:push": "pnpm run with-env prisma db push --skip-generate",
     "db:migrate": "pnpm run with-env prisma migrate dev --name trms",
     "db:seed": "pnpm run with-env prisma db seed",
+    "lint": "eslint \"src/**/*.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@prisma/client": "^4.16.1",
     "@trms/config": "workspace:*",
     "@trms/tsconfig": "workspace:*",
     "@trms/utils": "workspace:*",
@@ -32,12 +35,13 @@
     "bcryptjs": "^2.4.3",
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",
-    "prisma": "^4.14.1",
+    "prisma": "^4.16.2",
     "ts-node": "^10.0.0",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@prisma/client": "^4.16.2",
     "uuid": "^9.0.0"
   }
 }

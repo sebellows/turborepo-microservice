@@ -4,60 +4,59 @@
  * @license MIT {@see https://github.com/aralroca/default-composer/blob/main/LICENSE}
  */
 
-import { isEmpty, isPlainObject } from "./lang";
+import { isEmpty, isPlainObject } from './lang'
 
 type isDefaultableValueInputType = {
-  defaultableValue: boolean;
-  key: string;
-  value: unknown;
-};
+  defaultableValue: boolean
+  key: string
+  value: unknown
+}
 
 type isDefaultableValueType = ({
   defaultableValue,
   key,
   value,
-}: isDefaultableValueInputType) => boolean;
+}: isDefaultableValueInputType) => boolean
 
 type Config = {
-  isDefaultableValue?: isDefaultableValueType;
-};
+  isDefaultableValue?: isDefaultableValueType
+}
 
-let config: Config = {};
+let config: Config = {}
 
 export function setComposerConfig(newConfig: Config): void {
-  config = newConfig;
+  config = newConfig
 }
 
 export function composer<T>(...args: Partial<T>[]): T {
-  return args.reduce(compose, args[0]) as T;
+  return args.reduce(compose, args[0]) as T
 }
 
 function compose<T>(defaults: Partial<T>, obj: Partial<T>): Partial<T> {
-  const result: Partial<T> = {};
-  const allKeys = new Set([defaults, obj].flatMap(Object.keys));
+  const result: Partial<T> = {}
+  const allKeys = new Set([defaults, obj].flatMap(Object.keys))
 
   for (let key of allKeys) {
-    const defaultsValue = defaults[key];
-    const originalObjectValue = obj[key];
-    const hasDefault = key in defaults;
-    const checkOptions = { key, value: originalObjectValue };
-    const defaultableValue = isEmpty(checkOptions);
+    const defaultsValue = defaults[key]
+    const originalObjectValue = obj[key]
+    const hasDefault = key in defaults
+    const checkOptions = { key, value: originalObjectValue }
+    const defaultableValue = isEmpty(checkOptions)
     const defaultableValueFromConfig =
-      config.isDefaultableValue?.({ ...checkOptions, defaultableValue }) ??
-      defaultableValue;
+      config.isDefaultableValue?.({ ...checkOptions, defaultableValue }) ?? defaultableValue
 
     if (hasDefault && defaultableValueFromConfig) {
-      result[key] = defaultsValue;
-      continue;
+      result[key] = defaultsValue
+      continue
     }
 
     if (isPlainObject(defaultsValue) && isPlainObject(originalObjectValue)) {
-      result[key] = compose(defaultsValue, originalObjectValue);
-      continue;
+      result[key] = compose(defaultsValue, originalObjectValue)
+      continue
     }
 
-    result[key] = originalObjectValue;
+    result[key] = originalObjectValue
   }
 
-  return result;
+  return result
 }

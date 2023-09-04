@@ -1,0 +1,9 @@
+{
+  "extends": "@trms/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "sourceRoot": "./src",
+    "sourceMap": true
+  }
+}

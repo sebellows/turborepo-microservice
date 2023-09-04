@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@trms/api": "workspace:*",
     "@trms/ui": "workspace:*",
     "@trms/utils": "workspace:*",
     "next": "^13.4.1",
