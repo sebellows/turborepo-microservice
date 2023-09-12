@@ -1,6 +1,6 @@
 import { ColorBaseKeys, ColorPaletteKeys, ColorTintKeys, ColorVariantKeys } from '../types'
 import { _Range10, _Range6 } from './constants'
-import { setPropertyMap, setUnitValuePropertyMap } from './style.utils'
+import { setColorPropertyMap, setPropertyMap } from './style.utils'
 
 const FontFamilies = ['sans', 'serif', 'mono'] as const
 const FontSizes = [
@@ -68,8 +68,8 @@ const truncate = setPropertyMap(Truncate, '')
 
 export const textColor = {
   ...setPropertyMap(ColorBaseKeys, 'text'),
-  ...setUnitValuePropertyMap(ColorPaletteKeys, ColorTintKeys, 'text'),
-  ...setUnitValuePropertyMap(ColorVariantKeys, ColorTintKeys, 'text'),
+  ...setColorPropertyMap(ColorPaletteKeys, ColorTintKeys, 'text'),
+  ...setColorPropertyMap(ColorVariantKeys, ColorTintKeys, 'text'),
 }
 
 export const typography = {

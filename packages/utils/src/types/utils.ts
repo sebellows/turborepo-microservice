@@ -165,18 +165,18 @@ export type ConditionalKeys<Base, Condition> = NonNullable<
 
 type GetOptions = {
   /**
-	Include `undefined` in the return type when accessing properties.
-
-	Setting this to `false` is not recommended.
-
-	@default true
-	*/
+   * Include `undefined` in the return type when accessing properties.
+   *
+   * Setting this to `false` is not recommended.
+   *
+   * @default true
+   */
   strict?: boolean
 }
 
 /**
-Like the `Get` type but receives an array of strings as a path parameter.
-*/
+ * Like the `Get` type but receives an array of strings as a path parameter.
+ */
 type GetWithPath<
   BaseType,
   Keys extends readonly string[],
@@ -192,18 +192,20 @@ type GetWithPath<
   : never
 
 /**
-Adds `undefined` to `Type` if `strict` is enabled.
-*/
+ * Adds `undefined` to `Type` if `strict` is enabled.
+ */
 type Strictify<Type, Options extends GetOptions> = Options['strict'] extends false
   ? Type
   : Type | undefined
 
 /**
-If `Options['strict']` is `true`, includes `undefined` in the returned type when accessing properties on `Record<string, any>`.
-
-Known limitations:
-- Does not include `undefined` in the type on object types with an index signature (for example, `{a: string; [key: string]: string}`).
-*/
+ * If `Options['strict']` is `true`, includes `undefined` in the returned type when accessing
+ * properties on `Record<string, any>`.
+ *
+ * Known limitations:
+ * - Does not include `undefined` in the type on object types with an index signature
+ * (for example, `{a: string; [key: string]: string}`).
+ */
 type StrictPropertyOf<BaseType, Key extends keyof BaseType, Options extends GetOptions> = Record<
   string,
   any
@@ -214,22 +216,23 @@ type StrictPropertyOf<BaseType, Key extends keyof BaseType, Options extends GetO
   : BaseType[Key]
 
 /**
-Splits a dot-prop style path into a tuple comprised of the properties in the path. Handles square-bracket notation.
-
-@example
-```
-ToPath<'foo.bar.baz'>
-//=> ['foo', 'bar', 'baz']
-
-ToPath<'foo[0].bar.baz'>
-//=> ['foo', '0', 'bar', 'baz']
-```
-*/
+ * Splits a dot-prop style path into a tuple comprised of the properties in the path.
+ * Handles square-bracket notation.
+ *
+ * @example
+ * ```
+ * ToPath<'foo.bar.baz'>
+ * //=> ['foo', 'bar', 'baz']
+ *
+ * ToPath<'foo[0].bar.baz'>
+ * //=> ['foo', '0', 'bar', 'baz']
+ * ```
+ */
 type ToPath<S extends string> = Split<FixPathSquareBrackets<S>, '.'>
 
 /**
-Replaces square-bracketed dot notation with dots, for example, `foo[0].bar` -> `foo.0.bar`.
-*/
+ * Replaces square-bracketed dot notation with dots, for example, `foo[0].bar` -> `foo.0.bar`.
+ */
 type FixPathSquareBrackets<Path extends string> = Path extends `[${infer Head}]${infer Tail}`
   ? Tail extends `[${string}`
     ? `${Head}.${FixPathSquareBrackets<Tail>}`
@@ -239,16 +242,16 @@ type FixPathSquareBrackets<Path extends string> = Path extends `[${infer Head}]$
   : Path
 
 /**
-Returns true if `LongString` is made up out of `Substring` repeated 0 or more times.
-
-@example
-```
-ConsistsOnlyOf<'aaa', 'a'> //=> true
-ConsistsOnlyOf<'ababab', 'ab'> //=> true
-ConsistsOnlyOf<'aBa', 'a'> //=> false
-ConsistsOnlyOf<'', 'a'> //=> true
-```
-*/
+ * Returns true if `LongString` is made up out of `Substring` repeated 0 or more times.
+ *
+ * @example
+ * ```
+ * ConsistsOnlyOf<'aaa', 'a'> //=> true
+ * ConsistsOnlyOf<'ababab', 'ab'> //=> true
+ * ConsistsOnlyOf<'aBa', 'a'> //=> false
+ * ConsistsOnlyOf<'', 'a'> //=> true
+ * ```
+ */
 type ConsistsOnlyOf<LongString extends string, Substring extends string> = LongString extends ''
   ? true
   : LongString extends `${Substring}${infer Tail}`
@@ -270,18 +273,19 @@ type WithStringsKeys = keyof WithStrings;
 ```
 */
 type WithStringKeys<BaseType> = {
-  [Key in StringKeyOf<BaseType>]: UncheckedIndex<BaseType, Key>
+  [Key in StringKeyOf<BaseType, { strict: false }>]: UncheckedIndex<BaseType, Key>
 }
 
 /**
-Perform a `T[U]` operation if `T` supports indexing.
-*/
+ * Perform a `T[U]` operation if `T` supports indexing.
+ */
 type UncheckedIndex<T, U extends string | number> = [T] extends [Record<string | number, any>]
   ? T[U]
   : never
 
 /**
- * Get a property of an object or array. Works when indexing arrays using number-literal-strings, for example, `PropertyOf<number[], '0'> = number`, and when indexing objects with number keys.
+ * Get a property of an object or array. Works when indexing arrays using number-literal-strings,
+ * for example, `PropertyOf<number[], '0'> = number`, and when indexing objects with number keys.
  *
  * Note:
  * - Returns `unknown` if `Key` is not a property of `BaseType`, since TypeScript uses structural

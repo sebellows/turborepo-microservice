@@ -10,7 +10,8 @@
 
   .section-wrapper {
     @apply relative w-full;
-    padding: 0 var(--app-section-padding-x) var(--app-section-padding-y) var(--app-section-padding-x);
+    padding: 0 var(--app-section-padding-x) var(--app-section-padding-y)
+      var(--app-section-padding-x);
   }
 
   .section-header {
@@ -20,7 +21,7 @@
   }
 
   .section-title {
-    @apply text-2xl leading-snug tracking-tight;
+    @apply text-2xl font-bold leading-snug tracking-tight;
   }
 
   /**

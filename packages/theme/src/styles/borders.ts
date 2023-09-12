@@ -1,5 +1,5 @@
 import { ColorBaseKeys, ColorPaletteKeys, ColorTintKeys, ColorVariantKeys } from '../types'
-import { setPropertyMap, setUnitValuePropertyMap } from './style.utils'
+import { setColorPropertyMap, setPropertyMap } from './style.utils'
 
 const Radius = ['DEFAULT', 'none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const
 const BorderWidth = ['DEFAULT', '0', '2', '4', '8'] as const
@@ -34,9 +34,25 @@ const borderStyle = setPropertyMap(BorderStyle, 'border')
 
 const borderColor = {
   ...setPropertyMap(ColorBaseKeys, 'border'),
-  ...setUnitValuePropertyMap(ColorPaletteKeys, ColorTintKeys, 'border'),
-  ...setUnitValuePropertyMap(ColorVariantKeys, ColorTintKeys, 'border'),
+  ...setColorPropertyMap(ColorPaletteKeys, ColorTintKeys, 'border'),
+  ...setColorPropertyMap(ColorVariantKeys, ColorTintKeys, 'border'),
 }
+
+export const BorderUnitClasses = [
+  'radius',
+  'radiusT',
+  'radiusR',
+  'radiusB',
+  'radiusL',
+  'border',
+  'borderX',
+  'borderS',
+  'borderE',
+  'borderT',
+  'borderR',
+  'borderB',
+  'borderL',
+]
 
 export const borders = {
   radius,

@@ -203,12 +203,14 @@ export function isAsyncIterable<T>(value: unknown): value is AsyncIterable<T> {
 export function isEmpty<O extends Object | undefined>(value: O) {
   if (isNil(value)) return true
 
-  if (isPlainObject(value)) {
-    return !!Object.keys(value).length
-  } else if (hasOwn(value, 'length')) {
-    return (value as { length: number }).length <= 0
-  } else if (hasOwn(value, 'size')) {
-    return (value as { size: number }).size <= 0
+  if (typeof value === 'string') {
+    // Check for empty JSON string as well
+    return value === '' || value === '""'
+  } else if (Array.isArray(value)) {
+    return JSON.stringify(value) === '[]'
+  } else if (isObject(value)) {
+    // this will work for plain objects, Maps, and Set
+    return JSON.stringify(value) === '{}'
   }
 
   return false

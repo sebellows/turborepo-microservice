@@ -7,7 +7,7 @@ import { useVariant } from "../hooks";
 
 import { Box, BoxProps } from "./Box";
 import { Text } from './Text'
-import { Spinner } from "./spinner/Spinner";
+import { Spinner } from "./Spinner";
 
 type LoadingBoxProps = Partial<Pick<BoxProps, 'radius'>> & {
   backgroundColor?: string

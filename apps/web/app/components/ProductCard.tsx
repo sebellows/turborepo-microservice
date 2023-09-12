@@ -127,7 +127,7 @@ export const ProductCard = forwardRefAs(
                 <Stack
                   as="ul"
                   orientation="horizontal"
-                  grid={false}
+                  display="flex"
                   className="product-card__swatches-list"
                 >
                   {swatches.map(swatch => {

@@ -1,56 +1,56 @@
-import { Children, Fragment, ReactNode, isValidElement } from "react";
+import { Children, Fragment, ReactNode, isValidElement, useMemo } from 'react'
 import { classNames } from '@trms/utils'
+import { WithBreakpoint } from '@trms/theme'
 
-import { forwardRefAs, getChildTag } from "../../shared";
+import { forwardRefAs, getChildTag } from '../shared'
 
-import { Box, BoxProps } from "../Box";
-import { Divider } from "../Divider";
-import { WithBreakpoint } from "@trms/theme";
-
-// import './Stack.style.css'
+import { Box, BoxProps } from './Box'
+import { Divider } from './Divider'
 
 type StackOrientation = 'horizontal' | 'vertical'
 
 export type StackProps = {
   /** Each element in the stack. */
-  children: ReactNode;
-  grid?: boolean
+  children: ReactNode
+  /** Stack display options are "grid" or "flex" only! */
+  display?: 'grid' | 'flex'
   /** Causes items in the stack to be oriented horizontally, instead of vertically */
-  orientation?: StackOrientation | WithBreakpoint<StackOrientation>;
+  orientation?: StackOrientation | WithBreakpoint<StackOrientation>
   /** The placement, if any, of the dividing elements. */
-  dividers?: "none" | "around" | "between" | "start" | "end";
+  dividers?: 'none' | 'around' | 'between' | 'start' | 'end'
   /** Classes to apply to child wrapper elements */
   childClassName?: string | string[]
-} & BoxProps;
+} & Omit<BoxProps, 'display'>
 
-export const Stack = forwardRefAs<"div", StackProps>(
+export const Stack = forwardRefAs<'div', StackProps>(
   (
     {
       className,
-      cols = '1',
-      display,
-      grid = true,
+      display: initialDisplay = 'grid',
       orientation = 'vertical',
       children,
-      dividers = "none",
-      gap = "none",
+      dividers = 'none',
+      gap = 'none',
       childClassName,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const ChildWrapper = getChildTag(props?.as || 'div');
-    const classes = classNames(className, `stack-${orientation}`);
+    const ChildWrapper = getChildTag(props?.as || 'div')
+    const classes = classNames(className, `stack-${orientation}`)
+
+    const display = useMemo(() => {
+      if (!['grid', 'flex'].includes(initialDisplay)) {
+        throw new TypeError(`Stack component can only have a display value of "grid" or "flex".`)
+      }
+
+      return initialDisplay
+    }, [initialDisplay])
+
+    console.log('Stack', '\norientation: ', orientation, '\ncols: ', props.cols, '\nprops: ', props)
 
     return (
-      <Box
-        ref={ref}
-        className={classes}
-        {...props}
-        display={grid ? 'grid' : 'flex'}
-        cols={grid && cols}
-        gap={gap}
-      >
+      <Box ref={ref} className={classes} {...props} display={display} gap={gap}>
         {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
         {Children.toArray(children)
           .filter(child => isValidElement(child))
@@ -69,5 +69,5 @@ export const Stack = forwardRefAs<"div", StackProps>(
         {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
       </Box>
     )
-  }
-);
+  },
+)

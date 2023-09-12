@@ -1,108 +1,13 @@
-import {
-  camelCase,
-  get,
-  isPlainObject,
-  isRegExp,
-  kebabCase,
-  memoize,
-  NonEmptyString,
-} from '@trms/utils'
+import { camelCase, kebabCase, NonEmptyString } from '@trms/utils'
 
-import { Breakpoints, isWithBreakpoint, WithBreakpoint } from './breakpoints'
-import { TailwindPrefixes } from './tailwind'
-import { UIComponentProps } from './style.props'
-
-const containsTailwindPrefixObject = <T extends Record<string, any>>(value: T) => {
-  try {
-    const hasBreakpoint = Object.keys(value).some(val => includes(TailwindPrefixes, val))
-    return hasBreakpoint
-  } catch (err) {
-    return false
-  }
-}
-
-type FilteredPool = { regexes: RegExp[]; indices: (number | string)[] }
-const _filter = <TItems extends (number | string | RegExp)[]>(items: TItems) => {
-  // const parsedItems = JSON.parse(items);
-  // console.log('filterProps', parsedItems)
-  const pool: FilteredPool = {
-    regexes: [],
-    indices: [],
-  }
-  for (const item of items) {
-    if (isRegExp(item)) pool.regexes.push(item as RegExp)
-    else pool.indices.push(item as string | number)
-  }
-  return pool
-}
-const filterProps = memoize(_filter)
-
-/**
- * VSCode/TS complains about typeof 'string' not being assignable to '"string" | "string"'
- * when verifying as `ReadonlyArray.includes(string)`. Workaround is to create a custom
- * `includes` function that accepts a readonly array and then we can imply that the
- * string we're checking is readonly (wink, wink). Sadly, we need to pass it as rest
- * parameters because `readonly (number | string)` won't work.
- */
-export const includes = (
-  constProps: readonly (number | string | RegExp)[],
-  ...props: readonly (number | string)[]
-) => {
-  const pool = filterProps(constProps)
-  const { regexes, indices } = pool
-
-  const propIncluded = (prop: number | string) => {
-    return regexes.some(regex => regex.test(String(prop))) || indices.includes(prop)
-  }
-
-  const included = props.some(propIncluded)
-
-  return included
-}
-
-let bps = Breakpoints.map(bp => bp.toString())
-
-export const propsToTwClasses = (props: Partial<UIComponentProps>) => {
-  try {
-    const classSet = new Set<string>()
-    const result = Object.entries(props).reduce((classes, [prop, value]) => {
-      if (prop in UIComponentProps) {
-        if (typeof value === 'string' && value in UIComponentProps[prop]) {
-          const twClass = get(UIComponentProps, [prop, value], undefined)
-          classes.add(twClass)
-        }
-        if (isPlainObject(value) && containsTailwindPrefixObject(value)) {
-          const sortedBps = Object.keys(value).sort((a, b) => bps.indexOf(a) - bps.indexOf(b))
-
-          sortedBps.forEach((bp, i) => {
-            if (includes(TailwindPrefixes, bp)) {
-              const bpClass = get(UIComponentProps, [prop, value[bp]])
-              // if (i === 0) {
-              //   classes.add(bpClass)
-              // }
-              classes.add(`${bp}:${bpClass}`)
-            }
-          })
-        }
-      }
-
-      return classes
-    }, classSet)
-    const classResults = Array.from(result)
-    // console.log('classResults', classResults)
-    return classResults
-  } catch (err) {
-    console.error('propsToTwClasses=>Error', err)
-    throw new Error(`Failed to map properties`)
-  }
-}
+import { ColorPaletteKeys, ColorTintKey, ColorTintKeys, ColorVariantKeys } from '../types'
+import { isWithBreakpoint, WithBreakpoint } from './breakpoints'
 
 type SetPropertyMapReturnType<TArray extends readonly string[], TPrefix extends string = ''> = {
   [K in TArray[number]]: TPrefix extends NonEmptyString<TPrefix> ? `${TPrefix}-${K}` : K
 }
 
 /**
- * @internal
  * This is used to generate the property->value->className maps that are iterated through
  * in order to grab the correct TW class corresponding to property-value shorthand.
  *
@@ -125,7 +30,7 @@ export function setPropertyMap<TArray extends readonly string[], TPrefix extends
       let klassValue = value
       if (classPrefix.length > 0) {
         if (value.length && alt[value]) {
-          klassValue = alt[value]
+          klassValue = `${alt[value]}-${value}`
         } else {
           klassValue =
             !value.length || value === 'DEFAULT' ? String(classPrefix) : `${classPrefix}-${value}`
@@ -181,10 +86,40 @@ export function setUnitValuePropertyMap<
   return result
 }
 
-export const isUnit = (value: string) => ['px', 'em', 'rem'].some(unit => value.endsWith(unit))
+export type ColorValueClassMap<
+  TColorKeys extends readonly string[],
+  TTintKeys extends readonly string[],
+  TClassPrefix extends string,
+> = Record<
+  `${TColorKeys[number]}.${TTintKeys[number]}`,
+  `${TClassPrefix}-${TColorKeys[number]}-${TTintKeys[number]}`
+>
 
-export const extractUnit = (value: string) => {
-  const unit = ['px', 'em', 'rem'].find(suffix => value.endsWith(suffix))
+// TColorKeys extends typeof ColorPaletteKeys | typeof ColorVariantKeys,
+export function setColorPropertyMap<
+  TColorKeys extends readonly string[],
+  TTintKeys extends readonly string[],
+  TClassPrefix extends string,
+>(
+  prefixes: TColorKeys,
+  values: TTintKeys,
+  classPrefix: TClassPrefix,
+): ColorValueClassMap<TColorKeys, TTintKeys, TClassPrefix> {
+  const result = {} as ColorValueClassMap<TColorKeys, TTintKeys, TClassPrefix>
+  prefixes.forEach(prefix => {
+    values.forEach(value => {
+      result[`${prefix}.${value}`] = `${classPrefix}-${prefix}-${value}`
+    })
+  })
+  return result
+}
+
+const unitRE = /(px|%|rem|em|vw|vh)$/i
+
+export const isUnit = (value: string) => unitRE.test(value)
+
+export const extractUnit = (value: string): string => {
+  const unit = value.match(unitRE)?.[0] ?? ''
 
   return unit
 }
@@ -193,7 +128,12 @@ export const negateUiValue = <T extends string | number>(value: T | WithBreakpoi
   if (isWithBreakpoint(value)) {
     const bpObj: WithBreakpoint<T> = {}
     for (const bp in value) {
-      bpObj[bp] = value[bp] <= 0 ? value[bp] : -value[bp]
+      if (typeof value[bp] === 'number') {
+        bpObj[bp] = value[bp] <= 0 ? value[bp] : -value[bp]
+      } else {
+        bpObj[bp] =
+          value[bp].startsWith('-') || value[bp].startsWith('0') ? value[bp] : `-${value[bp]}`
+      }
     }
     return bpObj
   } else if (typeof value === 'number') {

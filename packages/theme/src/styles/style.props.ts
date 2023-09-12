@@ -1,6 +1,6 @@
 import { StringKeyOf } from '@trms/utils'
 
-import { bg } from './backgrounds'
+import { background } from './backgrounds'
 import { WithBreakpoint } from './breakpoints'
 import { flexgrid } from './flexgrid'
 import { layout } from './layout'
@@ -12,7 +12,7 @@ import { shadow } from './shadow'
 
 /** @internal */
 export const UIStyleCategoryMap = {
-  background: { bg },
+  background,
   borders,
   layout,
   flexgrid,
@@ -46,8 +46,8 @@ export type UIStyleCategory = keyof UIStyleCategoryMap
  *     }
  * }
  */
-export const UIComponentProps = {
-  bg,
+const UIComponentProps = {
+  ...background,
   ...borders,
   ...layout,
   ...flexgrid,
@@ -56,10 +56,13 @@ export const UIComponentProps = {
   ...spacing,
   ...typography,
 }
+export const UI_COMPONENT_PROPS = UIComponentProps
 
 type UIComponentPropsType = typeof UIComponentProps
+
 // Key of UIComponentProps: `flex`, `leading`, `alignItems`, etc.
 type UIPropertyKey = StringKeyOf<UIComponentPropsType>
+
 // i.e., key of UIComponentProps.flex: `none`, `1`, `auto`, etc.
 type UIPropertyValue<K extends UIPropertyKey> = StringKeyOf<UIComponentPropsType[K]>
 

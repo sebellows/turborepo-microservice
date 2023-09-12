@@ -20,6 +20,7 @@ async function bootstrap() {
   // })
 
   const app = await NestFactory.create(AppModule)
+  app.enableCors({ origin: 'http://127.0.0.1' })
 
   const HOST = config('host', 'http://localhost')
   const TITLE = config('appTitle', pkg.name)

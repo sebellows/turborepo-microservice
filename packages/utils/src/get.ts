@@ -163,14 +163,15 @@ function get<TObject, TPath extends string, TDefault = GetFieldType<TObject, TPa
   path: TPath,
   defaultValue: TDefault,
 ): Exclude<GetFieldType<TObject, TPath>, null | undefined> | TDefault
+function get(obj: any, path: string[], defaultValue?: any): any
 function get(obj: any, path: PropertyKey, defaultValue?: any): any {
   // return early if the value is a primitive
-  if (isNil(obj) || isPrimitive(obj)) return obj ?? defaultValue
+  if (isNil(obj) || isPrimitive(obj)) return defaultValue
 
   // return early if `obj` is an array or plain object that is empty
   if (isEmpty(path)) return defaultValue
 
-  let currObj = cloneDeep(obj)
+  let currObj: any = obj
   let paths: string[] = []
 
   if (isString(path)) {
@@ -215,7 +216,7 @@ function get(obj: any, path: PropertyKey, defaultValue?: any): any {
     }
   }
 
-  return isUndefined(currObj) && defaultValue ? defaultValue : currObj
+  return isUndefined(currObj) && defaultValue !== undefined ? defaultValue : currObj
 }
 
 export { get }

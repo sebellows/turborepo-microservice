@@ -18,7 +18,20 @@
  *   speed: '101'
  * }
  */
-export type Stringified<ObjectType> = { [KeyType in keyof ObjectType]: string };
+export type Stringified<ObjectType> = { [KeyType in keyof ObjectType]: string }
+
+type StringKeyOptions = {
+  /**
+   * To allow numbers as well as strings when accessing properties, set
+   * `strict` to false.
+   *
+   * @default true
+   */
+  strict?: boolean
+}
+type Strictify<Options extends StringKeyOptions> = Options['strict'] extends false
+  ? string | number
+  : string
 
 /**
  * Get keys of the given type as strings.
@@ -27,54 +40,50 @@ export type Stringified<ObjectType> = { [KeyType in keyof ObjectType]: string };
  * - Get string keys from a type which may have number keys.
  * - Makes it possible to index using strings retrieved from template types.
  */
-export type StringKeyOf<BaseType> = `${Extract<
+export type StringKeyOf<BaseType, Options extends StringKeyOptions = {}> = `${Extract<
   keyof BaseType,
-  string | number
->}`;
+  Strictify<Options>
+>}`
 
 export type Whitespace =
-  | "\u{9}" // '\t'
-  | "\u{A}" // '\n'
-  | "\u{B}" // '\v'
-  | "\u{C}" // '\f'
-  | "\u{D}" // '\r'
-  | "\u{20}" // ' '
-  | "\u{85}"
-  | "\u{A0}"
-  | "\u{1680}"
-  | "\u{2000}"
-  | "\u{2001}"
-  | "\u{2002}"
-  | "\u{2003}"
-  | "\u{2004}"
-  | "\u{2005}"
-  | "\u{2006}"
-  | "\u{2007}"
-  | "\u{2008}"
-  | "\u{2009}"
-  | "\u{200A}"
-  | "\u{2028}"
-  | "\u{2029}"
-  | "\u{202F}"
-  | "\u{205F}"
-  | "\u{3000}"
-  | "\u{FEFF}";
+  | '\u{9}' // '\t'
+  | '\u{A}' // '\n'
+  | '\u{B}' // '\v'
+  | '\u{C}' // '\f'
+  | '\u{D}' // '\r'
+  | '\u{20}' // ' '
+  | '\u{85}'
+  | '\u{A0}'
+  | '\u{1680}'
+  | '\u{2000}'
+  | '\u{2001}'
+  | '\u{2002}'
+  | '\u{2003}'
+  | '\u{2004}'
+  | '\u{2005}'
+  | '\u{2006}'
+  | '\u{2007}'
+  | '\u{2008}'
+  | '\u{2009}'
+  | '\u{200A}'
+  | '\u{2028}'
+  | '\u{2029}'
+  | '\u{202F}'
+  | '\u{205F}'
+  | '\u{3000}'
+  | '\u{FEFF}'
 
-export type WordSeparators = "-" | "_" | Whitespace;
+export type WordSeparators = '-' | '_' | Whitespace
 
 /**
  * Remove spaces from the left side.
  */
-type TrimLeft<V extends string> = V extends `${Whitespace}${infer R}`
-  ? TrimLeft<R>
-  : V;
+type TrimLeft<V extends string> = V extends `${Whitespace}${infer R}` ? TrimLeft<R> : V
 
 /**
  * Remove spaces from the right side.
  */
-type TrimRight<V extends string> = V extends `${infer R}${Whitespace}`
-  ? TrimRight<R>
-  : V;
+type TrimRight<V extends string> = V extends `${infer R}${Whitespace}` ? TrimRight<R> : V
 
 /**
  * Remove leading and trailing spaces from a string.
@@ -90,17 +99,13 @@ type TrimRight<V extends string> = V extends `${infer R}${Whitespace}`
  * @category String
  * @category Template literal
  */
-export type Trim<V extends string> = TrimLeft<TrimRight<V>>;
+export type Trim<V extends string> = TrimLeft<TrimRight<V>>
 
 /** Returns a boolean for whether the string is lowercased. */
-export type IsLowerCase<T extends string> = T extends Lowercase<T>
-  ? true
-  : false;
+export type IsLowerCase<T extends string> = T extends Lowercase<T> ? true : false
 
 /** Returns a boolean for whether the string is uppercased. */
-export type IsUpperCase<T extends string> = T extends Uppercase<T>
-  ? true
-  : false;
+export type IsUpperCase<T extends string> = T extends Uppercase<T> ? true : false
 
 /**
  * Type for a non-empty string. Good for conditional setting of template-literals.
@@ -116,7 +121,7 @@ export type IsUpperCase<T extends string> = T extends Uppercase<T>
  * }
  * ```
  */
-export type NonEmptyString<T extends string> = "" extends T ? never : T;
+export type NonEmptyString<T extends string> = '' extends T ? never : T
 
 /**
  * Returns a boolean for whether the string is numeric.
@@ -127,16 +132,14 @@ export type IsNumeric<T extends string> = T extends `${number}`
   ? Trim<T> extends T
     ? true
     : false
-  : false;
+  : false
 
-type SkipEmptyWord<Word extends string> = Word extends "" ? [] : [Word];
+type SkipEmptyWord<Word extends string> = Word extends '' ? [] : [Word]
 
 type RemoveLastCharacter<
   Sentence extends string,
-  Character extends string
-> = Sentence extends `${infer LeftSide}${Character}`
-  ? SkipEmptyWord<LeftSide>
-  : never;
+  Character extends string,
+> = Sentence extends `${infer LeftSide}${Character}` ? SkipEmptyWord<LeftSide> : never
 
 /**
  * Split a string (almost) like Lodash's `_.words()` function.
@@ -160,63 +163,45 @@ type RemoveLastCharacter<
  */
 export type SplitWords<
   Sentence extends string,
-  LastCharacter extends string = "",
-  CurrentWord extends string = ""
+  LastCharacter extends string = '',
+  CurrentWord extends string = '',
 > = Sentence extends `${infer FirstCharacter}${infer RemainingCharacters}`
   ? FirstCharacter extends WordSeparators
     ? // Skip word separator
       [...SkipEmptyWord<CurrentWord>, ...SplitWords<RemainingCharacters>]
-    : LastCharacter extends ""
+    : LastCharacter extends ''
     ? // Fist char of word
       SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>
     : // Case change: non-numeric to numeric, push word
     [false, true] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
     ? [
         ...SkipEmptyWord<CurrentWord>,
-        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>
+        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>,
       ]
     : // Case change: numeric to non-numeric, push word
     [true, false] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
     ? [
         ...SkipEmptyWord<CurrentWord>,
-        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>
+        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>,
       ]
     : // No case change: concat word
     [true, true] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
-    ? SplitWords<
-        RemainingCharacters,
-        FirstCharacter,
-        `${CurrentWord}${FirstCharacter}`
-      >
+    ? SplitWords<RemainingCharacters, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
     : // Case change: lower to upper, push word
-    [true, true] extends [
-        IsLowerCase<LastCharacter>,
-        IsUpperCase<FirstCharacter>
-      ]
+    [true, true] extends [IsLowerCase<LastCharacter>, IsUpperCase<FirstCharacter>]
     ? [
         ...SkipEmptyWord<CurrentWord>,
-        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>
+        ...SplitWords<RemainingCharacters, FirstCharacter, FirstCharacter>,
       ]
     : // Case change: upper to lower, brings back the last character, push word
-    [true, true] extends [
-        IsUpperCase<LastCharacter>,
-        IsLowerCase<FirstCharacter>
-      ]
+    [true, true] extends [IsUpperCase<LastCharacter>, IsLowerCase<FirstCharacter>]
     ? [
         ...RemoveLastCharacter<CurrentWord, LastCharacter>,
-        ...SplitWords<
-          RemainingCharacters,
-          FirstCharacter,
-          `${LastCharacter}${FirstCharacter}`
-        >
+        ...SplitWords<RemainingCharacters, FirstCharacter, `${LastCharacter}${FirstCharacter}`>,
       ]
     : // No case change: concat word
-      SplitWords<
-        RemainingCharacters,
-        FirstCharacter,
-        `${CurrentWord}${FirstCharacter}`
-      >
-  : [...SkipEmptyWord<CurrentWord>];
+      SplitWords<RemainingCharacters, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
+  : [...SkipEmptyWord<CurrentWord>]
 
 export type CamelCaseOptions = {
   /**
@@ -224,8 +209,8 @@ export type CamelCaseOptions = {
 
 	@default true
 	*/
-  preserveConsecutiveUppercase?: boolean;
-};
+  preserveConsecutiveUppercase?: boolean
+}
 
 /**
  * Convert an array of words to camel-case.
@@ -233,18 +218,12 @@ export type CamelCaseOptions = {
 type CamelCaseFromArray<
   Words extends string[],
   Options extends CamelCaseOptions,
-  OutputString extends string = ""
-> = Words extends [
-  infer FirstWord extends string,
-  ...infer RemainingWords extends string[]
-]
-  ? Options["preserveConsecutiveUppercase"] extends true
+  OutputString extends string = '',
+> = Words extends [infer FirstWord extends string, ...infer RemainingWords extends string[]]
+  ? Options['preserveConsecutiveUppercase'] extends true
     ? `${Capitalize<FirstWord>}${CamelCaseFromArray<RemainingWords, Options>}`
-    : `${Capitalize<Lowercase<FirstWord>>}${CamelCaseFromArray<
-        RemainingWords,
-        Options
-      >}`
-  : OutputString;
+    : `${Capitalize<Lowercase<FirstWord>>}${CamelCaseFromArray<RemainingWords, Options>}`
+  : OutputString
 
 /**
  * Convert a string literal to camel-case.
@@ -291,7 +270,7 @@ type CamelCaseFromArray<
  */
 export type CamelCase<
   Type,
-  Options extends CamelCaseOptions = { preserveConsecutiveUppercase: true }
+  Options extends CamelCaseOptions = { preserveConsecutiveUppercase: true },
 > = Type extends string
   ? string extends Type
     ? Type
@@ -301,4 +280,4 @@ export type CamelCase<
           Options
         >
       >
-  : Type;
+  : Type

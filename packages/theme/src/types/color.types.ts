@@ -1,4 +1,6 @@
 export const ColorBaseKeys = ['inherit', 'current', 'transparent', 'black', 'white'] as const
+export type ColorBaseKey = (typeof ColorBaseKeys)[number]
+
 export const ColorTintKeys = [
   '50',
   '100',
